@@ -471,3 +471,22 @@ html[dir="rtl"] .doctors-marquee-track{animation-name:doctorsMarqueeRTL}@keyfram
 .admin-notice.admin-toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
 .admin-notice.admin-toast.ok{background:#e9f8ef;color:#176b3a;border-color:#bde7cc}.admin-notice.admin-toast.err{background:#fdecec;color:#9b2025;border-color:#f5c6c8}
 @media(max-width:640px){.admin-notice.admin-toast{top:10px;min-width:calc(100vw - 20px);max-width:calc(100vw - 20px);font-size:14px;padding:12px 14px}}
+
+
+/* V38: Doctor booking controls, schedules and walk-in status */
+.doctor-hours{margin:10px 0 12px;padding:10px 11px;border:1px solid rgba(18,54,95,.1);border-radius:13px;background:#f8fafc;display:grid;gap:5px;font-size:.78rem}
+.doctor-hours>b{color:var(--navy);font-size:.82rem;margin-bottom:2px}
+.doctor-hours span{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#536273}
+.doctor-hours em{font-style:normal;font-weight:700;color:#34495e}
+.doctor-hours strong{font-size:.74rem;color:var(--navy);font-weight:800;white-space:nowrap}
+.doctor-hours-empty{font-size:.78rem;color:#7a8795;margin:9px 0}
+.doctor-walkin{width:100%;border:1px solid rgba(237,28,36,.22);background:linear-gradient(135deg,#fff7f7,#fff);border-radius:13px;padding:10px 12px;color:var(--red);cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center;transition:.2s ease}
+.doctor-walkin:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(237,28,36,.12)}
+.doctor-walkin b{font-size:.86rem}.doctor-walkin small{font-size:.7rem;color:#7f8892}
+.walkin-dialog{max-width:500px;text-align:center;padding:28px}.walkin-icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 10px;background:#fff2f2;color:var(--red);font-size:1.65rem}.walkin-dialog>p{color:#667281;line-height:1.8}.walkin-summary{margin:18px 0}.walkin-close-btn{min-width:130px}
+.doctor-schedule-editor{border:1px solid #e2e8f0;border-radius:14px;padding:12px;background:#fafcff}
+.schedule-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.schedule-head b{color:#12365f}.schedule-head span{font-size:.78rem;color:#778494}
+.schedule-day{display:grid;grid-template-columns:minmax(120px,1fr) 120px auto 120px;gap:8px;align-items:center;padding:7px 0;border-top:1px solid #edf1f5}.schedule-day:first-of-type{border-top:0}.schedule-toggle{display:flex!important;align-items:center;gap:8px}.schedule-toggle input{width:18px!important;height:18px!important}.schedule-toggle span{font-weight:700;color:#34495e}.schedule-dash{font-size:.76rem;color:#7c8895}.booking-enabled-label select{font-weight:700}
+@media(max-width:700px){.schedule-day{grid-template-columns:1fr 1fr;gap:6px}.schedule-toggle{grid-column:1/-1}.schedule-dash{display:none}.doctor-hours{font-size:.75rem}.doctor-hours span{gap:5px}.walkin-dialog{margin:15px;padding:24px 18px}}
+
+.booking-checkbox .toggle-line{display:flex;align-items:center;gap:9px;min-height:42px;padding:8px 10px;border:1px solid #dfe6ee;border-radius:10px;background:#fff}.booking-checkbox input{width:19px!important;height:19px!important;accent-color:#ed1c24}.booking-checkbox b{font-size:.78rem;color:#445467}

@@ -86,27 +86,91 @@ function writeCachedData(payload){
 async function refreshRemoteData(){
   try{
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),6500);
-    const u=CONFIG.sheetApiUrl+(CONFIG.sheetApiUrl.includes('?')?'&':'?')+'action=getAll';
-    const r=await fetch(u,{cache:'no-cache',signal:controller.signal});
+    const timer=setTimeout(()=>controller.abort(),5200);
+    const u=CONFIG.sheetApiUrl+(CONFIG.sheetApiUrl.includes('?')?'&':'?')+'action=getAll&_='+Date.now();
+    const r=await fetch(u,{cache:'no-store',signal:controller.signal});
     clearTimeout(timer);
     if(!r.ok)throw new Error('HTTP '+r.status);
     const raw=await r.json();
     const n=normalizePayload(raw);
-    if(n){writeCachedData(raw);data=n;render()}
+    if(n){
+      const before=JSON.stringify(data),after=JSON.stringify(n);
+      writeCachedData(raw);if(Array.isArray(n.doctors))writeDoctorsFastCache(n.doctors);
+      sessionStorage.setItem('alsiteen_last_bg_sync',String(Date.now()));
+      if(before!==after){data=n;render()}
+    }
   }catch(e){console.warn('Background content refresh skipped:',e)}
 }
+function readDoctorsFastCache(){
+  try{
+    const raw=localStorage.getItem('alsiteen_doctors_fast_v1');
+    if(!raw)return null;
+    const parsed=JSON.parse(raw);
+    return Array.isArray(parsed?.doctors)?parsed.doctors:null;
+  }catch(e){return null}
+}
+function writeDoctorsFastCache(doctors){
+  try{if(Array.isArray(doctors))localStorage.setItem('alsiteen_doctors_fast_v1',JSON.stringify({savedAt:Date.now(),doctors}))}catch(e){}
+}
+async function refreshDoctorsFast(){
+  if(!document.querySelector('#doctorsGrid'))return;
+  try{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),2800);
+    const u=CONFIG.sheetApiUrl+(CONFIG.sheetApiUrl.includes('?')?'&':'?')+'action=getDoctors&_='+Date.now();
+    const r=await fetch(u,{cache:'no-store',signal:controller.signal});clearTimeout(timer);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const raw=await r.json();
+    const list=raw?.data?.doctors||raw?.doctors;
+    if(Array.isArray(list)){
+      writeDoctorsFastCache(list);
+      data={...data,doctors:list};
+      renderDoctorsPublic();
+    }
+  }catch(e){console.warn('Fast doctors refresh skipped:',e)}
+}
 function loadData(){
-  // Paint immediately, then use the last successful content cache, and only refresh remotely in the background.
+  // Paint instantly. On the doctors page, restore the small doctors-only cache first,
+  // then refresh doctors independently without waiting for the much larger getAll payload.
+  const doctorsPage=!!document.querySelector('#doctorsGrid');
+  const fastDoctors=doctorsPage?readDoctorsFastCache():null;
+  if(fastDoctors?.length)data={...data,doctors:fastDoctors};
   render();
   const cached=readCachedData();
-  if(cached){data=cached;render()}
-  const startRefresh=()=>refreshRemoteData();
-  if('requestIdleCallback' in window)requestIdleCallback(startRefresh,{timeout:1800});
-  else if(document.readyState==='complete')setTimeout(startRefresh,350);
-  else window.addEventListener('load',()=>setTimeout(startRefresh,250),{once:true});
+  if(cached){
+    if(doctorsPage&&fastDoctors?.length)cached.doctors=fastDoctors;
+    data=cached;render();
+  }
+  if(doctorsPage)refreshDoctorsFast();
+  const startRefresh=()=>{
+    const last=Number(sessionStorage.getItem('alsiteen_last_bg_sync')||0);
+    if(Date.now()-last<60000)return; // لا نعيد تحميل الشيت في كل تنقل داخل الموقع خلال دقيقة.
+    refreshRemoteData();
+  };
+  // كل ما يأتي من Google Sheets صار stale-while-revalidate: الصفحة ترسم من الكاش فورًا والتحديث يتم بعد ذلك في الخلفية.
+  const delay=doctorsPage?2200:1200;
+  if('requestIdleCallback' in window)requestIdleCallback(()=>setTimeout(startRefresh,delay),{timeout:doctorsPage?3500:2500});
+  else if(document.readyState==='complete')setTimeout(startRefresh,delay);
+  else window.addEventListener('load',()=>setTimeout(startRefresh,delay),{once:true});
 }
-function esc(s=''){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}function val(ar,en){return lang==='ar'?ar:en}function cleanPhone(v){return String(v||'').replace(/\D/g,'')}function phoneDisplay(v){let x=cleanPhone(v);if(x.startsWith('966'))x=x.slice(3);if(x.length===9)x='0'+x;return x.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3')}function waUrl(s){return `https://wa.me/${cleanPhone(s.whatsapp||CONFIG.whatsapp)}?text=${encodeURIComponent(s.whatsappMessage||fallback.settings.whatsappMessage)}`}function setText(id,text){const e=$(id);if(e&&text!=null)e.textContent=text}function setImage(id,src){const e=$(id);if(e&&src)e.src=src}
+function esc(s=''){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}function val(ar,en){return lang==='ar'?ar:en}function cleanPhone(v){return String(v||'').replace(/\D/g,'')}
+const DOCTOR_DAYS=[
+  {key:'sat',day:6,ar:'السبت',en:'Saturday'},{key:'sun',day:0,ar:'الأحد',en:'Sunday'},
+  {key:'mon',day:1,ar:'الاثنين',en:'Monday'},{key:'tue',day:2,ar:'الثلاثاء',en:'Tuesday'},
+  {key:'wed',day:3,ar:'الأربعاء',en:'Wednesday'},{key:'thu',day:4,ar:'الخميس',en:'Thursday'},
+  {key:'fri',day:5,ar:'الجمعة',en:'Friday'}
+];
+function truthy(v,def=true){if(v===undefined||v===null||v==='')return def;return !['false','0','no','off'].includes(String(v).toLowerCase())}
+function doctorDayConfig(doc,date){
+  const item=DOCTOR_DAYS.find(x=>x.day===date.getDay())||DOCTOR_DAYS[0],k=item.key;
+  const fri=k==='fri';
+  return {key:k,label:lang==='ar'?item.ar:item.en,enabled:truthy(doc?.[k+'Enabled'],true),start:String(doc?.[k+'Start']||(fri?'15:00':'08:00')),end:String(doc?.[k+'End']||(fri?'23:00':'23:30'))};
+}
+function doctorScheduleRows(doc){
+  return DOCTOR_DAYS.map(item=>{const fri=item.key==='fri';return {label:lang==='ar'?item.ar:item.en,enabled:truthy(doc?.[item.key+'Enabled'],true),start:String(doc?.[item.key+'Start']||(fri?'15:00':'08:00')),end:String(doc?.[item.key+'End']||(fri?'23:00':'23:30'))}}).filter(x=>x.enabled);
+}
+function doctorScheduleHtml(doc){const rows=doctorScheduleRows(doc);if(!rows.length)return `<div class="doctor-hours-empty">${lang==='ar'?'لا توجد مواعيد عمل محددة':'No working hours set'}</div>`;return `<div class="doctor-hours"><b>${lang==='ar'?'مواعيد العمل':'Working hours'}</b>${rows.map(x=>`<span><em>${esc(x.label)}</em><strong dir="ltr">${esc(x.start)} - ${esc(x.end)}</strong></span>`).join('')}</div>`}
+function phoneDisplay(v){let x=cleanPhone(v);if(x.startsWith('966'))x=x.slice(3);if(x.length===9)x='0'+x;return x.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3')}function waUrl(s){return `https://wa.me/${cleanPhone(s.whatsapp||CONFIG.whatsapp)}?text=${encodeURIComponent(s.whatsappMessage||fallback.settings.whatsappMessage)}`}function setText(id,text){const e=$(id);if(e&&text!=null)e.textContent=text}function setImage(id,src){const e=$(id);if(e&&src)e.src=src}
 function applyTheme(s){const r=document.documentElement.style;r.setProperty('--navy',s.themeNavy||fallback.settings.themeNavy);r.setProperty('--navy2',s.themeNavyDark||fallback.settings.themeNavyDark);r.setProperty('--red',s.themeRed||fallback.settings.themeRed);r.setProperty('--bg',s.themeLight||fallback.settings.themeLight)}
 function animateCounter(el){if(el.dataset.animated==='1')return;el.dataset.animated='1';const target=Number(el.dataset.count||0),suffix=el.dataset.suffix||'',duration=850,start=performance.now();const tick=now=>{const p=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-p,3),v=Math.floor(target*ease);el.textContent=v.toLocaleString('en-US')+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}
 function renderStats(){const g=$('#statsGrid');if(!g)return;const list=(data.stats||[]).filter(x=>String(x.active??true)!=='false');g.innerHTML=list.map(x=>`<div class="stat-modern"><span class="stat-icon">${esc(x.icon||'◎')}</span><b class="counter" data-count="${Number(x.value)||0}" data-suffix="${esc(x.suffix||'')}">0</b><span>${esc(val(x.labelAr,x.labelEn)||'')}</span></div>`).join('');const sec=$('.stats-modern');if('IntersectionObserver'in window&&sec){const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.querySelectorAll('.counter').forEach(animateCounter);io.disconnect()}}),{threshold:.25});io.observe(sec)}else $$('.counter').forEach(animateCounter)}
@@ -129,18 +193,21 @@ function serviceIconSvg(ar,en,fallbackIcon){
 }
 function socialBrandIcon(name){const n=String(name||'').toLowerCase();if(n.includes('instagram'))return `<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#feda75"/><stop offset=".32" stop-color="#fa7e1e"/><stop offset=".58" stop-color="#d62976"/><stop offset=".78" stop-color="#962fbf"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2.2" y="2.2" width="19.6" height="19.6" rx="5.7" fill="url(#ig)"/><circle cx="12" cy="12" r="4.25" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.35" cy="6.75" r="1.25" fill="#fff"/></svg>`;if(n.includes('tiktok'))return `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25F4EE" d="M14.3 3.1v10.2a3.45 3.45 0 1 1-2.3-3.25V7.6a5.8 5.8 0 1 0 4.65 5.68V8.3c1.2.86 2.7 1.37 4.3 1.37V7.2a4.35 4.35 0 0 1-4.3-4.1z"/><path fill="#FE2C55" d="M15.25 2.15v10.2a3.45 3.45 0 1 1-2.3-3.25V6.65a5.8 5.8 0 1 0 4.65 5.68V7.35c1.2.86 2.7 1.37 4.3 1.37V6.25a4.35 4.35 0 0 1-4.3-4.1z"/><path fill="#111" d="M14.78 2.63v10.2a3.45 3.45 0 1 1-2.3-3.25V7.13a5.8 5.8 0 1 0 4.65 5.68V7.83c1.2.86 2.7 1.37 4.3 1.37V6.73a4.35 4.35 0 0 1-4.3-4.1z"/></svg>`;if(n.includes('snap'))return `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#FFFC00"/><path d="M12 5.1c2.12 0 3.47 1.55 3.47 3.65 0 .61-.04 1.08.22 1.49.21.32.66.45 1.07.58.44.14.72.31.7.56-.02.3-.39.48-1.14.59-.31.05-.39.3-.49.59-.25.69-.77 1.37-1.62 1.68-.45.16-.67.44-.72.82-.06.45-.26.62-.65.52-.55-.14-.94-.17-1.24-.17s-.69.03-1.24.17c-.39.1-.59-.07-.65-.52-.05-.38-.27-.66-.72-.82-.85-.31-1.37-.99-1.62-1.68-.1-.29-.18-.54-.49-.59-.75-.11-1.12-.29-1.14-.59-.02-.25.26-.42.7-.56.41-.13.86-.26 1.07-.58.26-.41.22-.88.22-1.49C8.53 6.65 9.88 5.1 12 5.1z" fill="#fff" stroke="#111" stroke-width=".7"/></svg>`;if(n.includes('linktree'))return `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="#43E660"/><path fill="#111" d="m12 4.2 2.65 4.2-1.7 1.06 3.05-.03 3.35 2.18-1.07 1.68-3.21-2.09 1.31 3.09-1.85.78-1.55-3.66v7.42h-2v-7.42l-1.55 3.66-1.85-.78 1.31-3.09-3.21 2.09-1.07-1.68 3.35-2.18 3.05.03-1.7-1.06z"/></svg>`;return `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#12365f"/><path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>`}
 
-let doctorBookingInitialized=false;
+let doctorBookingInitialized=false,currentBookingDoctor=null;
 function pad2(n){return String(n).padStart(2,'0')}
 function localDateValue(d){return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`}
-function doctorBookingWorkingWindow(date){const day=date.getDay();return day===5?{start:15,end:23}:{start:8,end:24}}
 function rebuildDoctorBookingTimes(){
-  const dateEl=$('#doctorBookingDate'),timeEl=$('#doctorBookingTime');if(!dateEl||!timeEl)return;
+  const dateEl=$('#doctorBookingDate'),timeEl=$('#doctorBookingTime'),note=$('#doctorBookingNote');if(!dateEl||!timeEl)return;
   timeEl.innerHTML=`<option value="">${lang==='ar'?'اختر التوقيت':'Select time'}</option>`;
-  if(!dateEl.value)return;
+  if(!dateEl.value||!currentBookingDoctor)return;
   const selected=new Date(dateEl.value+'T00:00:00'),today=new Date();today.setHours(0,0,0,0);
   if(selected<today){dateEl.value=localDateValue(today);return rebuildDoctorBookingTimes()}
-  const {start,end}=doctorBookingWorkingWindow(selected),min=new Date(Date.now()+CONFIG.minLeadHours*3600000);
-  for(let h=start;h<end;h++)for(let m=0;m<60;m+=30){const slot=new Date(selected);slot.setHours(h,m,0,0);if(slot<min)continue;const v=`${pad2(h)}:${pad2(m)}`;timeEl.insertAdjacentHTML('beforeend',`<option value="${v}">${v}</option>`)}
+  const cfg=doctorDayConfig(currentBookingDoctor,selected);
+  if(!cfg.enabled){if(note)note.textContent=lang==='ar'?`الطبيب غير متواجد يوم ${cfg.label}. اختر يومًا آخر.`:`The doctor is not available on ${cfg.label}. Please choose another day.`;return}
+  const [sh,sm]=cfg.start.split(':').map(Number),[eh,em]=cfg.end.split(':').map(Number),min=new Date(Date.now()+CONFIG.minLeadHours*3600000);
+  let count=0;
+  for(let total=sh*60+sm;total<=eh*60+em;total+=30){const h=Math.floor(total/60),m=total%60,slot=new Date(selected);slot.setHours(h,m,0,0);if(slot<min)continue;const v=`${pad2(h)}:${pad2(m)}`;timeEl.insertAdjacentHTML('beforeend',`<option value="${v}">${v}</option>`);count++}
+  if(note)note.textContent=count?'':(lang==='ar'?'لا توجد مواعيد متاحة في هذا اليوم بعد تطبيق شرط الحجز قبل الموعد بساعتين.':'No times are available on this day after applying the two-hour booking rule.');
 }
 function initDoctorBooking(){
   if(doctorBookingInitialized)return;doctorBookingInitialized=true;
@@ -153,20 +220,31 @@ function initDoctorBooking(){
   form.addEventListener('submit',e=>{
     e.preventDefault();const note=$('#doctorBookingNote'),f=new FormData(form),mobile=String(f.get('mobile')||'').replace(/\D/g,'');
     if(!/^05\d{8}$/.test(mobile)){if(note)note.textContent=lang==='ar'?'أدخل رقم جوال صحيح بصيغة 05xxxxxxxx.':'Enter a valid mobile number in 05xxxxxxxx format.';return}
-    const date=String(f.get('date')||''),time=String(f.get('time')||'');if(!date||!time){if(note)note.textContent=lang==='ar'?'اختر التاريخ والوقت المتاح.':'Select an available date and time.';return}
-    const chosen=new Date(`${date}T${time}:00`),todayStart=new Date();todayStart.setHours(0,0,0,0);const chosenDay=new Date(date+'T00:00:00');
-    if(chosenDay<todayStart||chosen<new Date(Date.now()+CONFIG.minLeadHours*3600000)){if(note)note.textContent=lang==='ar'?'لا يمكن الحجز بتاريخ سابق أو قبل ساعتين من الوقت الحالي.':'Past dates or appointments less than two hours from now are not allowed.';rebuildDoctorBookingTimes();return}
+    const date=String(f.get('date')||''),time=String(f.get('time')||'');if(!date||!time){if(note)note.textContent=lang==='ar'?'اختر تاريخًا ووقتًا متاحًا ضمن مواعيد عمل الطبيب.':'Select an available date and time within the doctor’s working hours.';return}
+    const chosen=new Date(`${date}T${time}:00`),todayStart=new Date();todayStart.setHours(0,0,0,0);const chosenDay=new Date(date+'T00:00:00'),cfg=doctorDayConfig(currentBookingDoctor,chosenDay);
+    if(!cfg.enabled||chosenDay<todayStart||chosen<new Date(Date.now()+CONFIG.minLeadHours*3600000)){if(note)note.textContent=lang==='ar'?'الموعد غير متاح. لا يمكن الحجز بتاريخ سابق أو قبل ساعتين من الوقت الحالي.':'This appointment is unavailable. Past dates or appointments less than two hours from now are not allowed.';rebuildDoctorBookingTimes();return}
     const doctor=String(f.get('doctor')||''),specialty=String(f.get('specialty')||''),name=String(f.get('name')||''),details=String(f.get('details')||'');
     const lines=lang==='ar'?[`طلب حجز موعد من صفحة أطباؤنا`,`الطبيب: ${doctor}`,`التخصص: ${specialty}`,`اسم المريض: ${name}`,`رقم جوال المريض: ${mobile}`,`التاريخ: ${date}`,`الوقت: ${time}`,`تفاصيل إضافية: ${details||'-'}`]:[`Appointment request from Our Doctors page`,`Doctor: ${doctor}`,`Specialty: ${specialty}`,`Patient name: ${name}`,`Patient mobile: ${mobile}`,`Date: ${date}`,`Time: ${time}`,`Additional details: ${details||'-'}`];
-    const s=data.settings||fallback.settings;window.open(`https://wa.me/${cleanPhone(s.whatsapp||CONFIG.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank');
+    const st=data.settings||fallback.settings;window.open(`https://wa.me/${cleanPhone(st.whatsapp||CONFIG.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank');
   });
-  rebuildDoctorBookingTimes();
 }
-function openDoctorBooking(doctor,specialty){
-  initDoctorBooking();const modal=$('#doctorBookingModal'),form=$('#doctorBookingForm');if(!modal||!form)return;
-  $('#doctorBookingDoctor').textContent=doctor||'-';$('#doctorBookingSpecialty').textContent=specialty||'-';$('#doctorBookingDoctorValue').value=doctor||'';$('#doctorBookingSpecialtyValue').value=specialty||'';
+function openWalkinNotice(doc){
+  const modal=$('#walkinModal');if(!modal)return;
+  setText('#walkinKicker',lang==='ar'?'الحضور المباشر':'Walk-in service');
+  setText('#walkinTitle',lang==='ar'?'الحضور بأسبقية الوصول':'First come, first served');
+  setText('#walkinText',lang==='ar'?'هذا الطبيب لا يستقبل حجز مواعيد مسبق حاليًا. يمكنكم الحضور خلال مواعيد العمل، وتكون الخدمة بأسبقية الوصول.':'This doctor is currently available on a walk-in basis only. Please visit during working hours; patients are seen in order of arrival.');
+  setText('#walkinDoctorLabel',lang==='ar'?'الطبيب':'Doctor');setText('#walkinSpecialtyLabel',lang==='ar'?'التخصص':'Specialty');
+  setText('#walkinDoctorName',val(doc?.nameAr,doc?.nameEn)||'');setText('#walkinSpecialty',val(doc?.specialtyAr,doc?.specialtyEn)||'');
+  const btn=modal.querySelector('.walkin-close-btn');if(btn)btn.textContent=lang==='ar'?'حسنًا':'OK';
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+}
+function openDoctorBooking(doc){
+  if(!truthy(doc?.bookingEnabled,true)){openWalkinNotice(doc);return}
+  currentBookingDoctor=doc;initDoctorBooking();const modal=$('#doctorBookingModal'),form=$('#doctorBookingForm');if(!modal||!form)return;
+  const doctor=val(doc.nameAr,doc.nameEn)||'',specialty=val(doc.specialtyAr,doc.specialtyEn)||'';
+  $('#doctorBookingDoctor').textContent=doctor||'-';$('#doctorBookingSpecialty').textContent=specialty||'-';$('#doctorBookingDoctorValue').value=doctor;$('#doctorBookingSpecialtyValue').value=specialty;
   const dateEl=$('#doctorBookingDate');if(dateEl){const today=new Date();dateEl.min=localDateValue(today);dateEl.value=localDateValue(today)}rebuildDoctorBookingTimes();
-  const note=$('#doctorBookingNote');if(note)note.textContent='';modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>form.querySelector('input[name="name"]')?.focus(),100)
+  const note=$('#doctorBookingNote');if(note&&!note.textContent)note.textContent='';modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>form.querySelector('input[name="name"]')?.focus(),100)
 }
 
 function renderDoctorsPublic(){
@@ -177,7 +255,7 @@ function renderDoctorsPublic(){
   const search=$('#publicDoctorsSearch'),specialty=$('#publicDoctorsSpecialty'),empty=$('#doctorsEmpty');
   const specs=[...new Set(all.map(x=>val(x.specialtyAr,x.specialtyEn)).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),lang==='ar'?'ar':'en'));
   if(specialty){const cur=specialty.value||'all';specialty.innerHTML=`<option value="all">${lang==='ar'?'كل التخصصات':'All specialties'}</option>`+specs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');specialty.value=[...specialty.options].some(o=>o.value===cur)?cur:'all'}
-  const card=(x,i)=>`<article class="doctor-card doctor-marquee-card"><div class="doctor-photo">${x.image?`<img src="${esc(x.image)}" alt="${esc(val(x.nameAr,x.nameEn)||'')}" loading="${i<6?'eager':'lazy'}" decoding="async" ${i<3?'fetchpriority="high"':'fetchpriority="low"'}>`:`<div class="doctor-placeholder" aria-hidden="true">⚕</div>`}</div><div class="doctor-info"><span class="doctor-specialty">${esc(val(x.specialtyAr,x.specialtyEn)||'')}</span><h3>${esc(val(x.nameAr,x.nameEn)||'')}</h3>${val(x.nationalityAr,x.nationalityEn)?`<div class="doctor-nationality">${lang==='ar'?'الجنسية: ':'Nationality: '}${esc(val(x.nationalityAr,x.nationalityEn))}</div>`:''}<p>${esc(val(x.bioAr,x.bioEn)||'')}</p><button class="btn primary doctor-book" type="button" data-doctor="${esc(val(x.nameAr,x.nameEn)||'')}" data-specialty="${esc(val(x.specialtyAr,x.specialtyEn)||'')}">${lang==='ar'?'حجز موعد':'Book Appointment'}</button></div></article>`;
+  const card=(x,i,idx)=>{const canBook=truthy(x.bookingEnabled,true);return `<article class="doctor-card doctor-marquee-card"><div class="doctor-photo">${x.image?`<img src="${esc(x.image)}" alt="${esc(val(x.nameAr,x.nameEn)||'')}" loading="${i<6?'eager':'lazy'}" decoding="async" ${i<3?'fetchpriority="high"':'fetchpriority="low"'}>`:`<div class="doctor-placeholder" aria-hidden="true">⚕</div>`}</div><div class="doctor-info"><span class="doctor-specialty">${esc(val(x.specialtyAr,x.specialtyEn)||'')}</span><h3>${esc(val(x.nameAr,x.nameEn)||'')}</h3>${val(x.nationalityAr,x.nationalityEn)?`<div class="doctor-nationality">${lang==='ar'?'الجنسية: ':'Nationality: '}${esc(val(x.nationalityAr,x.nationalityEn))}</div>`:''}<p>${esc(val(x.bioAr,x.bioEn)||'')}</p>${doctorScheduleHtml(x)}${canBook?`<button class="btn primary doctor-book" type="button" data-doctor-key="${esc(String(idx))}">${lang==='ar'?'حجز موعد':'Book Appointment'}</button>`:`<button class="doctor-walkin" type="button" data-walkin-key="${esc(String(idx))}"><b>${lang==='ar'?'الحضور بأسبقية الوصول':'Walk-in, first come first served'}</b><small>${lang==='ar'?'اضغط لمعرفة التفاصيل':'Tap for details'}</small></button>`}</div></article>`};
   function bindTrackDrag(scroller){
     let down=false,startX=0,startScroll=0,resumeTimer;
     const stopAuto=()=>scroller.classList.add('is-interacting');
@@ -218,12 +296,16 @@ function renderDoctorsPublic(){
     host.innerHTML=rows.map((row,ri)=>{
       const moving=row.length>=3;
       const expanded=moving?[...row,...row]:row;
-      return `<div class="doctors-marquee-row ${ri%2?'reverse':''} ${moving?'':'static-row'}"><div class="doctors-marquee-track">${expanded.map((x,i)=>card(x,i+ri*12)).join('')}</div></div>`
+      return `<div class="doctors-marquee-row ${ri%2?'reverse':''} ${moving?'':'static-row'}"><div class="doctors-marquee-track">${expanded.map((x,i)=>card(x,i+ri*12,all.indexOf(x))).join('')}</div></div>`
     }).join('');
     host.querySelectorAll('.doctors-marquee-row').forEach(r=>{if(!r.classList.contains('static-row'))bindTrackDrag(r)});
   }
   if(!host.dataset.bookingBound){
-    host.addEventListener('click',e=>{const b=e.target.closest('.doctor-book');if(!b)return;e.preventDefault();e.stopPropagation();openDoctorBooking(b.dataset.doctor||'',b.dataset.specialty||'')});
+    host.addEventListener('click',e=>{
+      const b=e.target.closest('.doctor-book,.doctor-walkin');if(!b)return;e.preventDefault();e.stopPropagation();
+      const idx=Number(b.dataset.doctorKey??b.dataset.walkinKey),doc=all[idx];if(!doc)return;
+      if(b.classList.contains('doctor-walkin'))openWalkinNotice(doc);else openDoctorBooking(doc);
+    });
     host.dataset.bookingBound='1';
   }
   search?.addEventListener('input',draw);specialty?.addEventListener('change',draw);draw();
@@ -311,4 +393,8 @@ function activateServiceView(filter='all'){
   grid.addEventListener('scroll',()=>{if(paused&&!dragging)resume(800)},{passive:true});
 }
 function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';if($('#langBtn'))$('#langBtn').textContent=lang==='ar'?'EN':'AR';$$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});$$('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder;if(I18N[lang][k])el.placeholder=I18N[lang][k]});render()}
-$('#langBtn')?.addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';localStorage.setItem('alsiteen_lang',lang);applyLang()});$('.menu')?.addEventListener('click',()=>$('.nav nav')?.classList.toggle('open'));$$('.nav nav a').forEach(a=>a.addEventListener('click',()=>$('.nav nav')?.classList.remove('open')));let formType='booking';const requestModal=$('#requestModal'),requestTrigger=$('.request-nav-trigger'),requestDropdown=$('.request-dropdown');function setFormType(type='booking'){formType=type;$$('.request-type').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('#bookingFields')?.classList.toggle('hidden',type!=='booking');$('#companyFields')?.classList.toggle('hidden',type!=='company');$('#complaintFields')?.classList.toggle('hidden',type!=='complaint')}function openRequestModal(type='booking'){setFormType(type);requestModal?.classList.add('open');requestModal?.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false');setTimeout(()=>requestModal?.querySelector('input[name="name"]')?.focus(),120)}function closeRequestModal(){requestModal?.classList.remove('open');requestModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}window.openAlsiteenRequest=openRequestModal;requestTrigger?.addEventListener('click',e=>{e.stopPropagation();const open=requestDropdown?.classList.toggle('open');requestTrigger.setAttribute('aria-expanded',open?'true':'false')});document.addEventListener('click',e=>{if(!e.target.closest('.request-nav')){requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false')}});$$('[data-request-type]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openRequestModal(b.dataset.requestType||'booking')}));const heroBookingButton=$('#heroBookingButton');if(heroBookingButton){heroBookingButton.onclick=e=>{e.preventDefault();e.stopPropagation();openRequestModal('booking')}}const heroOffersButton=$('#heroOffersButton');if(heroOffersButton){heroOffersButton.onclick=e=>{e.stopPropagation();location.href='offers.html'}}$$('.request-type').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));$$('[data-close-request]').forEach(b=>b.addEventListener('click',closeRequestModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRequestModal()});const dateEl=$('#date'),timeEl=$('#time');function pad(n){return String(n).padStart(2,'0')}function localDate(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}function rebuildTimes(){if(!timeEl||!dateEl)return;timeEl.innerHTML=`<option value="">${lang==='ar'?'اختر الوقت':'Select time'}</option>`;if(!dateEl.value)return;let selected=new Date(dateEl.value+'T00:00:00'),day=selected.getDay(),start=day===5?15:8,end=day===5?23:24,now=new Date(),min=new Date(now.getTime()+CONFIG.minLeadHours*3600000);for(let h=start;h<end;h++)for(let m=0;m<60;m+=30){let slot=new Date(selected);slot.setHours(h,m,0,0);if(slot<min)continue;let v=`${pad(h)}:${pad(m)}`;timeEl.insertAdjacentHTML('beforeend',`<option value="${v}">${v}</option>`)}}if(dateEl){let today=new Date();dateEl.min=localDate(today);dateEl.onchange=rebuildTimes;dateEl.value=localDate(today);rebuildTimes()}$('#serviceForm')?.addEventListener('submit',e=>{e.preventDefault();let f=new FormData(e.target),s=data.settings||fallback.settings,name=f.get('name'),mobile=f.get('mobile'),details=f.get('details')||'';let typeName=lang==='ar'?(formType==='booking'?'حجز موعد':formType==='company'?'طلب تعاقد':'شكوى أو اقتراح'):(formType==='booking'?'Appointment Booking':formType==='company'?'Corporate Contract':'Complaint or Suggestion');let lines=lang==='ar'?[`طلب من موقع مجمع أطباء الستين`,`النوع: ${typeName}`,`الاسم: ${name}`,`الجوال: ${mobile}`]:[`Request from Alsiteen website`,`Type: ${typeName}`,`Name: ${name}`,`Mobile: ${mobile}`];if(formType==='booking'){if(!f.get('department')||!f.get('date')||!f.get('time')){$('#formNote').textContent=lang==='ar'?'يرجى اختيار القسم والتاريخ والوقت.':'Please select department, date and time.';return}lines.push(`${lang==='ar'?'القسم':'Department'}: ${f.get('department')}`,`${lang==='ar'?'التاريخ':'Date'}: ${f.get('date')}`,`${lang==='ar'?'الوقت':'Time'}: ${f.get('time')}`)}if(formType==='company')lines.push(`${lang==='ar'?'الشركة':'Company'}: ${f.get('company')||'-'}`,`${lang==='ar'?'الخدمة':'Service'}: ${f.get('service')||'-'}`);if(formType==='complaint')lines.push(`${lang==='ar'?'نوع الرسالة':'Message type'}: ${f.get('messageType')}`);lines.push(`${lang==='ar'?'التفاصيل':'Details'}: ${details||'-'}`);window.open(`https://wa.me/${cleanPhone(s.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank')});$('#serviceFilters')?.addEventListener('click',e=>{const b=e.target.closest('.service-filter');if(!b)return;$$('.service-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activateServiceView(b.dataset.filter||'all')});const requestedType=new URLSearchParams(location.search).get('request');if(requestedType&&['booking','company','complaint'].includes(requestedType)){setTimeout(()=>openRequestModal(requestedType),300)}loadData();
+$('#langBtn')?.addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';localStorage.setItem('alsiteen_lang',lang);applyLang()});$('.menu')?.addEventListener('click',()=>$('.nav nav')?.classList.toggle('open'));$$('.nav nav a').forEach(a=>a.addEventListener('click',()=>$('.nav nav')?.classList.remove('open')));let formType='booking';const requestModal=$('#requestModal'),requestTrigger=$('.request-nav-trigger'),requestDropdown=$('.request-dropdown');function setFormType(type='booking'){formType=type;$$('.request-type').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('#bookingFields')?.classList.toggle('hidden',type!=='booking');$('#companyFields')?.classList.toggle('hidden',type!=='company');$('#complaintFields')?.classList.toggle('hidden',type!=='complaint')}function openRequestModal(type='booking'){setFormType(type);requestModal?.classList.add('open');requestModal?.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false');setTimeout(()=>requestModal?.querySelector('input[name="name"]')?.focus(),120)}function closeRequestModal(){requestModal?.classList.remove('open');requestModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}window.openAlsiteenRequest=openRequestModal;requestTrigger?.addEventListener('click',e=>{e.stopPropagation();const open=requestDropdown?.classList.toggle('open');requestTrigger.setAttribute('aria-expanded',open?'true':'false')});document.addEventListener('click',e=>{if(!e.target.closest('.request-nav')){requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false')}});$$('[data-request-type]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openRequestModal(b.dataset.requestType||'booking')}));const heroBookingButton=$('#heroBookingButton');if(heroBookingButton){heroBookingButton.onclick=e=>{e.preventDefault();e.stopPropagation();openRequestModal('booking')}}const heroOffersButton=$('#heroOffersButton');if(heroOffersButton){heroOffersButton.onclick=e=>{e.stopPropagation();location.href='offers.html'}}$$('.request-type').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));$$('[data-close-request]').forEach(b=>b.addEventListener('click',closeRequestModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRequestModal()});const dateEl=$('#date'),timeEl=$('#time');function pad(n){return String(n).padStart(2,'0')}function localDate(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}function rebuildTimes(){if(!timeEl||!dateEl)return;timeEl.innerHTML=`<option value="">${lang==='ar'?'اختر الوقت':'Select time'}</option>`;if(!dateEl.value)return;let selected=new Date(dateEl.value+'T00:00:00'),day=selected.getDay(),start=day===5?15:8,end=day===5?23:24,now=new Date(),min=new Date(now.getTime()+CONFIG.minLeadHours*3600000);for(let h=start;h<end;h++)for(let m=0;m<60;m+=30){let slot=new Date(selected);slot.setHours(h,m,0,0);if(slot<min)continue;let v=`${pad(h)}:${pad(m)}`;timeEl.insertAdjacentHTML('beforeend',`<option value="${v}">${v}</option>`)}}if(dateEl){let today=new Date();dateEl.min=localDate(today);dateEl.onchange=rebuildTimes;dateEl.value=localDate(today);rebuildTimes()}$('#serviceForm')?.addEventListener('submit',e=>{e.preventDefault();let f=new FormData(e.target),s=data.settings||fallback.settings,name=f.get('name'),mobile=f.get('mobile'),details=f.get('details')||'';let typeName=lang==='ar'?(formType==='booking'?'حجز موعد':formType==='company'?'طلب تعاقد':'شكوى أو اقتراح'):(formType==='booking'?'Appointment Booking':formType==='company'?'Corporate Contract':'Complaint or Suggestion');let lines=lang==='ar'?[`طلب من موقع مجمع أطباء الستين`,`النوع: ${typeName}`,`الاسم: ${name}`,`الجوال: ${mobile}`]:[`Request from Alsiteen website`,`Type: ${typeName}`,`Name: ${name}`,`Mobile: ${mobile}`];if(formType==='booking'){if(!f.get('department')||!f.get('date')||!f.get('time')){$('#formNote').textContent=lang==='ar'?'يرجى اختيار القسم والتاريخ والوقت.':'Please select department, date and time.';return}lines.push(`${lang==='ar'?'القسم':'Department'}: ${f.get('department')}`,`${lang==='ar'?'التاريخ':'Date'}: ${f.get('date')}`,`${lang==='ar'?'الوقت':'Time'}: ${f.get('time')}`)}if(formType==='company')lines.push(`${lang==='ar'?'الشركة':'Company'}: ${f.get('company')||'-'}`,`${lang==='ar'?'الخدمة':'Service'}: ${f.get('service')||'-'}`);if(formType==='complaint')lines.push(`${lang==='ar'?'نوع الرسالة':'Message type'}: ${f.get('messageType')}`);lines.push(`${lang==='ar'?'التفاصيل':'Details'}: ${details||'-'}`);window.open(`https://wa.me/${cleanPhone(s.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank')});$('#serviceFilters')?.addEventListener('click',e=>{const b=e.target.closest('.service-filter');if(!b)return;$$('.service-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activateServiceView(b.dataset.filter||'all')});const requestedType=new URLSearchParams(location.search).get('request');if(requestedType&&['booking','company','complaint'].includes(requestedType)){setTimeout(()=>openRequestModal(requestedType),300)}
+// نافذة الحضور بأسبقية الوصول
+$$('[data-close-walkin]').forEach(b=>b.addEventListener('click',()=>{const m=$('#walkinModal');m?.classList.remove('open');m?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}));
+$('#walkinModal')?.addEventListener('click',e=>{if(e.target.matches('.request-backdrop')){e.currentTarget.classList.remove('open');e.currentTarget.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}});
+loadData();
