@@ -673,3 +673,44 @@ html[dir="rtl"] .doctors-marquee-track{animation-name:doctorsMarqueeRTL}@keyfram
   .doctor-booking-dialog .modal-form{gap:6px!important}
   .doctor-booking-dialog .modal-form input,.doctor-booking-dialog .modal-form select{font-size:12px!important;padding-inline:7px!important}
 }
+
+/* V45 - compact mobile "اطلب الآن" dropdown + request forms */
+@media(max-width:620px){
+  /* Keep the mobile request submenu compact instead of turning into a tall block */
+  .nav nav{max-height:calc(100dvh - 110px);overflow-y:auto;overscroll-behavior:contain}
+  .request-nav{border-top:1px solid #eef2f6;border-bottom:1px solid #eef2f6;padding:2px 0}
+  .request-nav-trigger{display:flex!important;align-items:center;justify-content:space-between;gap:8px;min-height:42px!important;padding:8px 4px!important;font-size:15px!important}
+  .request-dropdown{margin-top:2px!important;padding:6px!important;border-radius:12px!important;background:#f7f9fc!important;display:none!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .request-dropdown.open{display:grid!important}
+  .request-dropdown button,.request-dropdown a{min-width:0!important;padding:9px 5px!important;border-radius:9px!important;text-align:center!important;font-size:12px!important;line-height:1.35!important;white-space:normal!important;background:#fff!important;border:1px solid #e7edf3!important}
+
+  /* Main request modal follows the same dense two-column mobile layout as doctor booking */
+  #requestModal{padding:6px!important;align-items:center!important}
+  #requestModal .request-dialog{width:min(96vw,500px)!important;max-height:94dvh!important;grid-template-columns:1fr!important;gap:0!important;padding:0!important;border-radius:18px!important;overflow:auto!important;background:var(--navy)!important}
+  #requestModal .request-dialog-copy{padding:22px 14px 12px!important;text-align:center!important}
+  #requestModal .request-kicker{font-size:12px!important;color:#ffd3d6!important}
+  #requestModal .request-dialog-copy h2{font-size:22px!important;line-height:1.25!important;margin:5px 0!important}
+  #requestModal .request-dialog-copy p{font-size:12px!important;line-height:1.5!important;margin:0 12px 10px!important}
+  #requestModal .request-type-list{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  #requestModal .request-type{min-width:0!important;padding:8px 5px!important;border-radius:10px!important;gap:2px!important}
+  #requestModal .request-type span{font-size:10px!important}
+  #requestModal .request-type b{font-size:11px!important;line-height:1.25!important}
+  #requestModal .request-dialog-form{padding:9px!important;border-radius:16px 16px 0 0!important;background:#fff!important}
+  #requestModal .modal-form{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;padding:0!important}
+  #requestModal .modal-form>label,#requestModal .modal-fields>label{grid-column:auto!important;min-width:0!important;margin:0!important}
+  #requestModal .modal-fields{display:contents!important}
+  #requestModal .modal-form .wide-field{grid-column:1/-1!important}
+  #requestModal .modal-form label>span{margin-bottom:4px!important;font-size:11px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #requestModal .modal-form input,#requestModal .modal-form select{width:100%!important;min-width:0!important;min-height:40px!important;height:40px!important;padding:7px 9px!important;font-size:13px!important;border-radius:10px!important}
+  #requestModal .modal-form input[type=date]{font-size:12px!important}
+  #requestModal .modal-form textarea{min-height:58px!important;height:58px!important;padding:8px 10px!important;font-size:13px!important;resize:none}
+  #requestModal .whatsapp-submit{grid-column:1/-1!important;min-height:42px!important;padding:9px 10px!important;font-size:13px!important;margin-top:0!important}
+  #requestModal .note{grid-column:1/-1!important;margin:0!important;font-size:10px!important;line-height:1.35!important}
+  #requestModal .request-close{top:8px!important;left:8px!important;width:36px!important;height:36px!important;font-size:25px!important}
+}
+@media(max-width:390px){
+  #requestModal .request-dialog-copy{padding-inline:10px!important}
+  #requestModal .modal-form{gap:6px!important}
+  #requestModal .modal-form input,#requestModal .modal-form select{font-size:12px!important;padding-inline:7px!important}
+  #requestModal .request-type b{font-size:10.5px!important}
+}
