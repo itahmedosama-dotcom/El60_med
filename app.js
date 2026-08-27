@@ -92,9 +92,11 @@ function socialBrandIcon(name){const n=String(name||'').toLowerCase();if(n.inclu
 function render(){const s=data.settings||fallback.settings;applyTheme(s);document.title=val(s.seoTitleAr,s.seoTitleEn)||val(s.siteNameAr,s.siteNameEn);const md=$('meta[name="description"]');if(md)md.content=val(s.seoDescriptionAr,s.seoDescriptionEn)||'';$$('.slogan').forEach(x=>x.textContent=val(s.sloganAr,s.sloganEn));setText('#heroEyebrow',val(s.heroEyebrowAr,s.heroEyebrowEn));setText('#heroTitle',val(s.heroTitleAr,s.heroTitleEn));setText('#heroText',val(s.heroTextAr,s.heroTextEn));setImage('#heroImage',s.heroImage);setText('#aboutTitle',val(s.aboutTitleAr,s.aboutTitleEn));setText('#aboutText',val(s.aboutTextAr,s.aboutTextEn));setText('#missionText',val(s.missionAr,s.missionEn));setText('#visionText',val(s.visionAr,s.visionEn));setText('#valuesText',val(s.valuesAr,s.valuesEn));setImage('#aboutImage',s.aboutImage);setText('#servicesLabel',val(s.servicesLabelAr,s.servicesLabelEn));setText('#servicesTitle',val(s.servicesTitleAr,s.servicesTitleEn));setText('#servicesIntro',val(s.servicesIntroAr,s.servicesIntroEn));setText('#journeyLabel',val(s.journeyLabelAr,s.journeyLabelEn));setText('#journeyTitle',val(s.journeyTitleAr,s.journeyTitleEn));setText('#journeyText',val(s.journeyTextAr,s.journeyTextEn));setImage('#journeyImage',s.journeyImage);setText('#insuranceLabel',val(s.insuranceLabelAr,s.insuranceLabelEn));setText('#insuranceTitle',val(s.insuranceTitleAr,s.insuranceTitleEn));setText('#insuranceNote',val(s.insuranceNoteAr,s.insuranceNoteEn));setText('#suppliersLabel',val(s.suppliersLabelAr,s.suppliersLabelEn));setText('#suppliersTitle',val(s.suppliersTitleAr,s.suppliersTitleEn));setText('#contactLabel',val(s.contactLabelAr,s.contactLabelEn));setText('#contactTitle',val(s.contactTitleAr,s.contactTitleEn));const address=val(s.addressAr,s.addressEn);setText('#addressText',address);setText('#footerAddressValue',address);setText('#footerContactKicker',val(s.footerContactKickerAr,s.footerContactKickerEn));setText('#footerContactTitle',val(s.footerContactTitleAr,s.footerContactTitleEn));setText('#footerContactText',val(s.footerContactTextAr,s.footerContactTextEn));setText('#footerAbout',val(s.footerAboutAr,s.footerAboutEn));setText('#copyrightText',val(s.copyrightAr,s.copyrightEn));setText('#footerSiteName',val(s.siteNameAr,s.siteNameEn));const pDisp=phoneDisplay(s.phone),wDisp=phoneDisplay(s.whatsapp),wurl=waUrl(s),tel='tel:+'+cleanPhone(s.phone).replace(/^0/,'966');const cp=$('#contactPhone');if(cp){cp.href=tel;cp.textContent='☎ '+pDisp}const cw=$('#contactWhatsapp');if(cw){cw.href=wurl;cw.textContent='◉ '+wDisp}setText('#footerPhoneValue',pDisp);setText('#footerWhatsappValue',wDisp);setText('#footerEmailValue',s.email||'');if($('#footerPhoneLink'))$('#footerPhoneLink').href=tel;if($('#footerWhatsappLink'))$('#footerWhatsappLink').href=wurl;if($('#footerEmailLink'))$('#footerEmailLink').href='mailto:'+(s.email||'');if($('#footerMapLink'))$('#footerMapLink').href=s.mapLink||'#';if($('#mapLink'))$('#mapLink').href=s.mapLink||'#';if($('#mapFrame')&&s.mapEmbed)$('#mapFrame').src=s.mapEmbed;if($('#shopLink'))$('#shopLink').href=s.shopUrl||'#';if($('#floatingWhatsapp'))$('#floatingWhatsapp').href=wurl;renderStats();const services=(data.services||[]).filter(o=>String(o.active??true)!=='false'),g=$('#servicesGrid');if(g){g.innerHTML=services.map((o,i)=>`<article class="card service-card-v10 service-tone-${(i%6)+1}" data-category="${esc(o.cat||'clinics')}"><div class="service-visual"><div class="icon">${serviceIconSvg(o.ar,o.en,o.icon)}</div><span class="service-en">${esc(o.en||'')}</span></div><div class="service-body"><h3>${esc(val(o.ar,o.en)||'')}</h3><p>${esc(val(o.descAr,o.descEn)||'')}</p></div></article>`).join('');activateServiceView('all')}const d=$('#department');if(d)d.innerHTML=`<option value="">${lang==='ar'?'اختر القسم':'Select department'}</option>`+services.map(o=>`<option>${esc(val(o.ar,o.en))}</option>`).join('');const ticker=(id,list,fallbackList)=>{const e=$(id);if(!e)return;const active=(list||[]).filter(o=>String(o.active??true)!=='false'),arr=[...active,...active];e.innerHTML=arr.map((o,i)=>`<div class="ticker-item"><img src="${esc(o.image||fallbackList[i%fallbackList.length]?.image||'')}" alt="${esc(val(o.ar,o.en)||'')}"><span>${esc(val(o.ar,o.en)||'')}</span></div>`).join('')};ticker('#insuranceTrack',data.insurers,fallback.insurers);ticker('#suppliersTrack',data.suppliers,fallback.suppliers);const sc=$('#socialCards');if(sc)sc.innerHTML=(data.socials||[]).filter(x=>String(x.active??true)!=='false').map(x=>`<a class="social-card social-${esc(String(x.name||'social').toLowerCase().replace(/[^a-z0-9]+/g,'-'))}" href="${esc(x.url||'#')}" target="_blank" rel="noopener"><span class="social-icon brand-logo">${socialBrandIcon(x.name)}</span><b>${esc(x.name||'')}</b><small>${esc(x.handle||'')}</small></a>`).join('');const og=$('#offersGrid');if(og){const offers=(data.offers||[]).filter(o=>String(o.active??true)!=='false');og.innerHTML=offers.map(o=>`<article class="offer-card">${o.image?`<img src="${esc(o.image)}" alt="${esc(val(o.titleAr,o.titleEn))}">`:''}<div class="offer-content"><h3>${esc(val(o.titleAr,o.titleEn))}</h3><p>${esc(val(o.descAr,o.descEn))}</p>${o.price?`<div><span class="offer-price">${esc(o.price)}</span>${o.oldPrice?`<span class="offer-old">${esc(o.oldPrice)}</span>`:''}</div>`:''}<a class="btn primary full offer-request" href="#" data-offer="${esc(val(o.titleAr,o.titleEn))}">${lang==='ar'?'اطلب العرض':'Request Offer'}</a></div></article>`).join('');$('#offersEmpty')?.classList.toggle('hidden',offers.length>0);$$('.offer-request').forEach(a=>a.onclick=e=>{e.preventDefault();window.open(`https://wa.me/${cleanPhone(s.whatsapp)}?text=${encodeURIComponent((lang==='ar'?'أرغب في طلب العرض: ':'I would like to request this offer: ')+a.dataset.offer)}`,'_blank')})}}
 
 let serviceScrollerFrame=0;
+let serviceScrollerTimer=0;
 let serviceScrollerGrid=null;
 function stopServiceScroller(){
   if(serviceScrollerFrame){cancelAnimationFrame(serviceScrollerFrame);serviceScrollerFrame=0}
+  if(serviceScrollerTimer){clearInterval(serviceScrollerTimer);serviceScrollerTimer=0}
   if(serviceScrollerGrid){
     serviceScrollerGrid.onmouseenter=null;serviceScrollerGrid.onmouseleave=null;
     serviceScrollerGrid.onpointerdown=null;serviceScrollerGrid.onpointermove=null;
@@ -111,45 +113,62 @@ function activateServiceView(filter='all'){
   originals.forEach(c=>c.style.display=(filter==='all'||c.dataset.category===filter)?'':'none');
   grid.classList.toggle('service-horizontal-marquee',filter==='all');
   if(filter!=='all')return;
+
+  // Duplicate the cards so the horizontal rail can loop without a visible jump.
   originals.forEach(c=>{
     c.style.display='';
     const clone=c.cloneNode(true);clone.dataset.serviceClone='true';clone.setAttribute('aria-hidden','true');grid.appendChild(clone);
   });
+
   serviceScrollerGrid=grid;
-  let paused=false,dragging=false,pointerDown=false,startX=0,startScroll=0,resumeTimer=0,lastTs=0;
+  let paused=false,dragging=false,pointerDown=false,startX=0,startScroll=0,resumeTimer=0;
   const pause=()=>{paused=true;clearTimeout(resumeTimer)};
   const resume=(delay=0)=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!dragging&&!pointerDown)paused=false},delay)};
-  const normalizeLoop=()=>{const half=grid.scrollWidth/2;if(half>0){while(grid.scrollLeft>=half)grid.scrollLeft-=half;while(grid.scrollLeft<0)grid.scrollLeft+=half}};
-  const tick=ts=>{
-    if(serviceScrollerGrid!==grid)return;
-    const dt=Math.min(40,lastTs?ts-lastTs:16);lastTs=ts;
-    if(!paused&&!dragging&&document.visibilityState==='visible'){
-      grid.scrollLeft+=dt*0.045; // same smooth speed on desktop and mobile
-      normalizeLoop();
-    }
-    serviceScrollerFrame=requestAnimationFrame(tick);
+  const halfWidth=()=>grid.scrollWidth/2;
+  const normalizeLoop=()=>{
+    const half=halfWidth();if(!half)return;
+    if(grid.scrollLeft>=half)grid.scrollLeft-=half;
+    if(grid.scrollLeft<0)grid.scrollLeft+=half;
   };
-  grid.scrollLeft=0;
+  const advance=()=>{
+    if(serviceScrollerGrid!==grid||paused||dragging||document.hidden)return;
+    const before=grid.scrollLeft;
+    grid.scrollLeft=before+1.25;
+    // Some mobile browsers occasionally ignore tiny fractional writes. Force a whole-pixel nudge.
+    if(grid.scrollLeft===before) grid.scrollLeft=before+2;
+    normalizeLoop();
+  };
+
+  // Keep the scroll container LTR on every device so scrollLeft behaves consistently;
+  // each Arabic card itself remains RTL via CSS.
+  grid.style.direction='ltr';
+  grid.scrollLeft=1;
+  // setInterval is intentionally used here rather than only requestAnimationFrame: it is
+  // more reliable for continuously scrolling overflow containers on mobile Safari/Chrome.
+  serviceScrollerTimer=setInterval(advance,30);
+
   grid.onmouseenter=()=>{if(matchMedia('(hover:hover)').matches)pause()};
   grid.onmouseleave=()=>{if(matchMedia('(hover:hover)').matches)resume(120)};
   grid.onwheel=()=>{pause();resume(900)};
   grid.onpointerdown=e=>{
-    if(e.pointerType!=='mouse')return; // touch uses native horizontal scrolling
+    if(e.pointerType!=='mouse')return;
     if(e.button!==0)return;
     pointerDown=true;startX=e.clientX;startScroll=grid.scrollLeft;
   };
   grid.onpointermove=e=>{
     if(!pointerDown||e.pointerType!=='mouse')return;
-    if(!dragging&&Math.abs(e.clientX-startX)>5){dragging=true;pause();grid.classList.add('is-dragging');try{grid.setPointerCapture(e.pointerId)}catch(_){ }}
+    if(!dragging&&Math.abs(e.clientX-startX)>5){dragging=true;pause();grid.classList.add('is-dragging');try{grid.setPointerCapture(e.pointerId)}catch(_){}}
     if(dragging)grid.scrollLeft=startScroll-(e.clientX-startX);
   };
-  const endMouse=e=>{if(e.pointerType!=='mouse')return;pointerDown=false;if(dragging){dragging=false;grid.classList.remove('is-dragging');try{grid.releasePointerCapture(e.pointerId)}catch(_){ }normalizeLoop()}resume(450)};
+  const endMouse=e=>{if(e.pointerType!=='mouse')return;pointerDown=false;if(dragging){dragging=false;grid.classList.remove('is-dragging');try{grid.releasePointerCapture(e.pointerId)}catch(_){}normalizeLoop()}resume(450)};
   grid.onpointerup=endMouse;grid.onpointercancel=endMouse;
+
+  // Native finger swipe remains enabled. Pause while the customer is touching/scrolling,
+  // then resume the automatic movement after interaction finishes.
   grid.addEventListener('touchstart',pause,{passive:true});
-  grid.addEventListener('touchend',()=>{normalizeLoop();resume(650)},{passive:true});
-  grid.addEventListener('touchcancel',()=>resume(350),{passive:true});
-  grid.addEventListener('scroll',()=>{if(!dragging&&paused)resume(700)},{passive:true});
-  serviceScrollerFrame=requestAnimationFrame(tick);
+  grid.addEventListener('touchend',()=>{normalizeLoop();resume(700)},{passive:true});
+  grid.addEventListener('touchcancel',()=>resume(400),{passive:true});
+  grid.addEventListener('scroll',()=>{if(paused&&!dragging)resume(800)},{passive:true});
 }
 function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';if($('#langBtn'))$('#langBtn').textContent=lang==='ar'?'EN':'AR';$$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});$$('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder;if(I18N[lang][k])el.placeholder=I18N[lang][k]});render()}
 $('#langBtn')?.addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';localStorage.setItem('alsiteen_lang',lang);applyLang()});$('.menu')?.addEventListener('click',()=>$('.nav nav')?.classList.toggle('open'));$$('.nav nav a').forEach(a=>a.addEventListener('click',()=>$('.nav nav')?.classList.remove('open')));let formType='booking';const requestModal=$('#requestModal'),requestTrigger=$('.request-nav-trigger'),requestDropdown=$('.request-dropdown');function setFormType(type='booking'){formType=type;$$('.request-type').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('#bookingFields')?.classList.toggle('hidden',type!=='booking');$('#companyFields')?.classList.toggle('hidden',type!=='company');$('#complaintFields')?.classList.toggle('hidden',type!=='complaint')}function openRequestModal(type='booking'){setFormType(type);requestModal?.classList.add('open');requestModal?.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false');setTimeout(()=>requestModal?.querySelector('input[name="name"]')?.focus(),120)}function closeRequestModal(){requestModal?.classList.remove('open');requestModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}requestTrigger?.addEventListener('click',e=>{e.stopPropagation();const open=requestDropdown?.classList.toggle('open');requestTrigger.setAttribute('aria-expanded',open?'true':'false')});document.addEventListener('click',e=>{if(!e.target.closest('.request-nav')){requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false')}});$$('[data-request-type]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openRequestModal(b.dataset.requestType||'booking')}));$$('.request-type').forEach(b=>b.addEventListener('click',()=>setFormType(b.dataset.type)));$$('[data-close-request]').forEach(b=>b.addEventListener('click',closeRequestModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRequestModal()});const dateEl=$('#date'),timeEl=$('#time');function pad(n){return String(n).padStart(2,'0')}function localDate(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}function rebuildTimes(){if(!timeEl||!dateEl)return;timeEl.innerHTML=`<option value="">${lang==='ar'?'اختر الوقت':'Select time'}</option>`;if(!dateEl.value)return;let selected=new Date(dateEl.value+'T00:00:00'),day=selected.getDay(),start=day===5?15:8,end=day===5?23:24,now=new Date(),min=new Date(now.getTime()+CONFIG.minLeadHours*3600000);for(let h=start;h<end;h++)for(let m=0;m<60;m+=30){let slot=new Date(selected);slot.setHours(h,m,0,0);if(slot<min)continue;let v=`${pad(h)}:${pad(m)}`;timeEl.insertAdjacentHTML('beforeend',`<option value="${v}">${v}</option>`)}}if(dateEl){let today=new Date();dateEl.min=localDate(today);dateEl.onchange=rebuildTimes;dateEl.value=localDate(today);rebuildTimes()}$('#serviceForm')?.addEventListener('submit',e=>{e.preventDefault();let f=new FormData(e.target),s=data.settings||fallback.settings,name=f.get('name'),mobile=f.get('mobile'),details=f.get('details')||'';let typeName=lang==='ar'?(formType==='booking'?'حجز موعد':formType==='company'?'طلب تعاقد':'شكوى أو اقتراح'):(formType==='booking'?'Appointment Booking':formType==='company'?'Corporate Contract':'Complaint or Suggestion');let lines=lang==='ar'?[`طلب من موقع مجمع أطباء الستين`,`النوع: ${typeName}`,`الاسم: ${name}`,`الجوال: ${mobile}`]:[`Request from Alsiteen website`,`Type: ${typeName}`,`Name: ${name}`,`Mobile: ${mobile}`];if(formType==='booking'){if(!f.get('department')||!f.get('date')||!f.get('time')){$('#formNote').textContent=lang==='ar'?'يرجى اختيار القسم والتاريخ والوقت.':'Please select department, date and time.';return}lines.push(`${lang==='ar'?'القسم':'Department'}: ${f.get('department')}`,`${lang==='ar'?'التاريخ':'Date'}: ${f.get('date')}`,`${lang==='ar'?'الوقت':'Time'}: ${f.get('time')}`)}if(formType==='company')lines.push(`${lang==='ar'?'الشركة':'Company'}: ${f.get('company')||'-'}`,`${lang==='ar'?'الخدمة':'Service'}: ${f.get('service')||'-'}`);if(formType==='complaint')lines.push(`${lang==='ar'?'نوع الرسالة':'Message type'}: ${f.get('messageType')}`);lines.push(`${lang==='ar'?'التفاصيل':'Details'}: ${details||'-'}`);window.open(`https://wa.me/${cleanPhone(s.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank')});$('#serviceFilters')?.addEventListener('click',e=>{const b=e.target.closest('.service-filter');if(!b)return;$$('.service-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activateServiceView(b.dataset.filter||'all')});const requestedType=new URLSearchParams(location.search).get('request');if(requestedType&&['booking','company','complaint'].includes(requestedType)){setTimeout(()=>openRequestModal(requestedType),300)}loadData();
