@@ -12,6 +12,15 @@
     <label>اسم المستخدم<input id="loginUser" autocomplete="username" required></label>
     <label>كلمة المرور<input id="loginPassword" type="password" autocomplete="current-password" required></label>
     <button class="btn primary full" type="submit">دخول</button><div id="loginNotice" class="login-notice"></div>
+    <div id="firstSetup" class="first-setup hidden">
+      <div class="setup-divider"><span>تهيئة حساب الإدارة لأول مرة</span></div>
+      <p class="setup-help">أنشئ اسم مستخدم وكلمة مرور قوية. سيتم حفظ كلمة المرور بصورة مشفرة ولن تظهر كنص صريح.</p>
+      <label>اسم المستخدم الجديد<input id="setupUser" autocomplete="username"></label>
+      <label>كلمة المرور الجديدة<input id="setupPassword" type="password" autocomplete="new-password"></label>
+      <label>تأكيد كلمة المرور<input id="setupPassword2" type="password" autocomplete="new-password"></label>
+      <button id="setupAdminBtn" class="btn primary full" type="button">إنشاء حساب الإدارة</button>
+      <div id="setupNotice" class="login-notice"></div>
+    </div>
   </form>
 </div>
 <div id="adminApp" class="admin-layout hidden">

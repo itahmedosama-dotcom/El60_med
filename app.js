@@ -116,40 +116,39 @@ function activateServiceView(filter='all'){
     const clone=c.cloneNode(true);clone.dataset.serviceClone='true';clone.setAttribute('aria-hidden','true');grid.appendChild(clone);
   });
   serviceScrollerGrid=grid;
-  let paused=false,dragging=false,startX=0,startScroll=0,resumeTimer=0;
+  let paused=false,dragging=false,pointerDown=false,startX=0,startScroll=0,resumeTimer=0,lastTs=0;
   const pause=()=>{paused=true;clearTimeout(resumeTimer)};
-  const resume=(delay=0)=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!dragging)paused=false},delay)};
-  const tick=()=>{
+  const resume=(delay=0)=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!dragging&&!pointerDown)paused=false},delay)};
+  const normalizeLoop=()=>{const half=grid.scrollWidth/2;if(half>0){while(grid.scrollLeft>=half)grid.scrollLeft-=half;while(grid.scrollLeft<0)grid.scrollLeft+=half}};
+  const tick=ts=>{
     if(serviceScrollerGrid!==grid)return;
-    if(!paused&&!dragging){
-      grid.scrollLeft+=0.55;
-      const half=grid.scrollWidth/2;
-      if(half>0&&grid.scrollLeft>=half)grid.scrollLeft-=half;
+    const dt=Math.min(40,lastTs?ts-lastTs:16);lastTs=ts;
+    if(!paused&&!dragging&&document.visibilityState==='visible'){
+      grid.scrollLeft+=dt*0.045; // same smooth speed on desktop and mobile
+      normalizeLoop();
     }
     serviceScrollerFrame=requestAnimationFrame(tick);
   };
   grid.scrollLeft=0;
-  grid.onmouseenter=pause;
-  grid.onmouseleave=()=>resume(120);
+  grid.onmouseenter=()=>{if(matchMedia('(hover:hover)').matches)pause()};
+  grid.onmouseleave=()=>{if(matchMedia('(hover:hover)').matches)resume(120)};
   grid.onwheel=()=>{pause();resume(900)};
   grid.onpointerdown=e=>{
-    if(e.pointerType==='mouse'&&e.button!==0)return;
-    dragging=true;pause();startX=e.clientX;startScroll=grid.scrollLeft;
-    grid.classList.add('is-dragging');
-    try{grid.setPointerCapture(e.pointerId)}catch(_){ }
+    if(e.pointerType!=='mouse')return; // touch uses native horizontal scrolling
+    if(e.button!==0)return;
+    pointerDown=true;startX=e.clientX;startScroll=grid.scrollLeft;
   };
   grid.onpointermove=e=>{
-    if(!dragging)return;
-    grid.scrollLeft=startScroll-(e.clientX-startX);
+    if(!pointerDown||e.pointerType!=='mouse')return;
+    if(!dragging&&Math.abs(e.clientX-startX)>5){dragging=true;pause();grid.classList.add('is-dragging');try{grid.setPointerCapture(e.pointerId)}catch(_){ }}
+    if(dragging)grid.scrollLeft=startScroll-(e.clientX-startX);
   };
-  const endDrag=e=>{
-    if(!dragging)return;dragging=false;grid.classList.remove('is-dragging');
-    try{grid.releasePointerCapture(e.pointerId)}catch(_){ }
-    const half=grid.scrollWidth/2;
-    if(half>0){while(grid.scrollLeft>=half)grid.scrollLeft-=half;while(grid.scrollLeft<0)grid.scrollLeft+=half}
-    resume(550);
-  };
-  grid.onpointerup=endDrag;grid.onpointercancel=endDrag;
+  const endMouse=e=>{if(e.pointerType!=='mouse')return;pointerDown=false;if(dragging){dragging=false;grid.classList.remove('is-dragging');try{grid.releasePointerCapture(e.pointerId)}catch(_){ }normalizeLoop()}resume(450)};
+  grid.onpointerup=endMouse;grid.onpointercancel=endMouse;
+  grid.addEventListener('touchstart',pause,{passive:true});
+  grid.addEventListener('touchend',()=>{normalizeLoop();resume(650)},{passive:true});
+  grid.addEventListener('touchcancel',()=>resume(350),{passive:true});
+  grid.addEventListener('scroll',()=>{if(!dragging&&paused)resume(700)},{passive:true});
   serviceScrollerFrame=requestAnimationFrame(tick);
 }
 function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';if($('#langBtn'))$('#langBtn').textContent=lang==='ar'?'EN':'AR';$$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});$$('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder;if(I18N[lang][k])el.placeholder=I18N[lang][k]});render()}

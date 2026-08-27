@@ -268,3 +268,11 @@ html[lang="en"] .service-cards.service-horizontal-marquee .service-card-v10{dire
   .service-cards.service-horizontal-marquee{gap:10px;padding-bottom:18px;mask-image:none;-webkit-mask-image:none}
   .service-cards.service-horizontal-marquee .service-card-v10{flex-basis:170px;width:170px;min-width:170px;max-width:170px}
 }
+
+/* V16 admin first-run setup and mobile specialties motion */
+.first-setup{margin-top:20px;padding-top:6px}.setup-divider{display:flex;align-items:center;gap:10px;margin:12px 0 10px;color:var(--navy);font-weight:900}.setup-divider:before,.setup-divider:after{content:"";height:1px;background:#dbe4ed;flex:1}.setup-help{font-size:13px!important;line-height:1.8;color:#667d91!important;margin:0 0 12px!important}.first-setup.hidden{display:none!important}
+@media(max-width:680px){
+  .service-cards.service-horizontal-marquee{display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:none!important;touch-action:pan-x!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain;gap:12px!important;padding-inline:6px!important}
+  .service-cards.service-horizontal-marquee .service-card-v10{flex:0 0 78vw!important;width:78vw!important;min-width:250px!important;max-width:310px!important}
+  .service-cards.service-horizontal-marquee .service-card-v10:hover{transform:none}
+}
