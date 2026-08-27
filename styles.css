@@ -888,3 +888,16 @@ input,select,textarea,button{max-width:100%}
   .admin-grid{grid-template-columns:1fr!important}
   .doctor-fields{grid-template-columns:1fr!important}
 }
+\n/* V48 - reliable mobile switching between request forms */
+#requestModal .request-type-list{position:relative;z-index:20;pointer-events:auto!important}
+#requestModal .request-type{position:relative;z-index:21;pointer-events:auto!important;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+#requestModal .request-type *{pointer-events:none}
+#requestModal .request-dialog-copy{position:relative;z-index:3}
+#requestModal .request-dialog-form{position:relative;z-index:2}
+@media(max-width:620px){
+  #requestModal .request-type-list{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #requestModal .request-type{display:flex!important;align-items:center!important;justify-content:center!important;min-height:38px!important}
+  #requestModal .request-type.active{background:#fff!important;color:var(--navy)!important;border-color:#fff!important}
+  #requestModal #bookingFields.hidden,#requestModal #companyFields.hidden,#requestModal #complaintFields.hidden{display:none!important}
+  #requestModal #bookingFields:not(.hidden),#requestModal #companyFields:not(.hidden),#requestModal #complaintFields:not(.hidden){display:contents!important}
+}
