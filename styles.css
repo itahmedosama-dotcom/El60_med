@@ -291,3 +291,23 @@ html[lang="en"] .service-cards.service-horizontal-marquee .service-card-v10{dire
 .offer-content{display:flex;flex-direction:column;flex:1}.offer-content h3{font-size:21px;margin:8px 0}.offer-content p{color:var(--muted);margin:0 0 14px;flex:1}.offer-badge{align-self:flex-start;background:#ed1c2410;color:var(--red);border:1px solid #ed1c2424;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:800}.offer-price-row{display:flex;align-items:baseline;gap:9px;margin:8px 0 16px}.offer-actions{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:auto}.offer-buy{text-align:center}.offer-whatsapp{background:#fff;color:#159447;border:1px solid #caead6}.offer-whatsapp:hover{background:#effbf4}
 .empty-state p{margin:0 0 16px}.empty-state .btn{width:auto}
 @media(max-width:760px){.offers-hero-grid{grid-template-columns:1fr}.store-hero-btn{min-width:0;width:100%}.offers-section-head{align-items:stretch;flex-direction:column}.store-outline{text-align:center}.offer-actions{grid-template-columns:1fr 1fr}}
+
+/* V19 offers polish */
+.offers-section{background:linear-gradient(180deg,#fff 0%,#f7f9fc 100%)}
+.offers-section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:30px}
+.offers-section-head h2{margin:4px 0 0}
+.store-outline{border:1px solid var(--navy);color:var(--navy);background:#fff;transition:.25s}
+.store-outline:hover{background:var(--navy);color:#fff;transform:translateY(-2px)}
+.offer-card-store{border:0;box-shadow:0 14px 42px rgba(18,54,95,.10);min-height:430px}
+.offer-image-placeholder{height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:radial-gradient(circle at 20% 20%,rgba(237,28,36,.12),transparent 36%),linear-gradient(135deg,#f8fbff,#edf3f9);color:var(--navy);border-bottom:1px solid var(--line)}
+.offer-placeholder-mark{width:84px;height:84px;border-radius:24px;display:grid;place-items:center;background:#fff;color:var(--red);font-size:34px;font-weight:900;box-shadow:0 14px 34px rgba(18,54,95,.12)}
+.offer-image-placeholder small{font-weight:800;color:var(--muted)}
+.offer-card-store .offer-content{display:flex;flex-direction:column;flex:1}
+.offer-card-store h3{font-size:21px;line-height:1.55;margin:9px 0}
+.offer-card-store p{color:var(--muted);margin:0 0 20px}
+.offer-badge{display:inline-flex;align-self:flex-start;background:#fff1f2;color:var(--red);border:1px solid #ffd5d8;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:800}
+.offer-actions{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin-top:auto}
+.offer-actions .btn{text-align:center}
+.offer-whatsapp{background:#fff;border:1px solid #d8e2ec;color:var(--navy)}
+.offer-whatsapp:hover{border-color:var(--navy);background:#f7f9fc}
+@media(max-width:760px){.offers-section-head{align-items:stretch;flex-direction:column}.offers-grid{grid-template-columns:1fr}.offer-card-store{min-height:0}.offer-image-placeholder{height:180px}}
