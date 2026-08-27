@@ -932,3 +932,112 @@ input,select,textarea,button{max-width:100%}
 @media(max-width:560px){
   .back-to-top{right:12px;bottom:14px;width:44px;height:44px;font-size:22px}
 }
+
+/* V50 - mobile admin doctors layout fix and compact cards */
+@media(max-width:620px){
+  #panel-doctors .editor-list{gap:10px!important}
+  #panel-doctors .doctor-editor-row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;
+    padding:9px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+  #panel-doctors .doctor-editor-row>.row-number{display:none!important}
+  #panel-doctors .doctor-editor-details{
+    grid-column:1/-1!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    border-radius:13px!important;
+  }
+  #panel-doctors .doctor-editor-details>summary{
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;
+    padding:10px!important;
+  }
+  #panel-doctors .doctor-summary-main{
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:44px minmax(0,1fr)!important;
+    gap:9px!important;
+    align-items:center!important;
+  }
+  #panel-doctors .doctor-summary-avatar{
+    width:44px!important;
+    height:44px!important;
+    flex:none!important;
+    border-radius:11px!important;
+  }
+  #panel-doctors .doctor-summary-main>div:last-child{min-width:0!important;width:100%!important}
+  #panel-doctors .doctor-summary-main b,
+  #panel-doctors .doctor-summary-main span{
+    display:block!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  #panel-doctors .doctor-summary-main b{font-size:14px!important}
+  #panel-doctors .doctor-summary-main span{font-size:11px!important;margin-top:2px!important}
+  #panel-doctors .doctor-summary-badges{
+    width:100%!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    justify-content:flex-start!important;
+    gap:5px!important;
+  }
+  #panel-doctors .mini-status,
+  #panel-doctors .expand-hint{font-size:10px!important;padding:4px 7px!important}
+  #panel-doctors .doctor-editor-details .row-fields.doctor-fields{
+    grid-template-columns:minmax(0,1fr)!important;
+    width:100%!important;
+    max-width:100%!important;
+    padding:10px!important;
+    gap:8px!important;
+    overflow:hidden!important;
+  }
+  #panel-doctors .doctor-editor-details .row-fields.doctor-fields>*{min-width:0!important;max-width:100%!important}
+  #panel-doctors .doctor-editor-details input,
+  #panel-doctors .doctor-editor-details select,
+  #panel-doctors .doctor-editor-details textarea{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  #panel-doctors .doctor-options-line{grid-template-columns:1fr!important;gap:8px!important}
+  #panel-doctors .doctor-schedule-body{grid-template-columns:1fr!important;gap:6px!important}
+  #panel-doctors .schedule-day{grid-template-columns:minmax(82px,1fr) minmax(0,1fr) auto minmax(0,1fr)!important;gap:5px!important;padding:7px!important}
+  #panel-doctors .schedule-day input[type=time]{min-width:0!important;padding-inline:4px!important;font-size:11px!important}
+  #panel-doctors .doctor-preview{min-height:72px!important}
+  #panel-doctors .doctor-preview img{max-width:82px!important;max-height:82px!important}
+  #panel-doctors .doctor-editor-row>.row-actions{
+    grid-column:1/-1!important;
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:42px 42px minmax(0,1fr)!important;
+    gap:6px!important;
+    align-items:stretch!important;
+  }
+  #panel-doctors .doctor-editor-row>.row-actions button{
+    width:100%!important;
+    min-width:0!important;
+    min-height:38px!important;
+    padding:7px!important;
+    margin:0!important;
+    border-radius:10px!important;
+  }
+  #panel-doctors .doctor-editor-row>.row-actions .remove-btn{grid-column:auto!important}
+  #panel-doctors .filter-bar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(120px,.55fr)!important;gap:7px!important}
+  #panel-doctors .filter-bar input,#panel-doctors .filter-bar select{width:100%!important;min-width:0!important;font-size:12px!important;padding:9px 10px!important}
+}
+@media(max-width:390px){
+  #panel-doctors .filter-bar{grid-template-columns:1fr!important}
+  #panel-doctors .schedule-day{grid-template-columns:1fr 1fr!important}
+  #panel-doctors .schedule-toggle{grid-column:1/-1!important}
+  #panel-doctors .schedule-dash{display:none!important}
+}
