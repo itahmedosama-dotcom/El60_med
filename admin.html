@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>لوحة التحكم | مجمع أطباء الستين</title>
-  <link rel="stylesheet" href="styles.css"><script defer src="admin.js"></script>
+  <link rel="stylesheet" href="styles.css"><script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script defer src="admin.js"></script>
 </head>
 <body class="admin-body">
 <div id="loginScreen" class="login-screen">
@@ -32,6 +32,7 @@
       <button class="side-link" data-target="contact">☎ <span>التواصل والروابط</span></button>
       <button class="side-link" data-target="stats"># <span>العدادات</span></button>
       <button class="side-link" data-target="services">✚ <span>التخصصات والخدمات</span></button>
+      <button class="side-link" data-target="doctors">⚕ <span>أطباؤنا</span></button>
       <button class="side-link" data-target="offers">٪ <span>العروض</span></button>
       <button class="side-link" data-target="insurers">▣ <span>شركاء التأمين</span></button>
       <button class="side-link" data-target="suppliers">◇ <span>الموردون والشركاء</span></button>
@@ -46,11 +47,21 @@
     <main class="admin-main-v3"><div id="adminNotice" class="admin-notice">جاهز</div>
       <section id="panel-dashboard" class="admin-panel active">
         <div class="admin-welcome"><span class="eyebrow">لوحة التحكم</span><h1>إدارة الموقع من مكان واحد</h1><p>يمكنك تعديل النصوص والصور والروابط والعدادات والخدمات والعروض والشركاء، ثم حفظ الكل مرة واحدة.</p></div>
-        <div class="dashboard-cards"><button data-go="services"><b id="countServices">0</b><span>تخصص وخدمة</span></button><button data-go="offers"><b id="countOffers">0</b><span>عرض</span></button><button data-go="insurers"><b id="countInsurers">0</b><span>شركة تأمين</span></button><button data-go="suppliers"><b id="countSuppliers">0</b><span>مورد وشريك</span></button><button data-go="stats"><b id="countStats">0</b><span>عداد</span></button><button data-go="socials"><b id="countSocials">0</b><span>قناة تواصل</span></button></div>
+        <div class="dashboard-cards"><button data-go="services"><b id="countServices">0</b><span>تخصص وخدمة</span></button><button data-go="doctors"><b id="countDoctors">0</b><span>طبيب</span></button><button data-go="offers"><b id="countOffers">0</b><span>عرض</span></button><button data-go="insurers"><b id="countInsurers">0</b><span>شركة تأمين</span></button><button data-go="suppliers"><b id="countSuppliers">0</b><span>مورد وشريك</span></button><button data-go="stats"><b id="countStats">0</b><span>عداد</span></button><button data-go="socials"><b id="countSocials">0</b><span>قناة تواصل</span></button></div>
       </section>
 
       <section id="panel-content" class="admin-panel">
         <div class="panel-head"><div><span class="eyebrow">المحتوى</span><h2>محتوى الصفحات والصور</h2></div></div>
+        <div class="admin-card announcement-admin-card"><h3>الشريط الإعلاني أعلى الموقع</h3><p class="admin-tip">اكتب الإعلان بالعربي والإنجليزي وحدد الرابط الذي يفتح عند الضغط عليه. يمكن إيقاف الشريط مؤقتاً بدون حذف النص.</p><div class="admin-grid">
+          <label>حالة الشريط<select id="announcementEnabled"><option value="true">ظاهر</option><option value="false">مخفي</option></select></label>
+          <label>رابط الإعلان<input id="announcementUrl" dir="ltr" placeholder="https://..."></label>
+          <label class="wide">نص الإعلان بالعربي<input id="announcementTextAr" placeholder="مثال: خصم خاص لفترة محدودة"></label>
+          <label class="wide">Announcement English<input id="announcementTextEn" dir="ltr" placeholder="Limited-time special offer"></label>
+        </div></div>
+        <div class="admin-card"><h3>زر العروض العائم</h3><p class="admin-tip">يظهر فوق زر واتساب في الواجهة ويوجه الزائر مباشرة إلى صفحة العروض.</p><div class="admin-grid">
+          <label>حالة الزر<select id="floatingOffersEnabled"><option value="true">ظاهر</option><option value="false">مخفي</option></select></label>
+          <label>النص عربي<input id="floatingOffersTextAr"></label><label>Text English<input id="floatingOffersTextEn" dir="ltr"></label>
+        </div></div>
         <div class="admin-card"><h3>هوية الموقع وSEO</h3><div class="admin-grid">
           <label>اسم المجمع عربي<input id="siteNameAr"></label><label>Site name English<input id="siteNameEn" dir="ltr"></label>
           <label>السلوجن عربي<input id="sloganAr"></label><label>Slogan English<input id="sloganEn" dir="ltr"></label>
@@ -83,7 +94,40 @@
 
       <section id="panel-stats" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الإحصائيات</span><h2>العدادات المتحركة</h2></div><button class="btn primary small" data-add="stats">+ إضافة عداد</button></div><div class="filter-bar"><input class="editor-search" data-list="stats" placeholder="بحث في العدادات..."></div><div id="statsEditor" class="editor-list"></div></section>
       <section id="panel-services" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">المحتوى الطبي</span><h2>التخصصات والخدمات</h2></div><button class="btn primary small" data-add="services">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="services" placeholder="بحث..."><select id="serviceCategoryFilter"><option value="all">كل التصنيفات</option><option value="clinics">العيادات</option><option value="diagnostics">التشخيص والفحوصات</option><option value="support">الخدمات المساندة</option></select></div><div id="servicesEditor" class="editor-list"></div></section>
-      <section id="panel-offers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">التسويق</span><h2>العروض</h2></div><button class="btn primary small" data-add="offers">+ إضافة عرض</button></div><div class="admin-card offer-store-settings"><h3>إعدادات المتجر</h3><div class="admin-grid"><label class="wide">رابط متجر سلة الرئيسي<input id="shopUrl" dir="ltr" placeholder="https://salla.sa/alsiteen60"><span class="field-help">عند تغييره وحفظ التعديلات، يتحدث رابط المتجر في صفحة العروض وفي زر المتجر بالموقع.</span></label></div></div><div class="filter-bar"><input class="editor-search" data-list="offers" placeholder="بحث في العروض..."><select id="offerStatusFilter"><option value="all">الكل</option><option value="true">المنشور</option><option value="false">المخفي</option></select></div><div id="offersEditor" class="editor-list"></div></section>
+      <section id="panel-doctors" class="admin-panel">
+        <div class="panel-head"><div><span class="eyebrow">الفريق الطبي</span><h2>إدارة صفحة أطباؤنا</h2><p class="admin-tip">أضف الطبيب وصورته وتخصصه وجنسيته ونبذة عنه. يمكن استخدام رابط صورة مباشر أو مسار صورة داخل مجلد assets.</p></div><button class="btn primary small" data-add="doctors">+ إضافة طبيب</button></div>
+        <div class="admin-card"><h3>عنوان صفحة أطباؤنا</h3><div class="admin-grid"><label>التسمية عربي<input id="doctorsLabelAr"></label><label>Label English<input id="doctorsLabelEn" dir="ltr"></label><label>العنوان عربي<input id="doctorsTitleAr"></label><label>Title English<input id="doctorsTitleEn" dir="ltr"></label><label class="wide">الوصف عربي<textarea id="doctorsIntroAr"></textarea></label><label class="wide">Description English<textarea id="doctorsIntroEn" dir="ltr"></textarea></label></div></div>
+        <div class="filter-bar"><input class="editor-search" data-list="doctors" placeholder="بحث باسم الطبيب أو التخصص أو الجنسية..."><select id="doctorStatusFilter"><option value="all">كل الحالات</option><option value="true">ظاهر</option><option value="false">مخفي</option></select></div>
+        <div id="doctorsEditor" class="editor-list"></div>
+      </section>
+      <section id="panel-offers" class="admin-panel">
+        <div class="panel-head"><div><span class="eyebrow">المتجر والعروض</span><h2>إدارة خدمات المتجر</h2><p class="panel-subtitle">استورد ملف Excel من المتجر، راجع الخدمات، ثم احفظ التعديلات. الخدمات المخفضة تظهر أولاً تلقائياً في صفحة العروض.</p></div><button class="btn primary small" data-add="offers">+ إضافة خدمة يدوياً</button></div>
+        <div class="offers-admin-overview">
+          <div class="offer-admin-kpi"><span>إجمالي الخدمات</span><b id="offerKpiTotal">0</b></div>
+          <div class="offer-admin-kpi discount"><span>خدمات مخفضة</span><b id="offerKpiDiscount">0</b></div>
+          <div class="offer-admin-kpi"><span>منشورة</span><b id="offerKpiActive">0</b></div>
+          <div class="offer-admin-kpi muted"><span>مخفية</span><b id="offerKpiHidden">0</b></div>
+        </div>
+        <div class="admin-card offer-import-card">
+          <div class="offer-card-heading"><div><span class="eyebrow">استيراد سريع</span><h3>استيراد خدمات المتجر من Excel</h3><p>يدعم ملف تصدير Salla مباشرة، ويقرأ اسم المنتج والتصنيف والسعر والسعر المخفض والوصف والحالة وSKU والرابط المخصص.</p></div><span class="excel-chip">XLSX / XLS</span></div>
+          <div class="offer-import-grid">
+            <label class="excel-drop" for="offersExcelFile"><span class="excel-icon">⇧</span><b>اختر ملف Excel</b><small>أو اسحب الملف هنا</small><input id="offersExcelFile" type="file" accept=".xlsx,.xls,.csv"></label>
+            <div class="import-options">
+              <label>طريقة الاستيراد<select id="offersImportMode"><option value="replace">استبدال قائمة الخدمات الحالية</option><option value="merge">دمج وتحديث حسب SKU / رقم المنتج</option></select></label>
+              <label class="check-line"><input id="offersImportAvailableOnly" type="checkbox"> استيراد المنتجات المتاحة فقط</label>
+              <button id="offersImportBtn" class="btn primary" type="button" disabled>استيراد الملف</button>
+            </div>
+          </div>
+          <div id="offersImportStatus" class="import-status">لم يتم اختيار ملف بعد.</div>
+        </div>
+        <div class="admin-card offer-store-settings"><div class="offer-card-heading"><div><span class="eyebrow">إعدادات الروابط</span><h3>رابط المتجر الرئيسي</h3></div></div><div class="admin-grid"><label class="wide">رابط متجر سلة الرئيسي<input id="shopUrl" dir="ltr" placeholder="https://salla.sa/alsiteen60"><span class="field-help">يستخدم كرابط افتراضي عندما لا يحتوي المنتج على رابط مخصص، ويتحدث زر المتجر بالموقع بعد الحفظ.</span></label></div></div>
+        <div class="offer-list-toolbar">
+          <div class="filter-bar offer-filter-bar"><input class="editor-search" data-list="offers" placeholder="ابحث بجزء من الاسم أو SKU أو رقم المنتج أو التصنيف..."><select id="offerStatusFilter"><option value="all">كل الحالات</option><option value="true">المنشور</option><option value="false">المخفي</option></select><select id="offerDiscountFilter"><option value="all">كل الأسعار</option><option value="discount">المخفض فقط</option><option value="regular">بدون تخفيض</option></select><select id="offerCategoryFilter"><option value="all">كل التصنيفات</option></select></div>
+          <div class="offer-list-actions"><button id="resetOfferFiltersBtn" class="btn ghost small" type="button">إلغاء الفلاتر</button><button id="sortOffersDiscountBtn" class="btn ghost small" type="button">ترتيب المخفض أولاً</button></div>
+        </div>
+        <div class="offer-bulk-bar"><label class="offer-select-all"><input id="selectVisibleOffers" type="checkbox"> تحديد كل النتائج الظاهرة</label><span id="offerSelectionCount">لم يتم تحديد خدمات</span><div><button id="deleteSelectedOffersBtn" class="btn ghost small danger-soft" type="button" disabled>حذف المحدد</button><button id="clearOffersBtn" class="btn ghost small danger-soft" type="button">حذف الكل</button></div></div>
+        <div id="offersEditor" class="editor-list"></div>
+      </section>
       <section id="panel-insurers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الشركاء</span><h2>شركاء التأمين</h2></div><button class="btn primary small" data-add="insurers">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="insurers" placeholder="بحث باسم شركة التأمين..."></div><div id="insurersEditor" class="editor-list"></div></section>
       <section id="panel-suppliers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الشركاء</span><h2>سابقة الأعمال والموردون</h2></div><button class="btn primary small" data-add="suppliers">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="suppliers" placeholder="بحث باسم المورد أو الشريك..."></div><div id="suppliersEditor" class="editor-list"></div></section>
       <section id="panel-socials" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">التواصل</span><h2>قنوات السوشيال ميديا</h2></div><button class="btn primary small" data-add="socials">+ إضافة قناة</button></div><div class="filter-bar"><input class="editor-search" data-list="socials" placeholder="بحث..."></div><div id="socialsEditor" class="editor-list"></div></section>
