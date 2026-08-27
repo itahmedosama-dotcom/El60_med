@@ -277,3 +277,17 @@ html[lang="en"] .service-cards.service-horizontal-marquee .service-card-v10{dire
   .service-cards.service-horizontal-marquee .service-card-v10:hover{transform:none}
 }
 \n/* V17: reliable mobile specialty rail */\n.service-cards.service-horizontal-marquee{direction:ltr!important;will-change:scroll-position;scroll-behavior:auto!important}\n.service-cards.service-horizontal-marquee .service-card-v10{direction:rtl}\nhtml[lang="en"] .service-cards.service-horizontal-marquee .service-card-v10{direction:ltr}\n@media(max-width:680px){\n  .service-cards.service-horizontal-marquee{overflow-x:scroll!important;touch-action:pan-x!important;scrollbar-width:none!important;contain:layout paint;transform:translateZ(0)}\n  .service-cards.service-horizontal-marquee .service-card-v10{flex:0 0 78vw!important;width:78vw!important;min-width:250px!important;max-width:310px!important}\n}\n
+/* V18 - Salla-integrated offers page */
+.offers-hero{padding:72px 0 58px}
+.offers-hero-grid{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+.store-hero-btn{display:flex;align-items:center;gap:14px;min-width:285px;padding:17px 20px;border-radius:20px;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));box-shadow:0 16px 38px rgba(18,54,95,.22);transition:.25s}
+.store-hero-btn:hover{transform:translateY(-4px);box-shadow:0 22px 48px rgba(18,54,95,.28)}
+.store-hero-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#fff;color:var(--navy);font-size:23px}
+.store-hero-btn span:last-child{display:flex;flex-direction:column;line-height:1.4}.store-hero-btn b{font-size:16px}.store-hero-btn small{opacity:.75;direction:ltr;text-align:left}
+.offers-section{background:linear-gradient(180deg,#fff,#f7f9fc)}
+.offers-section-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:28px}.offers-section-head h2{margin:3px 0 5px;font-size:clamp(28px,3vw,42px)}.offers-section-head p{margin:0;color:var(--muted);max-width:720px}.store-outline{border:1px solid #ced8e5;color:var(--navy);background:#fff;white-space:nowrap}.store-outline:hover{border-color:var(--red);color:var(--red)}
+.offer-card-store{display:flex;flex-direction:column;position:relative}.offer-image-link{display:block;overflow:hidden;background:#f5f7fa}.offer-card-store img{transition:transform .4s ease}.offer-card-store:hover img{transform:scale(1.035)}
+.offer-image-placeholder{height:240px;display:grid;place-items:center;background:linear-gradient(135deg,#f6f8fb,#edf2f7);font-weight:900;font-size:70px;color:#dce5ee}
+.offer-content{display:flex;flex-direction:column;flex:1}.offer-content h3{font-size:21px;margin:8px 0}.offer-content p{color:var(--muted);margin:0 0 14px;flex:1}.offer-badge{align-self:flex-start;background:#ed1c2410;color:var(--red);border:1px solid #ed1c2424;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:800}.offer-price-row{display:flex;align-items:baseline;gap:9px;margin:8px 0 16px}.offer-actions{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:auto}.offer-buy{text-align:center}.offer-whatsapp{background:#fff;color:#159447;border:1px solid #caead6}.offer-whatsapp:hover{background:#effbf4}
+.empty-state p{margin:0 0 16px}.empty-state .btn{width:auto}
+@media(max-width:760px){.offers-hero-grid{grid-template-columns:1fr}.store-hero-btn{min-width:0;width:100%}.offers-section-head{align-items:stretch;flex-direction:column}.store-outline{text-align:center}.offer-actions{grid-template-columns:1fr 1fr}}
