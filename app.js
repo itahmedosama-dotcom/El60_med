@@ -167,21 +167,49 @@ function renderDoctorsPublic(){
     let down=false,startX=0,startScroll=0,resumeTimer;
     const stopAuto=()=>scroller.classList.add('is-interacting');
     const resume=()=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>scroller.classList.remove('is-interacting'),900)};
-    scroller.addEventListener('pointerdown',e=>{down=true;startX=e.clientX;startScroll=scroller.scrollLeft;stopAuto();scroller.setPointerCapture?.(e.pointerId)});
+    scroller.addEventListener('pointerdown',e=>{
+      // لا نبدأ السحب عند الضغط على زر الحجز أو أي عنصر تفاعلي.
+      if(e.target.closest('button,a,input,select,textarea,label'))return;
+      down=true;startX=e.clientX;startScroll=scroller.scrollLeft;stopAuto();scroller.setPointerCapture?.(e.pointerId)
+    });
     scroller.addEventListener('pointermove',e=>{if(!down)return;scroller.scrollLeft=startScroll-(e.clientX-startX)});
     const up=e=>{if(!down)return;down=false;try{scroller.releasePointerCapture?.(e.pointerId)}catch(_){}resume()};
-    scroller.addEventListener('pointerup',up);scroller.addEventListener('pointercancel',up);scroller.addEventListener('mouseenter',stopAuto);scroller.addEventListener('mouseleave',resume);scroller.addEventListener('touchstart',stopAuto,{passive:true});scroller.addEventListener('touchend',resume,{passive:true});
+    scroller.addEventListener('pointerup',up);scroller.addEventListener('pointercancel',up);scroller.addEventListener('mouseenter',stopAuto);scroller.addEventListener('mouseleave',resume);scroller.addEventListener('touchstart',e=>{if(!e.target.closest('button,a,input,select,textarea,label'))stopAuto()},{passive:true});scroller.addEventListener('touchend',resume,{passive:true});
   }
+  function uniqueDoctors(items){
+    const seen=new Set();
+    return items.filter(x=>{
+      const key=String(x.id||x.doctorId||`${x.nameAr||''}|${x.nameEn||''}|${x.specialtyAr||''}|${x.specialtyEn||''}`).trim().toLowerCase();
+      if(!key||seen.has(key))return false;seen.add(key);return true;
+    });
+  }
+  function rotate(arr,n){if(!arr.length)return arr;const k=((n%arr.length)+arr.length)%arr.length;return [...arr.slice(k),...arr.slice(0,k)]}
   function draw(){
     const q=(search?.value||'').trim().toLowerCase(),sp=specialty?.value||'all';
-    const list=all.filter(x=>{const txt=`${x.nameAr||''} ${x.nameEn||''} ${x.specialtyAr||''} ${x.specialtyEn||''} ${x.nationalityAr||''} ${x.nationalityEn||''} ${x.bioAr||''} ${x.bioEn||''}`.toLowerCase();return(!q||txt.includes(q))&&(sp==='all'||val(x.specialtyAr,x.specialtyEn)===sp)});
+    const list=uniqueDoctors(all.filter(x=>{const txt=`${x.nameAr||''} ${x.nameEn||''} ${x.specialtyAr||''} ${x.specialtyEn||''} ${x.nationalityAr||''} ${x.nationalityEn||''} ${x.bioAr||''} ${x.bioEn||''}`.toLowerCase();return(!q||txt.includes(q))&&(sp==='all'||val(x.specialtyAr,x.specialtyEn)===sp)}));
     empty?.classList.toggle('hidden',list.length>0);
     if(!list.length){host.innerHTML='';return}
-    const mid=Math.ceil(list.length/2),rows=[list.slice(0,mid),list.slice(mid)];
-    if(!rows[1].length)rows[1]=[...rows[0]];
-    host.innerHTML=rows.map((row,ri)=>{const expanded=row.length<4?[...row,...row,...row]:[...row,...row];return `<div class="doctors-marquee-row ${ri%2?'reverse':''}"><div class="doctors-marquee-track">${expanded.map((x,i)=>card(x,i+ri*6)).join('')}</div></div>`}).join('');
-    host.querySelectorAll('.doctor-book').forEach(b=>b.onclick=e=>{e.preventDefault();openDoctorBooking(b.dataset.doctor||'',b.dataset.specialty||'')});
-    host.querySelectorAll('.doctors-marquee-row').forEach(bindTrackDrag);
+    let rows;
+    if(list.length>=6){
+      rows=[list.filter((_,i)=>i%2===0),list.filter((_,i)=>i%2===1)];
+    }else if(list.length>=3){
+      // مع عدد قليل من الأطباء نستخدم نفس المجموعة بترتيب مختلف في الصف الثاني،
+      // بحيث لا يتكرر نفس الطبيب بجوار نفسه إطلاقاً.
+      rows=[list,rotate(list,Math.max(1,Math.floor(list.length/2)))];
+    }else{
+      // لا نخترع أطباء غير موجودين: نعرض الأطباء الفعليين فقط بدون تكرار بصري.
+      rows=[list];
+    }
+    host.innerHTML=rows.map((row,ri)=>{
+      const moving=row.length>=3;
+      const expanded=moving?[...row,...row]:row;
+      return `<div class="doctors-marquee-row ${ri%2?'reverse':''} ${moving?'':'static-row'}"><div class="doctors-marquee-track">${expanded.map((x,i)=>card(x,i+ri*12)).join('')}</div></div>`
+    }).join('');
+    host.querySelectorAll('.doctors-marquee-row').forEach(r=>{if(!r.classList.contains('static-row'))bindTrackDrag(r)});
+  }
+  if(!host.dataset.bookingBound){
+    host.addEventListener('click',e=>{const b=e.target.closest('.doctor-book');if(!b)return;e.preventDefault();e.stopPropagation();openDoctorBooking(b.dataset.doctor||'',b.dataset.specialty||'')});
+    host.dataset.bookingBound='1';
   }
   search?.addEventListener('input',draw);specialty?.addEventListener('change',draw);draw();
 }
