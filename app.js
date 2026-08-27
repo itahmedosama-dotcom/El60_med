@@ -103,16 +103,30 @@ async function refreshRemoteData(force=false){
     if(n){const before=JSON.stringify(data),after=JSON.stringify(n);writeCachedData(raw,version);if(Array.isArray(n.doctors))writeDoctorsFastCache(n.doctors);sessionStorage.setItem('alsiteen_last_bg_sync',String(Date.now()));if(before!==after){data=n;render()}}
   }catch(e){console.warn('Background content refresh skipped:',e)}
 }
-function readDoctorsFastCache(){
+function readDoctorsFastCache(withMeta=false){
   try{
-    const raw=localStorage.getItem('alsiteen_doctors_fast_v1');
-    if(!raw)return null;
-    const parsed=JSON.parse(raw);
-    return Array.isArray(parsed?.doctors)?parsed.doctors:null;
+    const raw=localStorage.getItem('alsiteen_doctors_fast_v2')||localStorage.getItem('alsiteen_doctors_fast_v1');
+    if(!raw)return withMeta?null:null;
+    const parsed=JSON.parse(raw), doctors=Array.isArray(parsed?.doctors)?parsed.doctors:null;
+    if(!doctors)return null;
+    return withMeta?{doctors,savedAt:Number(parsed?.savedAt||0)}:doctors;
   }catch(e){return null}
 }
 function writeDoctorsFastCache(doctors){
-  try{if(Array.isArray(doctors))localStorage.setItem('alsiteen_doctors_fast_v1',JSON.stringify({savedAt:Date.now(),doctors}))}catch(e){}
+  try{if(Array.isArray(doctors))localStorage.setItem('alsiteen_doctors_fast_v2',JSON.stringify({savedAt:Date.now(),doctors}))}catch(e){}
+}
+function doctorSkeletons(){
+  return `<div class="doctors-skeleton-row">${Array.from({length:3},()=>`<article class="doctor-card doctor-skeleton-card"><div class="doctor-skeleton-photo skeleton-shimmer"></div><div class="doctor-info"><i class="skeleton-line w35"></i><i class="skeleton-line w70"></i><i class="skeleton-line w50"></i><i class="skeleton-line w100"></i><i class="skeleton-line w100"></i><i class="skeleton-button"></i></div></article>`).join('')}</div>`;
+}
+async function prefetchDoctorsInBackground(force=false){
+  if(document.querySelector('#doctorsGrid'))return;
+  const meta=readDoctorsFastCache(true);
+  if(!force&&meta?.doctors?.length&&Date.now()-meta.savedAt<30*60*1000)return;
+  try{
+    const raw=await fetchJsonAction('getDoctorsPage',4800);
+    const list=raw?.data?.doctors||raw?.doctors;
+    if(Array.isArray(list))writeDoctorsFastCache(list);
+  }catch(e){console.warn('Doctors prefetch skipped:',e)}
 }
 async function refreshDoctorsFast(){
   if(!document.querySelector('#doctorsGrid'))return;
@@ -139,12 +153,22 @@ function loadData(){
   const fastDoctors=doctorsPage?readDoctorsFastCache():null;
   if(fastDoctors?.length)data={...data,doctors:fastDoctors};
   render();
+  if(doctorsPage&&!fastDoctors?.length){
+    const host=document.querySelector('#doctorsGrid');
+    if(host)host.innerHTML=doctorSkeletons();
+    document.querySelector('#doctorsEmpty')?.classList.add('hidden');
+  }
   const cached=readCachedData();
   if(cached){
     if(doctorsPage&&fastDoctors?.length)cached.doctors=fastDoctors;
     data=cached;render();
   }
   if(doctorsPage)refreshDoctorsFast();
+  else {
+    const prefetch=()=>prefetchDoctorsInBackground(false);
+    if('requestIdleCallback' in window)requestIdleCallback(prefetch,{timeout:2200});
+    else setTimeout(prefetch,900);
+  }
   const startRefresh=()=>{
     const last=Number(sessionStorage.getItem('alsiteen_last_bg_sync')||0);
     if(Date.now()-last<300000)return; // فحص خفيف كل 5 دقائق فقط؛ تغييرات المحتوى تُكتشف عبر رقم الإصدار.
