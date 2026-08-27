@@ -465,3 +465,9 @@ html[dir="rtl"] .doctors-marquee-track{animation-name:doctorsMarqueeRTL}@keyfram
 .doctor-marquee-card .doctor-book{position:relative;z-index:5;pointer-events:auto;touch-action:manipulation;cursor:pointer}
 .doctor-marquee-card{position:relative}
 @media(max-width:760px){.doctors-marquee-row.static-row .doctors-marquee-track{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto}.doctor-marquee-card .doctor-book{min-height:46px;font-size:15px}}
+
+/* V35 admin viewport toast: save feedback stays visible wherever the editor is scrolled. */
+.admin-notice.admin-toast{position:fixed!important;top:18px;left:50%;right:auto;z-index:9999;min-width:min(420px,calc(100vw - 28px));max-width:min(620px,calc(100vw - 28px));margin:0!important;padding:14px 20px;border-radius:14px;box-shadow:0 18px 50px rgba(13,41,73,.22);text-align:center;font-weight:800;opacity:0;pointer-events:none;transform:translate(-50%,-14px) scale(.98);transition:opacity .22s ease,transform .22s ease;background:#fff4d6;color:#745400;border:1px solid rgba(116,84,0,.12)}
+.admin-notice.admin-toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.admin-notice.admin-toast.ok{background:#e9f8ef;color:#176b3a;border-color:#bde7cc}.admin-notice.admin-toast.err{background:#fdecec;color:#9b2025;border-color:#f5c6c8}
+@media(max-width:640px){.admin-notice.admin-toast{top:10px;min-width:calc(100vw - 20px);max-width:calc(100vw - 20px);font-size:14px;padding:12px 14px}}

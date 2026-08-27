@@ -56,17 +56,32 @@ const I18N={
 
 let data=structuredClone(fallback);let lang=localStorage.getItem('alsiteen_lang')||'ar';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-function normalizePayload(j){if(!j||typeof j!=="object")return null;if(j.data&&typeof j.data==="object")j=j.data;const out={...structuredClone(fallback),settings:{...fallback.settings,...(j.settings||{})}};['stats','socials','services','doctors','insurers','suppliers'].forEach(k=>{if(Array.isArray(j[k])&&j[k].length)out[k]=j[k]});/* Offers are authoritative from the admin/Excel source. An empty array means deliberately empty and must never fall back to bundled demo data. */if(Array.isArray(j.offers))out.offers=j.offers;if(Array.isArray(out.stats)){out.stats=out.stats.map(x=>{const ar=String(x.labelAr||''),en=String(x.labelEn||'');if((Number(x.value)===24||ar.includes('24 تخصص')||en.includes('24 specialties'))&&String(x.icon||'').includes('✚'))return {...x,value:11,labelAr:'أكثر من 11 تخصص',labelEn:'More than 11 specialties'};return x})}return out}
+function normalizePayload(j){if(!j||typeof j!=="object")return null;if(j.data&&typeof j.data==="object")j=j.data;const out={...structuredClone(fallback),settings:{...fallback.settings,...(j.settings||{})}};
+  const cleanList=(key,valid)=>{
+    if(!Array.isArray(j[key]))return;
+    const cleaned=j[key].filter(x=>x&&typeof x==='object'&&valid(x));
+    // لا نستبدل بيانات الموقع الأساسية بصفوف فارغة/تالفة قادمة من الشيت.
+    if(cleaned.length)out[key]=cleaned;
+  };
+  cleanList('stats',x=>String(x.labelAr||x.labelEn||'').trim()||Number(x.value));
+  cleanList('socials',x=>String(x.name||x.url||'').trim());
+  cleanList('services',x=>String(x.ar||x.en||'').trim());
+  cleanList('doctors',x=>String(x.nameAr||x.nameEn||'').trim());
+  cleanList('insurers',x=>String(x.ar||x.en||x.image||'').trim());
+  cleanList('suppliers',x=>String(x.ar||x.en||x.image||'').trim());
+  /* Offers are authoritative from the admin/Excel source. An empty array means deliberately empty and must never fall back to bundled demo data. */
+  if(Array.isArray(j.offers))out.offers=j.offers.filter(x=>x&&typeof x==='object');
+  if(Array.isArray(out.stats)){out.stats=out.stats.map(x=>{const ar=String(x.labelAr||''),en=String(x.labelEn||'');if((Number(x.value)===24||ar.includes('24 تخصص')||en.includes('24 specialties'))&&String(x.icon||'').includes('✚'))return {...x,value:11,labelAr:'أكثر من 11 تخصص',labelEn:'More than 11 specialties'};return x})}return out}
 function readCachedData(){
   try{
-    const raw=localStorage.getItem('alsiteen_content_cache_v3');
+    const raw=localStorage.getItem('alsiteen_content_cache_v4');
     if(!raw)return null;
     const parsed=JSON.parse(raw);
     return normalizePayload(parsed?.payload||parsed);
   }catch(e){return null}
 }
 function writeCachedData(payload){
-  try{localStorage.setItem('alsiteen_content_cache_v3',JSON.stringify({savedAt:Date.now(),payload}))}catch(e){}
+  try{localStorage.setItem('alsiteen_content_cache_v4',JSON.stringify({savedAt:Date.now(),payload}))}catch(e){}
 }
 async function refreshRemoteData(){
   try{

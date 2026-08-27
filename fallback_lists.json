@@ -1,0 +1,263 @@
+{
+  "services": [
+    {
+      "cat": "clinics",
+      "icon": "🩺",
+      "ar": "عيادة الطب العام",
+      "en": "General Medicine",
+      "descAr": "الرعاية الأولية والتقييم العام للحالات الصحية.",
+      "descEn": "Primary care and general health assessment.",
+      "active": true
+    },
+    {
+      "cat": "clinics",
+      "icon": "🫀",
+      "ar": "عيادة الباطنة",
+      "en": "Internal Medicine",
+      "descAr": "تشخيص ومتابعة الأمراض الباطنية والمزمنة.",
+      "descEn": "Diagnosis and follow-up of internal and chronic conditions.",
+      "active": true
+    },
+    {
+      "cat": "clinics",
+      "icon": "👩‍⚕️",
+      "ar": "عيادة النساء والولادة",
+      "en": "Obstetrics & Gynecology",
+      "descAr": "متابعة صحة المرأة والحمل وخدمات النساء والولادة.",
+      "descEn": "Women's health, pregnancy and obstetric care.",
+      "active": true
+    },
+    {
+      "cat": "clinics",
+      "icon": "🧒",
+      "ar": "عيادة الأطفال",
+      "en": "Pediatrics",
+      "descAr": "متابعة صحة الأطفال والنمو والحالات الشائعة.",
+      "descEn": "Child health, development and common pediatric conditions.",
+      "active": true
+    },
+    {
+      "cat": "clinics",
+      "icon": "🦷",
+      "ar": "عيادة الأسنان",
+      "en": "Dental Clinic",
+      "descAr": "خدمات علاجية وتجميلية متكاملة لصحة الفم والأسنان.",
+      "descEn": "Comprehensive therapeutic and cosmetic dental services.",
+      "active": true
+    },
+    {
+      "cat": "clinics",
+      "icon": "✨",
+      "ar": "عيادة الجلدية والليزر",
+      "en": "Dermatology & Laser",
+      "descAr": "العناية بالبشرة والجلدية والليزر والإجراءات التجميلية.",
+      "descEn": "Dermatology, skin care, laser and aesthetic procedures.",
+      "active": true
+    },
+    {
+      "cat": "diagnostics",
+      "icon": "🧪",
+      "ar": "قسم المختبر",
+      "en": "Laboratory",
+      "descAr": "تحاليل وفحوصات مخبرية لدعم التشخيص والمتابعة.",
+      "descEn": "Laboratory tests supporting diagnosis and follow-up.",
+      "active": true
+    },
+    {
+      "cat": "diagnostics",
+      "icon": "🩻",
+      "ar": "قسم الأشعة",
+      "en": "Radiology",
+      "descAr": "خدمات تصوير وتشخيص مساندة للرعاية الطبية.",
+      "descEn": "Diagnostic imaging services supporting clinical care.",
+      "active": true
+    },
+    {
+      "cat": "support",
+      "icon": "🧾",
+      "ar": "فحص العمالة",
+      "en": "Employment Medical Check",
+      "descAr": "فحوصات العمالة والإقامة والرخص وفق المتطلبات.",
+      "descEn": "Employment, residency and licensing medical checks.",
+      "active": true
+    },
+    {
+      "cat": "support",
+      "icon": "🚑",
+      "ar": "الطوارئ",
+      "en": "Emergency",
+      "descAr": "استقبال وتقييم الحالات التي تحتاج إلى رعاية عاجلة.",
+      "descEn": "Assessment and care for urgent medical conditions.",
+      "active": true
+    },
+    {
+      "cat": "support",
+      "icon": "💊",
+      "ar": "الصيدليات",
+      "en": "Pharmacies",
+      "descAr": "أدوية ومستلزمات طبية وخدمة الوصفات.",
+      "descEn": "Medicines, medical supplies and prescription services.",
+      "active": true
+    }
+  ],
+  "insurers": [
+    {
+      "ar": "الاتحاد للتأمين",
+      "en": "Aletihad Insurance",
+      "image": "assets/insurance-uploaded/aletihad.jpg",
+      "active": true
+    },
+    {
+      "ar": "تكافل الراجحي",
+      "en": "Al Rajhi Takaful",
+      "image": "assets/insurance-uploaded/alrajhi.png",
+      "active": true
+    },
+    {
+      "ar": "بوبا العربية",
+      "en": "Bupa Arabia",
+      "image": "assets/insurance-uploaded/bupa.png",
+      "active": true
+    },
+    {
+      "ar": "مجموعة الخليج للتأمين",
+      "en": "Gulf Insurance Group",
+      "image": "assets/insurance-uploaded/gig.png",
+      "active": true
+    },
+    {
+      "ar": "غلوب مد",
+      "en": "GlobeMed",
+      "image": "assets/insurance-uploaded/globemed.png",
+      "active": true
+    },
+    {
+      "ar": "اتحاد الخليج الأهلية",
+      "en": "Gulf Union Cooperative Insurance",
+      "image": "assets/insurance-uploaded/gulf-union.png",
+      "active": true
+    },
+    {
+      "ar": "ملاذ للتأمين",
+      "en": "Malath Insurance",
+      "image": "assets/insurance-uploaded/malath.png",
+      "active": true
+    },
+    {
+      "ar": "ميدنت",
+      "en": "MedNet",
+      "image": "assets/insurance-uploaded/mednet.jpg",
+      "active": true
+    },
+    {
+      "ar": "نكست كير",
+      "en": "NextCare",
+      "image": "assets/insurance-uploaded/nextcare.png",
+      "active": true
+    },
+    {
+      "ar": "تكافل العربية",
+      "en": "Takaful Al Arabia",
+      "image": "assets/insurance-uploaded/takaful-arabia.jpg",
+      "active": true
+    },
+    {
+      "ar": "التعاونية",
+      "en": "Tawuniya",
+      "image": "assets/insurance-uploaded/tawuniya.png",
+      "active": true
+    },
+    {
+      "ar": "العناية الشاملة السعودية TCS",
+      "en": "TCS",
+      "image": "assets/insurance-uploaded/tcs.jpg",
+      "active": true
+    },
+    {
+      "ar": "ولاء",
+      "en": "Walaa",
+      "image": "assets/insurance-uploaded/walaa.png",
+      "active": true
+    },
+    {
+      "ar": "مجمع نهج الشفاء الطبي العام",
+      "en": "Nahj Al-Shifaa General Medical Complex",
+      "image": "assets/insurance-uploaded/nahj-alshifaa.png",
+      "active": true
+    }
+  ],
+  "suppliers": [
+    {
+      "ar": "شركة أبناء عبدالله بالغفار المحدودة",
+      "en": "Abdullah A. Baghaffar Sons Co., Ltd.",
+      "image": "assets/supplier-01.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة مكتب الكمال للاستيراد المحدودة",
+      "en": "Alkamal Import Office Co.",
+      "image": "assets/supplier-02.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة إمداد للأعمال الطبية",
+      "en": "Imdad Medical Business",
+      "image": "assets/supplier-03.jpg",
+      "active": true
+    },
+    {
+      "ar": "الشركة الرابعة الحديثة للتجارة",
+      "en": "Modern Rabiyah Trading Company",
+      "image": "assets/supplier-04.jpg",
+      "active": true
+    },
+    {
+      "ar": "الشركة السعودية الخليجية سيبكو",
+      "en": "SEPCO Environment",
+      "image": "assets/supplier-05.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة بسام بن محمد الثقافي وشركاؤه للاستشارات المهنية",
+      "en": "BMB&CO Advisory & Assurance",
+      "image": "assets/supplier-06.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة الخدمات الطبية والصيدلانية بشير شكيب",
+      "en": "Medical & Pharmaceutical Services",
+      "image": "assets/supplier-07.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة مختبر الجودة الطبي",
+      "en": "Aljawadah Medical Laboratory Company",
+      "image": "assets/supplier-08.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة صفوة التشخيص الطبية",
+      "en": "Diagnostics Elite",
+      "image": "assets/supplier-09.jpg",
+      "active": true
+    },
+    {
+      "ar": "مجمع جمجوم",
+      "en": "Jamjoom Medical Solutions",
+      "image": "assets/supplier-10.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة العرفج للتجارة والاستيراد",
+      "en": "Al Arafaj Commercial & Imports Co.",
+      "image": "assets/supplier-11.jpg",
+      "active": true
+    },
+    {
+      "ar": "شركة المرمر الأبيض للخدمات الطبية",
+      "en": "Al Marmar Dental Co.",
+      "image": "assets/supplier-12.jpg",
+      "active": true
+    }
+  ]
+}
