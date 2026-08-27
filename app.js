@@ -56,10 +56,20 @@ const I18N={
 let data=structuredClone(fallback);let lang=localStorage.getItem('alsiteen_lang')||'ar';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 function normalizePayload(j){if(!j||typeof j!=="object")return null;if(j.data&&typeof j.data==="object")j=j.data;const out={...structuredClone(fallback),settings:{...fallback.settings,...(j.settings||{})}};['stats','socials','services','offers','insurers','suppliers'].forEach(k=>{if(Array.isArray(j[k])&&j[k].length)out[k]=j[k]});if(Array.isArray(out.stats)){out.stats=out.stats.map(x=>{const ar=String(x.labelAr||''),en=String(x.labelEn||'');if((Number(x.value)===24||ar.includes('24 تخصص')||en.includes('24 specialties'))&&String(x.icon||'').includes('✚'))return {...x,value:11,labelAr:'أكثر من 11 تخصص',labelEn:'More than 11 specialties'};return x})}return out}
-async function loadData(){try{const u=CONFIG.sheetApiUrl+(CONFIG.sheetApiUrl.includes('?')?'&':'?')+'action=getAll&_='+Date.now(),r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const n=normalizePayload(await r.json());if(n)data=n}catch(e){console.warn('Using fallback content:',e)}render();applyLang()}
+async function loadData(){
+  // Render local fallback content immediately so the page never waits for the remote content endpoint.
+  render();
+  try{
+    const u=CONFIG.sheetApiUrl+(CONFIG.sheetApiUrl.includes('?')?'&':'?')+'action=getAll&_='+Date.now();
+    const r=await fetch(u,{cache:'no-store'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const n=normalizePayload(await r.json());
+    if(n){data=n;render()}
+  }catch(e){console.warn('Using fallback content:',e)}
+}
 function esc(s=''){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}function val(ar,en){return lang==='ar'?ar:en}function cleanPhone(v){return String(v||'').replace(/\D/g,'')}function phoneDisplay(v){let x=cleanPhone(v);if(x.startsWith('966'))x=x.slice(3);if(x.length===9)x='0'+x;return x.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3')}function waUrl(s){return `https://wa.me/${cleanPhone(s.whatsapp||CONFIG.whatsapp)}?text=${encodeURIComponent(s.whatsappMessage||fallback.settings.whatsappMessage)}`}function setText(id,text){const e=$(id);if(e&&text!=null)e.textContent=text}function setImage(id,src){const e=$(id);if(e&&src)e.src=src}
 function applyTheme(s){const r=document.documentElement.style;r.setProperty('--navy',s.themeNavy||fallback.settings.themeNavy);r.setProperty('--navy2',s.themeNavyDark||fallback.settings.themeNavyDark);r.setProperty('--red',s.themeRed||fallback.settings.themeRed);r.setProperty('--bg',s.themeLight||fallback.settings.themeLight)}
-function animateCounter(el){if(el.dataset.animated==='1')return;el.dataset.animated='1';const target=Number(el.dataset.count||0),suffix=el.dataset.suffix||'',duration=1500,start=performance.now();const tick=now=>{const p=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-p,3),v=Math.floor(target*ease);el.textContent=v.toLocaleString('en-US')+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}
+function animateCounter(el){if(el.dataset.animated==='1')return;el.dataset.animated='1';const target=Number(el.dataset.count||0),suffix=el.dataset.suffix||'',duration=850,start=performance.now();const tick=now=>{const p=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-p,3),v=Math.floor(target*ease);el.textContent=v.toLocaleString('en-US')+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}
 function renderStats(){const g=$('#statsGrid');if(!g)return;const list=(data.stats||[]).filter(x=>String(x.active??true)!=='false');g.innerHTML=list.map(x=>`<div class="stat-modern"><span class="stat-icon">${esc(x.icon||'◎')}</span><b class="counter" data-count="${Number(x.value)||0}" data-suffix="${esc(x.suffix||'')}">0</b><span>${esc(val(x.labelAr,x.labelEn)||'')}</span></div>`).join('');const sec=$('.stats-modern');if('IntersectionObserver'in window&&sec){const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.querySelectorAll('.counter').forEach(animateCounter);io.disconnect()}}),{threshold:.25});io.observe(sec)}else $$('.counter').forEach(animateCounter)}
 
 function serviceIconSvg(ar,en,fallbackIcon){
