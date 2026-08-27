@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>لوحة التحكم | مجمع أطباء الستين</title>
+  <link rel="stylesheet" href="styles.css"><script defer src="admin.js"></script>
+</head>
+<body class="admin-body">
+<div id="loginScreen" class="login-screen">
+  <form id="loginForm" class="login-card">
+    <img src="assets/logo.jpg" alt="مجمع أطباء الستين"><h1>تسجيل الدخول</h1><p>الدخول إلى لوحة إدارة محتوى الموقع</p>
+    <label>اسم المستخدم<input id="loginUser" autocomplete="username" required></label>
+    <label>كلمة المرور<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+    <button class="btn primary full" type="submit">دخول</button><div id="loginNotice" class="login-notice"></div>
+  </form>
+</div>
+<div id="adminApp" class="admin-layout hidden">
+  <aside class="admin-sidebar">
+    <div class="admin-side-brand"><img src="assets/logo.jpg" alt="الشعار"><b>لوحة التحكم</b><small>إدارة الموقع بالكامل</small></div>
+    <nav>
+      <button class="side-link active" data-target="dashboard">⌂ <span>الرئيسية</span></button>
+      <button class="side-link" data-target="content">✎ <span>محتوى الصفحات</span></button>
+      <button class="side-link" data-target="contact">☎ <span>التواصل والروابط</span></button>
+      <button class="side-link" data-target="stats"># <span>العدادات</span></button>
+      <button class="side-link" data-target="services">✚ <span>التخصصات والخدمات</span></button>
+      <button class="side-link" data-target="offers">٪ <span>العروض</span></button>
+      <button class="side-link" data-target="insurers">▣ <span>شركاء التأمين</span></button>
+      <button class="side-link" data-target="suppliers">◇ <span>الموردون والشركاء</span></button>
+      <button class="side-link" data-target="socials">◎ <span>السوشيال ميديا</span></button>
+      <button class="side-link" data-target="appearance">◐ <span>الهوية والمظهر</span></button>
+      <button class="side-link" data-target="account">⚿ <span>حساب الإدارة</span></button>
+    </nav>
+    <button id="logoutBtn" class="side-logout">تسجيل الخروج</button>
+  </aside>
+  <div class="admin-content">
+    <header class="admin-toolbar"><button id="sideToggle" class="side-toggle">☰</button><div><b>إدارة محتوى الموقع</b><small>مجمع أطباء الستين الطبي العام</small></div><div class="toolbar-actions"><a href="index.html" target="_blank" class="btn ghost small">معاينة الموقع</a><button id="saveAllBtn" class="btn primary small">حفظ جميع التعديلات</button></div></header>
+    <main class="admin-main-v3"><div id="adminNotice" class="admin-notice">جاهز</div>
+      <section id="panel-dashboard" class="admin-panel active">
+        <div class="admin-welcome"><span class="eyebrow">لوحة التحكم</span><h1>إدارة الموقع من مكان واحد</h1><p>يمكنك تعديل النصوص والصور والروابط والعدادات والخدمات والعروض والشركاء، ثم حفظ الكل مرة واحدة.</p></div>
+        <div class="dashboard-cards"><button data-go="services"><b id="countServices">0</b><span>تخصص وخدمة</span></button><button data-go="offers"><b id="countOffers">0</b><span>عرض</span></button><button data-go="insurers"><b id="countInsurers">0</b><span>شركة تأمين</span></button><button data-go="suppliers"><b id="countSuppliers">0</b><span>مورد وشريك</span></button><button data-go="stats"><b id="countStats">0</b><span>عداد</span></button><button data-go="socials"><b id="countSocials">0</b><span>قناة تواصل</span></button></div>
+      </section>
+
+      <section id="panel-content" class="admin-panel">
+        <div class="panel-head"><div><span class="eyebrow">المحتوى</span><h2>محتوى الصفحات والصور</h2></div></div>
+        <div class="admin-card"><h3>هوية الموقع وSEO</h3><div class="admin-grid">
+          <label>اسم المجمع عربي<input id="siteNameAr"></label><label>Site name English<input id="siteNameEn" dir="ltr"></label>
+          <label>السلوجن عربي<input id="sloganAr"></label><label>Slogan English<input id="sloganEn" dir="ltr"></label>
+          <label>عنوان المتصفح عربي<input id="seoTitleAr"></label><label>Page title English<input id="seoTitleEn" dir="ltr"></label>
+          <label class="wide">وصف محركات البحث عربي<textarea id="seoDescriptionAr"></textarea></label><label class="wide">SEO description English<textarea id="seoDescriptionEn" dir="ltr"></textarea></label>
+        </div></div>
+        <div class="admin-card"><h3>الواجهة الرئيسية</h3><div class="admin-grid">
+          <label>السطر الصغير عربي<input id="heroEyebrowAr"></label><label>Eyebrow English<input id="heroEyebrowEn" dir="ltr"></label>
+          <label>العنوان عربي<input id="heroTitleAr"></label><label>Title English<input id="heroTitleEn" dir="ltr"></label>
+          <label class="wide">الوصف عربي<textarea id="heroTextAr"></textarea></label><label class="wide">Description English<textarea id="heroTextEn" dir="ltr"></textarea></label>
+          <label class="wide">مسار/رابط صورة الواجهة<input id="heroImage" dir="ltr"><span class="field-help">مثال: assets/reception-clean.jpg أو رابط صورة مباشر</span></label>
+        </div></div>
+        <div class="admin-card"><h3>عن المجمع</h3><div class="admin-grid">
+          <label>العنوان عربي<input id="aboutTitleAr"></label><label>Title English<input id="aboutTitleEn" dir="ltr"></label>
+          <label class="wide">النص عربي<textarea id="aboutTextAr"></textarea></label><label class="wide">Text English<textarea id="aboutTextEn" dir="ltr"></textarea></label>
+          <label class="wide">الرسالة عربي<textarea id="missionAr"></textarea></label><label class="wide">Mission English<textarea id="missionEn" dir="ltr"></textarea></label>
+          <label class="wide">الرؤية عربي<textarea id="visionAr"></textarea></label><label class="wide">Vision English<textarea id="visionEn" dir="ltr"></textarea></label>
+          <label class="wide">القيم عربي<textarea id="valuesAr"></textarea></label><label class="wide">Values English<textarea id="valuesEn" dir="ltr"></textarea></label>
+          <label class="wide">مسار/رابط صورة القسم<input id="aboutImage" dir="ltr"></label>
+        </div></div>
+        <div class="admin-card"><h3>قسم التخصصات</h3><div class="admin-grid"><label>التسمية عربي<input id="servicesLabelAr"></label><label>Label English<input id="servicesLabelEn" dir="ltr"></label><label>العنوان عربي<input id="servicesTitleAr"></label><label>Title English<input id="servicesTitleEn" dir="ltr"></label><label class="wide">الوصف عربي<textarea id="servicesIntroAr"></textarea></label><label class="wide">Description English<textarea id="servicesIntroEn" dir="ltr"></textarea></label></div></div>
+        <div class="admin-card"><h3>رحلة المراجع</h3><div class="admin-grid"><label>التسمية عربي<input id="journeyLabelAr"></label><label>Label English<input id="journeyLabelEn" dir="ltr"></label><label>العنوان عربي<input id="journeyTitleAr"></label><label>Title English<input id="journeyTitleEn" dir="ltr"></label><label class="wide">النص عربي<textarea id="journeyTextAr"></textarea></label><label class="wide">Text English<textarea id="journeyTextEn" dir="ltr"></textarea></label><label class="wide">مسار/رابط الصورة<input id="journeyImage" dir="ltr"></label></div></div>
+        <div class="admin-card"><h3>عناوين الأقسام</h3><div class="admin-grid"><label>تسمية التأمين عربي<input id="insuranceLabelAr"></label><label>Insurance label<input id="insuranceLabelEn" dir="ltr"></label><label>عنوان التأمين عربي<input id="insuranceTitleAr"></label><label>Insurance title<input id="insuranceTitleEn" dir="ltr"></label><label class="wide">ملاحظة التأمين عربي<input id="insuranceNoteAr"></label><label class="wide">Insurance note English<input id="insuranceNoteEn" dir="ltr"></label><label>تسمية الموردين عربي<input id="suppliersLabelAr"></label><label>Suppliers label<input id="suppliersLabelEn" dir="ltr"></label><label>عنوان الموردين عربي<input id="suppliersTitleAr"></label><label>Suppliers title<input id="suppliersTitleEn" dir="ltr"></label></div></div>
+      </section>
+
+      <section id="panel-contact" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">التواصل</span><h2>بيانات التواصل والروابط</h2></div></div>
+        <div class="admin-card"><div class="admin-grid"><label>العنوان عربي<input id="addressAr"></label><label>Address English<input id="addressEn" dir="ltr"></label><label>الهاتف<input id="phone" dir="ltr"></label><label>واتساب<input id="whatsapp" dir="ltr"></label><label>البريد الإلكتروني<input id="email" dir="ltr"></label><label>رابط المتجر<input id="shopUrl" dir="ltr"></label><label class="wide">رسالة واتساب الافتراضية<input id="whatsappMessage"></label><label class="wide">رابط Google Maps<input id="mapLink" dir="ltr"></label><label class="wide">رابط Embed للخريطة<input id="mapEmbed" dir="ltr"></label></div></div>
+        <div class="admin-card"><h3>نصوص التواصل والفوتر</h3><div class="admin-grid"><label>تسمية التواصل عربي<input id="contactLabelAr"></label><label>Contact label<input id="contactLabelEn" dir="ltr"></label><label>عنوان التواصل عربي<input id="contactTitleAr"></label><label>Contact title<input id="contactTitleEn" dir="ltr"></label><label>عنوان الشريط عربي<input id="footerContactTitleAr"></label><label>Footer title English<input id="footerContactTitleEn" dir="ltr"></label><label class="wide">وصف شريط التواصل عربي<textarea id="footerContactTextAr"></textarea></label><label class="wide">Footer contact text English<textarea id="footerContactTextEn" dir="ltr"></textarea></label><label class="wide">نبذة الفوتر عربي<textarea id="footerAboutAr"></textarea></label><label class="wide">Footer about English<textarea id="footerAboutEn" dir="ltr"></textarea></label><label class="wide">حقوق النشر عربي<input id="copyrightAr"></label><label class="wide">Copyright English<input id="copyrightEn" dir="ltr"></label></div></div>
+      </section>
+
+      <section id="panel-stats" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الإحصائيات</span><h2>العدادات المتحركة</h2></div><button class="btn primary small" data-add="stats">+ إضافة عداد</button></div><div class="filter-bar"><input class="editor-search" data-list="stats" placeholder="بحث في العدادات..."></div><div id="statsEditor" class="editor-list"></div></section>
+      <section id="panel-services" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">المحتوى الطبي</span><h2>التخصصات والخدمات</h2></div><button class="btn primary small" data-add="services">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="services" placeholder="بحث..."><select id="serviceCategoryFilter"><option value="all">كل التصنيفات</option><option value="clinics">العيادات</option><option value="diagnostics">التشخيص والفحوصات</option><option value="support">الخدمات المساندة</option></select></div><div id="servicesEditor" class="editor-list"></div></section>
+      <section id="panel-offers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">التسويق</span><h2>العروض</h2></div><button class="btn primary small" data-add="offers">+ إضافة عرض</button></div><div class="filter-bar"><input class="editor-search" data-list="offers" placeholder="بحث في العروض..."><select id="offerStatusFilter"><option value="all">الكل</option><option value="true">المنشور</option><option value="false">المخفي</option></select></div><div id="offersEditor" class="editor-list"></div></section>
+      <section id="panel-insurers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الشركاء</span><h2>شركاء التأمين</h2></div><button class="btn primary small" data-add="insurers">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="insurers" placeholder="بحث باسم شركة التأمين..."></div><div id="insurersEditor" class="editor-list"></div></section>
+      <section id="panel-suppliers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الشركاء</span><h2>سابقة الأعمال والموردون</h2></div><button class="btn primary small" data-add="suppliers">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="suppliers" placeholder="بحث باسم المورد أو الشريك..."></div><div id="suppliersEditor" class="editor-list"></div></section>
+      <section id="panel-socials" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">التواصل</span><h2>قنوات السوشيال ميديا</h2></div><button class="btn primary small" data-add="socials">+ إضافة قناة</button></div><div class="filter-bar"><input class="editor-search" data-list="socials" placeholder="بحث..."></div><div id="socialsEditor" class="editor-list"></div></section>
+      <section id="panel-appearance" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الهوية</span><h2>ألوان الموقع</h2></div></div><div class="admin-card"><p class="admin-tip">تم توحيد التصميم على ألوان الشعار: الكحلي والأحمر والأبيض. يمكن تغييرها هنا عند الحاجة، ويفضل عدم إدخال ألوان خارج الهوية.</p><div class="admin-grid color-grid"><label>الكحلي الرئيسي<input id="themeNavy" type="color"></label><label>الكحلي الداكن<input id="themeNavyDark" type="color"></label><label>الأحمر<input id="themeRed" type="color"></label><label>الخلفية الفاتحة<input id="themeLight" type="color"></label></div></div></section>
+      <section id="panel-account" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الأمان</span><h2>تغيير بيانات الدخول</h2></div></div><div class="admin-card account-card"><p>يمكن تغيير اسم المستخدم وكلمة المرور من هنا. كلمة المرور لا يتم حفظها كنص صريح.</p><div class="admin-grid"><label>اسم المستخدم الجديد<input id="newUsername" autocomplete="username"></label><label>كلمة المرور الحالية<input id="currentPassword" type="password" autocomplete="current-password"></label><label>كلمة المرور الجديدة<input id="newPassword" type="password" autocomplete="new-password"></label><label>تأكيد كلمة المرور<input id="confirmPassword" type="password" autocomplete="new-password"></label></div><button id="changeCredentialsBtn" class="btn primary">تحديث بيانات الدخول</button><div id="accountNotice" class="login-notice"></div></div></section>
+    </main>
+  </div>
+</div>
+</body></html>
