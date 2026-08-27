@@ -101,7 +101,7 @@
         <div id="doctorsEditor" class="editor-list"></div>
       </section>
       <section id="panel-offers" class="admin-panel">
-        <div class="panel-head"><div><span class="eyebrow">المتجر والعروض</span><h2>إدارة خدمات المتجر</h2><p class="panel-subtitle">استورد ملف Excel من المتجر، راجع الخدمات، ثم احفظ التعديلات. الخدمات المخفضة تظهر أولاً تلقائياً في صفحة العروض.</p></div><button class="btn primary small" data-add="offers">+ إضافة خدمة يدوياً</button></div>
+        <div class="panel-head"><div><span class="eyebrow">المتجر والعروض</span><h2>إدارة خدمات المتجر من Excel</h2><p class="panel-subtitle">مصدر خدمات صفحة العروض هو ملف Excel المُصدّر من المتجر فقط. ارفع أحدث ملف ليتم استبدال القائمة الحالية، ثم راجع النتائج واحفظ.</p></div><span class="excel-chip">Excel فقط</span></div>
         <div class="offers-admin-overview">
           <div class="offer-admin-kpi"><span>إجمالي الخدمات</span><b id="offerKpiTotal">0</b></div>
           <div class="offer-admin-kpi discount"><span>خدمات مخفضة</span><b id="offerKpiDiscount">0</b></div>
@@ -113,7 +113,7 @@
           <div class="offer-import-grid">
             <label class="excel-drop" for="offersExcelFile"><span class="excel-icon">⇧</span><b>اختر ملف Excel</b><small>أو اسحب الملف هنا</small><input id="offersExcelFile" type="file" accept=".xlsx,.xls,.csv"></label>
             <div class="import-options">
-              <label>طريقة الاستيراد<select id="offersImportMode"><option value="replace">استبدال قائمة الخدمات الحالية</option><option value="merge">دمج وتحديث حسب SKU / رقم المنتج</option></select></label>
+              
               <label class="check-line"><input id="offersImportAvailableOnly" type="checkbox"> استيراد المنتجات المتاحة فقط</label>
               <button id="offersImportBtn" class="btn primary" type="button" disabled>استيراد الملف</button>
             </div>
