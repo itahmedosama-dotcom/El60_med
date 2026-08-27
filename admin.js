@@ -78,3 +78,19 @@ document.addEventListener('input',e=>{if(!e.target.closest('#loginScreen')&&e.ta
 document.addEventListener('change',e=>{if(!e.target.closest('#loginScreen')&&e.target.closest('#adminApp'))setDirty(true)},true);
 window.addEventListener('beforeunload',e=>{if(hasUnsavedChanges){e.preventDefault();e.returnValue=''}});
 (async()=>{auth.token=sessionStorage.getItem('alsiteen_admin_token')||'';if(auth.token){$('#loginScreen').classList.add('hidden');$('#adminApp').classList.remove('hidden');try{normalize(await apiGet());notice('تم تحميل المحتوى بنجاح.','ok');return}catch{sessionStorage.clear();location.reload();return}}try{const st=await adminStatus();if(st&&st.ok&&st.hasAdmin===false)$('#firstSetup')?.classList.remove('hidden')}catch{ /* Old deployment: normal login stays available. */ }})();
+
+// V49: زر العودة لأعلى داخل لوحة التحكم أيضًا.
+(function initAdminBackToTop(){
+  if(document.querySelector('.back-to-top')) return;
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='back-to-top';
+  btn.setAttribute('aria-label','العودة إلى أعلى الصفحة');
+  btn.title='أعلى الصفحة';
+  btn.innerHTML='↑';
+  document.body.appendChild(btn);
+  const sync=()=>btn.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>320);
+  window.addEventListener('scroll',sync,{passive:true});
+  btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  sync();
+})();

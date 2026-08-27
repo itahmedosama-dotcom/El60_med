@@ -441,3 +441,19 @@ requestTypeList?.addEventListener('pointerup',e=>{if(e.pointerType==='touch'||e.
 $$('[data-close-walkin]').forEach(b=>b.addEventListener('click',()=>{const m=$('#walkinModal');m?.classList.remove('open');m?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}));
 $('#walkinModal')?.addEventListener('click',e=>{if(e.target.matches('.request-backdrop')){e.currentTarget.classList.remove('open');e.currentTarget.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}});
 loadData();
+
+// V49: زر ثابت للعودة إلى أعلى الصفحة في كل صفحات الموقع العامة.
+(function initBackToTop(){
+  if(document.querySelector('.back-to-top')) return;
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='back-to-top';
+  btn.setAttribute('aria-label', document.documentElement.lang==='en' ? 'Back to top' : 'العودة إلى أعلى الصفحة');
+  btn.title=document.documentElement.lang==='en' ? 'Back to top' : 'أعلى الصفحة';
+  btn.innerHTML='↑';
+  document.body.appendChild(btn);
+  const sync=()=>btn.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>320);
+  window.addEventListener('scroll',sync,{passive:true});
+  btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  sync();
+})();
