@@ -493,3 +493,13 @@ html[dir="rtl"] .doctors-marquee-track{animation-name:doctorsMarqueeRTL}@keyfram
 
 /* V39 performance/admin polish */
 .save-state{display:inline-flex;align-items:center;padding:.45rem .7rem;border-radius:999px;font-size:.78rem;font-weight:800;white-space:nowrap}.save-state.saved{background:#eaf8ef;color:#15703a}.save-state.dirty{background:#fff1d6;color:#9b5b00;box-shadow:0 0 0 3px rgba(255,170,0,.08)}.account-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem}.discount-badge{font-weight:900}.doctor-card img{content-visibility:auto}@media(max-width:720px){.save-state{display:none}}
+
+/* V40 admin usability refinements */
+.admin-sidebar{overflow:hidden;padding-bottom:12px}
+.admin-sidebar nav{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent;min-height:0;padding:2px 3px 14px;margin-bottom:8px}
+.admin-sidebar nav::-webkit-scrollbar{width:6px}.admin-sidebar nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.25);border-radius:10px}
+.admin-side-brand{flex:0 0 auto;padding-bottom:14px}.admin-side-brand img{width:180px}.admin-sidebar nav{margin-top:12px;gap:5px}.side-link{padding:10px 12px;display:flex;align-items:center;gap:9px}.side-logout{flex:0 0 auto;margin-top:4px}
+.admin-card{border-radius:20px;box-shadow:0 8px 26px rgba(18,54,95,.045)}
+.admin-card:focus-within{border-color:rgba(18,54,95,.22);box-shadow:0 10px 30px rgba(18,54,95,.08)}
+.admin-toolbar{box-shadow:0 5px 20px rgba(18,54,95,.04)}
+@media(max-width:850px){.admin-sidebar{height:100dvh;max-height:100dvh}.admin-sidebar nav{padding-bottom:20px}.admin-side-brand img{width:155px}.side-link{padding:11px 12px}}
