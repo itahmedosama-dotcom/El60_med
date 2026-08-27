@@ -490,3 +490,6 @@ html[dir="rtl"] .doctors-marquee-track{animation-name:doctorsMarqueeRTL}@keyfram
 @media(max-width:700px){.schedule-day{grid-template-columns:1fr 1fr;gap:6px}.schedule-toggle{grid-column:1/-1}.schedule-dash{display:none}.doctor-hours{font-size:.75rem}.doctor-hours span{gap:5px}.walkin-dialog{margin:15px;padding:24px 18px}}
 
 .booking-checkbox .toggle-line{display:flex;align-items:center;gap:9px;min-height:42px;padding:8px 10px;border:1px solid #dfe6ee;border-radius:10px;background:#fff}.booking-checkbox input{width:19px!important;height:19px!important;accent-color:#ed1c24}.booking-checkbox b{font-size:.78rem;color:#445467}
+
+/* V39 performance/admin polish */
+.save-state{display:inline-flex;align-items:center;padding:.45rem .7rem;border-radius:999px;font-size:.78rem;font-weight:800;white-space:nowrap}.save-state.saved{background:#eaf8ef;color:#15703a}.save-state.dirty{background:#fff1d6;color:#9b5b00;box-shadow:0 0 0 3px rgba(255,170,0,.08)}.account-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem}.discount-badge{font-weight:900}.doctor-card img{content-visibility:auto}@media(max-width:720px){.save-state{display:none}}
