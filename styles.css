@@ -1050,3 +1050,50 @@ html[dir="ltr"] .doctor-time-range{direction:ltr}
 .doctor-hours-list .doctor-time-range{font-size:9.5px}
 .doctor-hours-today .doctor-time-range{font-size:12px;margin-top:1px}
 @media(max-width:700px){.doctor-time-range{font-size:.7rem;gap:3px}.doctor-hours-list .doctor-time-range{font-size:9px}.doctor-hours-today .doctor-time-range{font-size:11px}}
+
+/* V53 - show doctor weekly hours completely inside compact cards */
+.doctor-hours-list{
+  grid-template-columns:1fr!important;
+  gap:3px!important;
+  padding:7px 9px 9px!important;
+}
+.doctor-hours-list>span{
+  display:grid!important;
+  grid-template-columns:minmax(48px,.42fr) minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:3px 0!important;
+  border-bottom:1px dashed #edf1f5;
+  font-size:10px!important;
+}
+.doctor-hours-list>span:last-child{border-bottom:0}
+.doctor-hours-list em{
+  min-width:0!important;
+  font-size:10px!important;
+  font-weight:700;
+  color:#66788c;
+  white-space:nowrap;
+}
+.doctor-hours-list .doctor-time-range{
+  width:100%!important;
+  min-width:0!important;
+  display:flex!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  font-size:10px!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+.doctor-hours-list .doctor-time-range .time-start,
+.doctor-hours-list .doctor-time-range .time-end{white-space:nowrap!important;flex:0 0 auto!important}
+html[dir="rtl"] .doctor-hours-list>span{direction:rtl}
+html[dir="rtl"] .doctor-hours-list .doctor-time-range{direction:rtl;justify-content:flex-start!important}
+html[dir="ltr"] .doctor-hours-list>span{direction:ltr}
+html[dir="ltr"] .doctor-hours-list .doctor-time-range{direction:ltr}
+@media(max-width:760px){
+  .doctor-hours-list>span{grid-template-columns:58px minmax(0,1fr)!important;gap:6px!important}
+  .doctor-hours-list em{font-size:9.5px!important}
+  .doctor-hours-list .doctor-time-range{font-size:9.5px!important;gap:3px!important}
+}
