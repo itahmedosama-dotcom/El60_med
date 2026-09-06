@@ -1041,3 +1041,12 @@ input,select,textarea,button{max-width:100%}
   #panel-doctors .schedule-toggle{grid-column:1/-1!important}
   #panel-doctors .schedule-dash{display:none!important}
 }
+
+/* V52 - doctor working hours: 12-hour clock, start at visual beginning */
+.doctor-time-range{display:inline-flex!important;align-items:center;gap:5px;white-space:nowrap;font-weight:800;color:var(--navy);font-size:.74rem}
+html[dir="rtl"] .doctor-time-range{direction:rtl}
+html[dir="ltr"] .doctor-time-range{direction:ltr}
+.doctor-time-range i{font-style:normal;opacity:.48;font-size:.8em}
+.doctor-hours-list .doctor-time-range{font-size:9.5px}
+.doctor-hours-today .doctor-time-range{font-size:12px;margin-top:1px}
+@media(max-width:700px){.doctor-time-range{font-size:.7rem;gap:3px}.doctor-hours-list .doctor-time-range{font-size:9px}.doctor-hours-today .doctor-time-range{font-size:11px}}
