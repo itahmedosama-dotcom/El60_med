@@ -199,9 +199,19 @@ function normalizeDoctorTime(v,fallback=''){
   if(!Number.isNaN(d.getTime()))return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
   return fallback;
 }
+function doctorDayShiftCount(doc,k){
+  const raw=doc?.[k+'ShiftCount'];
+  if(raw!==undefined&&raw!==null&&raw!=='')return Number(raw)>=2?2:1;
+  const keys=DOCTOR_DAYS.map(x=>x.key),anyDayCount=keys.some(d=>doc?.[d+'ShiftCount']!==undefined&&doc?.[d+'ShiftCount']!==null&&doc?.[d+'ShiftCount']!=='');
+  const hasSecond=!!(normalizeDoctorTime(doc?.[k+'Start2'],'')&&normalizeDoctorTime(doc?.[k+'End2'],''));
+  if(anyDayCount)return hasSecond?2:1;
+  const anySecond=keys.some(d=>normalizeDoctorTime(doc?.[d+'Start2'],'')&&normalizeDoctorTime(doc?.[d+'End2'],''));
+  if(anySecond)return hasSecond?2:1;
+  return Number(doc?.shiftCount||1)>=2?2:1;
+}
 function doctorDayConfig(doc,date){
   const item=DOCTOR_DAYS.find(x=>x.day===date.getDay())||DOCTOR_DAYS[0],k=item.key;
-  const fri=k==='fri',defaultStart=fri?'15:00':'08:00',defaultEnd=fri?'23:00':'23:30',shiftCount=Number(doc?.shiftCount||1)>=2?2:1;
+  const fri=k==='fri',defaultStart=fri?'15:00':'08:00',defaultEnd=fri?'23:00':'23:30',shiftCount=doctorDayShiftCount(doc,k);
   const shifts=[{no:1,start:normalizeDoctorTime(doc?.[k+'Start'],defaultStart),end:normalizeDoctorTime(doc?.[k+'End'],defaultEnd)}];
   if(shiftCount===2){const s2=normalizeDoctorTime(doc?.[k+'Start2'],''),e2=normalizeDoctorTime(doc?.[k+'End2'],'');if(s2&&e2)shifts.push({no:2,start:s2,end:e2})}
   return {key:k,label:lang==='ar'?item.ar:item.en,enabled:truthy(doc?.[k+'Enabled'],true),shiftCount,shifts,start:shifts[0].start,end:shifts[0].end};

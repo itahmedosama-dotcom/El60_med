@@ -1129,3 +1129,17 @@ html[dir="ltr"] .doctor-day-shifts{align-items:flex-start}
   .doctor-hours-list .doctor-time-range{font-size:9px!important;max-width:100%}
   .doctor-hours-list .shift-badge{font-size:7.5px;padding:1px 4px}
 }
+
+/* V55: per-day doctor shift count */
+.schedule-day-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.schedule-day-head .schedule-toggle{grid-row:auto!important;align-self:auto!important}
+.day-shift-count{display:flex!important;align-items:center;gap:6px;margin:0!important;font-size:.72rem;color:#66788b;font-weight:700;white-space:nowrap}
+.day-shift-count select{width:auto!important;min-width:88px!important;height:32px!important;padding:3px 26px 3px 7px!important;border:1px solid #d7e1eb!important;border-radius:9px!important;background:#fff!important;color:var(--navy)!important;font-weight:800!important}
+.schedule-day{grid-template-columns:minmax(150px,.9fr) minmax(0,1.6fr)!important}
+.schedule-day-head{grid-row:1 / span 2;align-self:center}
+@media(max-width:700px){
+  #panel-doctors .schedule-day{grid-template-columns:1fr!important}
+  #panel-doctors .schedule-day-head{grid-row:auto!important;grid-column:1!important;margin-bottom:3px}
+  #panel-doctors .day-shift-count{margin-inline-start:auto!important}
+  #panel-doctors .day-shift-count select{min-width:92px!important;height:34px!important}
+}
