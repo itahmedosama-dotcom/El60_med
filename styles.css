@@ -1097,3 +1097,35 @@ html[dir="ltr"] .doctor-hours-list .doctor-time-range{direction:ltr}
   .doctor-hours-list em{font-size:9.5px!important}
   .doctor-hours-list .doctor-time-range{font-size:9.5px!important;gap:3px!important}
 }
+
+/* V54: doctor dual-shift schedules */
+.schedule-summary-actions{display:flex;align-items:center;gap:10px;margin-inline-start:auto}
+.shift-count-control{display:flex!important;align-items:center;gap:7px;font-size:.76rem;color:#66788b;font-weight:700;cursor:default}
+.shift-count-control select{width:auto!important;min-width:92px!important;height:34px!important;padding:4px 28px 4px 8px!important;border:1px solid #d7e1eb!important;border-radius:9px!important;background:#fff!important;color:var(--navy)!important;font-weight:800!important}
+.schedule-day{display:grid!important;grid-template-columns:minmax(105px,.75fr) minmax(0,1.5fr)!important;gap:8px 12px!important;align-items:start!important;padding:10px 0!important}
+.schedule-toggle{grid-row:1 / span 2;align-self:center!important}
+.schedule-shift{display:grid;grid-template-columns:62px minmax(95px,1fr) 28px minmax(95px,1fr);gap:6px;align-items:center;min-width:0}
+.schedule-shift>b{font-size:.72rem;color:#51657a;white-space:nowrap}
+.schedule-shift input[type=time]{min-width:0!important;width:100%!important}
+.schedule-shift[hidden]{display:none!important}
+.doctor-day-shifts{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+.doctor-time-range{display:flex!important;align-items:center!important;gap:4px!important;flex-wrap:nowrap!important}
+.shift-badge{display:inline-flex;align-items:center;justify-content:center;padding:2px 5px;border-radius:999px;background:#eef4fb;color:#315578;font-size:8.5px;font-weight:800;white-space:nowrap}
+.doctor-hours-list>span{align-items:flex-start!important}
+.doctor-hours-today .doctor-day-shifts{margin-top:2px}
+html[dir="rtl"] .doctor-day-shifts{align-items:flex-start}
+html[dir="ltr"] .doctor-day-shifts{align-items:flex-start}
+@media(max-width:700px){
+  .doctor-schedule-editor>summary{align-items:flex-start!important;flex-wrap:wrap!important}
+  .schedule-summary-actions{width:100%;justify-content:space-between;margin:6px 0 0!important}
+  .shift-count-control{flex:1}
+  .shift-count-control select{min-width:104px!important}
+  #panel-doctors .schedule-day{grid-template-columns:1fr!important;padding:9px 0!important}
+  #panel-doctors .schedule-toggle{grid-row:auto!important;grid-column:1!important;margin-bottom:2px}
+  #panel-doctors .schedule-shift{grid-template-columns:52px minmax(0,1fr) 20px minmax(0,1fr)!important;gap:4px!important}
+  #panel-doctors .schedule-shift>b{font-size:10px!important}
+  #panel-doctors .schedule-shift input[type=time]{font-size:11px!important;padding-inline:3px!important}
+  .doctor-hours-list .doctor-day-shifts{gap:3px;width:100%}
+  .doctor-hours-list .doctor-time-range{font-size:9px!important;max-width:100%}
+  .doctor-hours-list .shift-badge{font-size:7.5px;padding:1px 4px}
+}

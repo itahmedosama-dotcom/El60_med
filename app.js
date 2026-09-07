@@ -201,11 +201,13 @@ function normalizeDoctorTime(v,fallback=''){
 }
 function doctorDayConfig(doc,date){
   const item=DOCTOR_DAYS.find(x=>x.day===date.getDay())||DOCTOR_DAYS[0],k=item.key;
-  const fri=k==='fri',defaultStart=fri?'15:00':'08:00',defaultEnd=fri?'23:00':'23:30';
-  return {key:k,label:lang==='ar'?item.ar:item.en,enabled:truthy(doc?.[k+'Enabled'],true),start:normalizeDoctorTime(doc?.[k+'Start'],defaultStart),end:normalizeDoctorTime(doc?.[k+'End'],defaultEnd)};
+  const fri=k==='fri',defaultStart=fri?'15:00':'08:00',defaultEnd=fri?'23:00':'23:30',shiftCount=Number(doc?.shiftCount||1)>=2?2:1;
+  const shifts=[{no:1,start:normalizeDoctorTime(doc?.[k+'Start'],defaultStart),end:normalizeDoctorTime(doc?.[k+'End'],defaultEnd)}];
+  if(shiftCount===2){const s2=normalizeDoctorTime(doc?.[k+'Start2'],''),e2=normalizeDoctorTime(doc?.[k+'End2'],'');if(s2&&e2)shifts.push({no:2,start:s2,end:e2})}
+  return {key:k,label:lang==='ar'?item.ar:item.en,enabled:truthy(doc?.[k+'Enabled'],true),shiftCount,shifts,start:shifts[0].start,end:shifts[0].end};
 }
 function doctorScheduleRows(doc){
-  return DOCTOR_DAYS.map(item=>{const fri=item.key==='fri',defaultStart=fri?'15:00':'08:00',defaultEnd=fri?'23:00':'23:30';return {label:lang==='ar'?item.ar:item.en,enabled:truthy(doc?.[item.key+'Enabled'],true),start:normalizeDoctorTime(doc?.[item.key+'Start'],defaultStart),end:normalizeDoctorTime(doc?.[item.key+'End'],defaultEnd)}}).filter(x=>x.enabled);
+  return DOCTOR_DAYS.map(item=>{const cfg=doctorDayConfig(doc,new Date(2026,7,23+item.day));return {label:lang==='ar'?item.ar:item.en,enabled:truthy(doc?.[item.key+'Enabled'],true),shifts:cfg.shifts,start:cfg.start,end:cfg.end}}).filter(x=>x.enabled);
 }
 function formatTime12(v){
   const n=normalizeDoctorTime(v,'');if(!n)return '';
@@ -213,17 +215,20 @@ function formatTime12(v){
   if(lang==='ar')return `${h12}:${String(mm).padStart(2,'0')} ${hh<12?'صباحًا':'مساءً'}`;
   return `${h12}:${String(mm).padStart(2,'0')} ${hh<12?'AM':'PM'}`;
 }
-function scheduleRangeHtml(start,end){
-  return `<strong class="doctor-time-range"><span class="time-start">${esc(formatTime12(start))}</span><i aria-hidden="true">←</i><span class="time-end">${esc(formatTime12(end))}</span></strong>`;
+function scheduleRangeHtml(start,end,shiftNo){
+  return `<strong class="doctor-time-range">${shiftNo?`<small class="shift-badge">${lang==='ar'?'دوام':'Shift'} ${shiftNo}</small>`:''}<span class="time-start">${esc(formatTime12(start))}</span><i aria-hidden="true">←</i><span class="time-end">${esc(formatTime12(end))}</span></strong>`;
 }
-function doctorScheduleHtml(doc){const rows=doctorScheduleRows(doc);if(!rows.length)return `<div class="doctor-hours-empty">${lang==='ar'?'لا توجد مواعيد عمل محددة':'No working hours set'}</div>`;return `<div class="doctor-hours"><b>${lang==='ar'?'مواعيد العمل':'Working hours'}</b>${rows.map(x=>`<span><em>${esc(x.label)}</em>${scheduleRangeHtml(x.start,x.end)}</span>`).join('')}</div>`}
+function scheduleShiftsHtml(shifts){return (shifts||[]).map(sh=>scheduleRangeHtml(sh.start,sh.end,sh.no)).join('')}
+function doctorScheduleHtml(doc){const rows=doctorScheduleRows(doc);if(!rows.length)return `<div class="doctor-hours-empty">${lang==='ar'?'لا توجد مواعيد عمل محددة':'No working hours set'}</div>`;return `<div class="doctor-hours"><b>${lang==='ar'?'مواعيد العمل':'Working hours'}</b>${rows.map(x=>`<span><em>${esc(x.label)}</em><span class="doctor-day-shifts">${scheduleShiftsHtml(x.shifts)}</span></span>`).join('')}</div>`}
 function doctorScheduleCompactHtml(doc){
   const rows=doctorScheduleRows(doc);
   if(!rows.length)return `<div class="doctor-hours-compact empty"><span>${lang==='ar'?'المواعيد غير محددة':'Hours not set'}</span></div>`;
   const todayCfg=doctorDayConfig(doc,new Date());
-  const todayText=todayCfg.enabled?scheduleRangeHtml(todayCfg.start,todayCfg.end):(lang==='ar'?'غير متواجد':'Unavailable');
-  return `<details class="doctor-hours-compact"><summary><span class="doctor-hours-today"><small>${lang==='ar'?'اليوم':'Today'} · ${esc(todayCfg.label)}</small>${todayCfg.enabled?todayText:`<b>${esc(todayText)}</b>`}</span><span class="hours-toggle">${lang==='ar'?'كل المواعيد':'All hours'} <i>⌄</i></span></summary><div class="doctor-hours-list">${rows.map(x=>`<span><em>${esc(x.label)}</em>${scheduleRangeHtml(x.start,x.end)}</span>`).join('')}</div></details>`
+  const todayText=todayCfg.enabled?scheduleShiftsHtml(todayCfg.shifts):(lang==='ar'?'غير متواجد':'Unavailable');
+  return `<details class="doctor-hours-compact"><summary><span class="doctor-hours-today"><small>${lang==='ar'?'اليوم':'Today'} · ${esc(todayCfg.label)}</small>${todayCfg.enabled?`<span class="doctor-day-shifts">${todayText}</span>`:`<b>${esc(todayText)}</b>`}</span><span class="hours-toggle">${lang==='ar'?'كل المواعيد':'All hours'} <i>⌄</i></span></summary><div class="doctor-hours-list">${rows.map(x=>`<span><em>${esc(x.label)}</em><span class="doctor-day-shifts">${scheduleShiftsHtml(x.shifts)}</span></span>`).join('')}</div></details>`
 }
+function timeToMinutes(v){const n=normalizeDoctorTime(v,'');if(!n)return null;const [h,m]=n.split(':').map(Number);return h*60+m}
+function shiftContainsTime(shift,time){let s=timeToMinutes(shift.start),e=timeToMinutes(shift.end),t=timeToMinutes(time);if(s==null||e==null||t==null)return false;if(e<s)e+=1440;if(t<s)t+=1440;return t>=s&&t<=e}
 function phoneDisplay(v){let x=cleanPhone(v);if(x.startsWith('966'))x=x.slice(3);if(x.length===9)x='0'+x;return x.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3')}function waUrl(s){return `https://wa.me/${cleanPhone(s.whatsapp||CONFIG.whatsapp)}?text=${encodeURIComponent(s.whatsappMessage||fallback.settings.whatsappMessage)}`}function setText(id,text){const e=$(id);if(e&&text!=null)e.textContent=text}function setImage(id,src){const e=$(id);if(e&&src)e.src=src}
 function applyTheme(s){const r=document.documentElement.style;r.setProperty('--navy',s.themeNavy||fallback.settings.themeNavy);r.setProperty('--navy2',s.themeNavyDark||fallback.settings.themeNavyDark);r.setProperty('--red',s.themeRed||fallback.settings.themeRed);r.setProperty('--bg',s.themeLight||fallback.settings.themeLight)}
 function animateCounter(el){if(el.dataset.animated==='1')return;el.dataset.animated='1';const target=Number(el.dataset.count||0),suffix=el.dataset.suffix||'',duration=850,start=performance.now();const tick=now=>{const p=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-p,3),v=Math.floor(target*ease);el.textContent=v.toLocaleString('en-US')+suffix;if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}
@@ -258,9 +263,9 @@ function rebuildDoctorBookingTimes(){
   if(selected<today){dateEl.value=localDateValue(today);return rebuildDoctorBookingTimes()}
   const cfg=doctorDayConfig(currentBookingDoctor,selected);
   if(!cfg.enabled){dateEl.setCustomValidity(lang==='ar'?`الطبيب غير متواجد يوم ${cfg.label}`:`Doctor unavailable on ${cfg.label}`);if(note)note.textContent=lang==='ar'?`الطبيب غير متواجد يوم ${cfg.label}. هذا اليوم غير متاح للحجز.`:`The doctor is not available on ${cfg.label}. This date cannot be booked.`;timeEl.disabled=true;return}else{dateEl.setCustomValidity('');timeEl.disabled=false}
-  const [sh,sm]=cfg.start.split(':').map(Number),[eh,em]=cfg.end.split(':').map(Number),min=new Date(Date.now()+CONFIG.minLeadHours*3600000);
+  const min=new Date(Date.now()+CONFIG.minLeadHours*3600000),seen=new Set();
   let count=0;
-  for(let total=sh*60+sm;total<=eh*60+em;total+=30){const h=Math.floor(total/60),m=total%60,slot=new Date(selected);slot.setHours(h,m,0,0);if(slot<min)continue;const v=`${pad2(h)}:${pad2(m)}`;timeEl.insertAdjacentHTML('beforeend',`<option value="${v}">${esc(formatTime12(v))}</option>`);count++}
+  cfg.shifts.forEach(shift=>{let startM=timeToMinutes(shift.start),endM=timeToMinutes(shift.end);if(startM==null||endM==null)return;if(endM<startM)endM+=1440;for(let total=startM;total<=endM;total+=30){const dayOffset=Math.floor(total/1440),mins=total%1440,h=Math.floor(mins/60),m=mins%60,slot=new Date(selected);slot.setDate(slot.getDate()+dayOffset);slot.setHours(h,m,0,0);if(slot<min)continue;const v=`${pad2(h)}:${pad2(m)}`;const key=`${dayOffset}:${v}`;if(seen.has(key))continue;seen.add(key);const suffix=cfg.shifts.length>1?` · ${lang==='ar'?'دوام':'Shift'} ${shift.no}`:'';timeEl.insertAdjacentHTML('beforeend',`<option value="${v}" data-shift="${shift.no}">${esc(formatTime12(v)+suffix)}</option>`);count++}});
   if(note)note.textContent=count?'':(lang==='ar'?'لا توجد مواعيد متاحة في هذا اليوم بعد تطبيق شرط الحجز قبل الموعد بساعتين.':'No times are available on this day after applying the two-hour booking rule.');
 }
 function initDoctorBooking(){
@@ -276,7 +281,8 @@ function initDoctorBooking(){
     if(!/^05\d{8}$/.test(mobile)){if(note)note.textContent=lang==='ar'?'أدخل رقم جوال صحيح بصيغة 05xxxxxxxx.':'Enter a valid mobile number in 05xxxxxxxx format.';return}
     const date=String(f.get('date')||''),time=String(f.get('time')||'');if(!date||!time){if(note)note.textContent=lang==='ar'?'اختر تاريخًا ووقتًا متاحًا ضمن مواعيد عمل الطبيب.':'Select an available date and time within the doctor’s working hours.';return}
     const chosen=new Date(`${date}T${time}:00`),todayStart=new Date();todayStart.setHours(0,0,0,0);const chosenDay=new Date(date+'T00:00:00'),cfg=doctorDayConfig(currentBookingDoctor,chosenDay);
-    if(!cfg.enabled||chosenDay<todayStart||chosen<new Date(Date.now()+CONFIG.minLeadHours*3600000)){if(note)note.textContent=lang==='ar'?'الموعد غير متاح. لا يمكن الحجز بتاريخ سابق أو قبل ساعتين من الوقت الحالي.':'This appointment is unavailable. Past dates or appointments less than two hours from now are not allowed.';rebuildDoctorBookingTimes();return}
+    const inWorkingShift=cfg.shifts.some(sh=>shiftContainsTime(sh,time));
+    if(!cfg.enabled||!inWorkingShift||chosenDay<todayStart||chosen<new Date(Date.now()+CONFIG.minLeadHours*3600000)){if(note)note.textContent=lang==='ar'?'الموعد غير متاح. اختر وقتًا داخل دوام الطبيب، ولا يمكن الحجز بتاريخ سابق أو قبل ساعتين من الوقت الحالي.':'This appointment is unavailable. Choose a time within the doctor’s working shifts; past dates or appointments less than two hours from now are not allowed.';rebuildDoctorBookingTimes();return}
     const doctor=String(f.get('doctor')||''),specialty=String(f.get('specialty')||''),name=String(f.get('name')||''),details=String(f.get('details')||'');
     const lines=lang==='ar'?[`طلب حجز موعد من صفحة أطباؤنا`,`الطبيب: ${doctor}`,`التخصص: ${specialty}`,`اسم المريض: ${name}`,`رقم جوال المريض: ${mobile}`,`التاريخ: ${date}`,`الوقت: ${formatTime12(time)}`,`تفاصيل إضافية: ${details||'-'}`]:[`Appointment request from Our Doctors page`,`Doctor: ${doctor}`,`Specialty: ${specialty}`,`Patient name: ${name}`,`Patient mobile: ${mobile}`,`Date: ${date}`,`Time: ${formatTime12(time)}`,`Additional details: ${details||'-'}`];
     const st=data.settings||fallback.settings;window.open(`https://wa.me/${cleanPhone(st.whatsapp||CONFIG.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank');
