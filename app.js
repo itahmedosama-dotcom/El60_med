@@ -56,10 +56,21 @@ const I18N={
 
 
 let data=structuredClone(fallback);
-const urlLang=new URLSearchParams(location.search).get('lang');
-let lang=(urlLang==='en'||urlLang==='ar')?urlLang:(localStorage.getItem('alsiteen_lang')||sessionStorage.getItem('alsiteen_lang')||'ar');
-if(lang!=='en'&&lang!=='ar')lang='ar';
-try{localStorage.setItem('alsiteen_lang',lang);sessionStorage.setItem('alsiteen_lang',lang)}catch(_){}
+function readSavedLanguage(){
+  const q=new URLSearchParams(location.search).get('lang');
+  if(q==='en'||q==='ar')return q;
+  try{
+    const saved=localStorage.getItem('alsiteen_lang')||sessionStorage.getItem('alsiteen_lang');
+    if(saved==='en'||saved==='ar')return saved;
+  }catch(_){}
+  const htmlLang=(document.documentElement.lang||'').toLowerCase();
+  return htmlLang==='en'?'en':'ar';
+}
+function persistLanguage(value){
+  try{localStorage.setItem('alsiteen_lang',value);sessionStorage.setItem('alsiteen_lang',value)}catch(_){}
+}
+let lang=readSavedLanguage();
+persistLanguage(lang);
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 function normalizePayload(j){if(!j||typeof j!=="object")return null;if(j.data&&typeof j.data==="object")j=j.data;const out={...structuredClone(fallback),settings:{...fallback.settings,...(j.settings||{})}};
   const cleanList=(key,valid)=>{
@@ -516,26 +527,54 @@ function activateServiceView(filter='all'){
   grid.addEventListener('touchcancel',()=>resume(400),{passive:true});
   grid.addEventListener('scroll',()=>{if(paused&&!dragging)resume(800)},{passive:true});
 }
+function isInternalSiteUrl(u){
+  try{return u.origin===location.origin}catch(_){return false}
+}
+function languageUrl(path){
+  const u=new URL(path,location.href);
+  if(!isInternalSiteUrl(u))return u.href;
+  u.searchParams.set('lang',lang);
+  return u.pathname+u.search+u.hash;
+}
 function syncInternalLanguageLinks(){
-  const isInternalHref=href=>href&& !href.startsWith('#') && !href.startsWith('http://') && !href.startsWith('https://') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('javascript:');
   document.querySelectorAll('a[href]').forEach(a=>{
     const raw=a.getAttribute('href');
-    if(!isInternalHref(raw))return;
+    if(!raw||raw.startsWith('#')||raw.startsWith('mailto:')||raw.startsWith('tel:')||raw.startsWith('javascript:'))return;
     try{
       const u=new URL(raw,location.href);
-      if(lang==='en')u.searchParams.set('lang','en');else u.searchParams.delete('lang');
-      a.setAttribute('href',u.pathname.split('/').pop()+(u.search||'')+(u.hash||''));
+      if(!isInternalSiteUrl(u))return;
+      u.searchParams.set('lang',lang);
+      a.setAttribute('href',u.pathname+u.search+u.hash);
     }catch(_){}
   });
 }
 function navigateInternal(path){
-  const u=new URL(path,location.href);
-  if(lang==='en')u.searchParams.set('lang','en');else u.searchParams.delete('lang');
-  location.href=u.pathname.split('/').pop()+(u.search||'')+(u.hash||'');
+  persistLanguage(lang);
+  location.href=languageUrl(path);
+}
+function installLanguageNavigationGuard(){
+  if(document.documentElement.dataset.langNavGuard==='1')return;
+  document.documentElement.dataset.langNavGuard='1';
+  document.addEventListener('click',e=>{
+    if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    const a=e.target.closest?.('a[href]');
+    if(!a||a.target==='_blank'||a.hasAttribute('download'))return;
+    const raw=a.getAttribute('href');
+    if(!raw||raw.startsWith('#')||raw.startsWith('mailto:')||raw.startsWith('tel:')||raw.startsWith('javascript:'))return;
+    try{
+      const u=new URL(raw,location.href);
+      if(!isInternalSiteUrl(u))return;
+      u.searchParams.set('lang',lang);
+      persistLanguage(lang);
+      e.preventDefault();
+      location.href=u.pathname+u.search+u.hash;
+    }catch(_){}
+  },true);
 }
 function applyLang(){
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
-  try{localStorage.setItem('alsiteen_lang',lang);sessionStorage.setItem('alsiteen_lang',lang)}catch(_){}
+  persistLanguage(lang);
+  try{const current=new URL(location.href);current.searchParams.set('lang',lang);history.replaceState(null,'',current.pathname+current.search+current.hash)}catch(_){}
   if($('#langBtn'))$('#langBtn').textContent=lang==='ar'?'EN':'AR';
   $$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});
   $$('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder;if(I18N[lang][k])el.placeholder=I18N[lang][k]});
@@ -550,7 +589,7 @@ function applyLang(){
   render();
   syncInternalLanguageLinks();
 }
-$('#langBtn')?.addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';try{localStorage.setItem('alsiteen_lang',lang);sessionStorage.setItem('alsiteen_lang',lang)}catch(_){};const u=new URL(location.href);if(lang==='en')u.searchParams.set('lang','en');else u.searchParams.delete('lang');history.replaceState(null,'',u.pathname+u.search+u.hash);applyLang()});$('.menu')?.addEventListener('click',()=>$('.nav nav')?.classList.toggle('open'));$$('.nav nav a').forEach(a=>a.addEventListener('click',()=>$('.nav nav')?.classList.remove('open')));let formType='booking';const requestModal=$('#requestModal'),requestTrigger=$('.request-nav-trigger'),requestDropdown=$('.request-dropdown');function setFormType(type='booking'){formType=type;$$('.request-type').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('#bookingFields')?.classList.toggle('hidden',type!=='booking');$('#companyFields')?.classList.toggle('hidden',type!=='company');$('#complaintFields')?.classList.toggle('hidden',type!=='complaint')}function openRequestModal(type='booking'){setFormType(type);requestModal?.classList.add('open');requestModal?.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false');setTimeout(()=>requestModal?.querySelector('input[name="name"]')?.focus(),120)}function closeRequestModal(){requestModal?.classList.remove('open');requestModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}window.openAlsiteenRequest=openRequestModal;requestTrigger?.addEventListener('click',e=>{e.stopPropagation();const open=requestDropdown?.classList.toggle('open');requestTrigger.setAttribute('aria-expanded',open?'true':'false')});document.addEventListener('click',e=>{if(!e.target.closest('.request-nav')){requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false')}});$$('[data-request-type]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openRequestModal(b.dataset.requestType||'booking')}));const heroBookingButton=$('#heroBookingButton');if(heroBookingButton){heroBookingButton.onclick=e=>{e.preventDefault();e.stopPropagation();openRequestModal('booking')}}const heroOffersButton=$('#heroOffersButton');if(heroOffersButton){heroOffersButton.onclick=e=>{e.stopPropagation();navigateInternal('offers.html')}}const requestTypeList=$('.request-type-list');
+$('#langBtn')?.addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';persistLanguage(lang);const u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState(null,'',u.pathname+u.search+u.hash);applyLang()});$('.menu')?.addEventListener('click',()=>$('.nav nav')?.classList.toggle('open'));$$('.nav nav a').forEach(a=>a.addEventListener('click',()=>$('.nav nav')?.classList.remove('open')));let formType='booking';const requestModal=$('#requestModal'),requestTrigger=$('.request-nav-trigger'),requestDropdown=$('.request-dropdown');function setFormType(type='booking'){formType=type;$$('.request-type').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('#bookingFields')?.classList.toggle('hidden',type!=='booking');$('#companyFields')?.classList.toggle('hidden',type!=='company');$('#complaintFields')?.classList.toggle('hidden',type!=='complaint')}function openRequestModal(type='booking'){setFormType(type);requestModal?.classList.add('open');requestModal?.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false');setTimeout(()=>requestModal?.querySelector('input[name="name"]')?.focus(),120)}function closeRequestModal(){requestModal?.classList.remove('open');requestModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}window.openAlsiteenRequest=openRequestModal;requestTrigger?.addEventListener('click',e=>{e.stopPropagation();const open=requestDropdown?.classList.toggle('open');requestTrigger.setAttribute('aria-expanded',open?'true':'false')});document.addEventListener('click',e=>{if(!e.target.closest('.request-nav')){requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false')}});$$('[data-request-type]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openRequestModal(b.dataset.requestType||'booking')}));const heroBookingButton=$('#heroBookingButton');if(heroBookingButton){heroBookingButton.onclick=e=>{e.preventDefault();e.stopPropagation();openRequestModal('booking')}}const heroOffersButton=$('#heroOffersButton');if(heroOffersButton){heroOffersButton.onclick=e=>{e.stopPropagation();navigateInternal('offers.html')}}const requestTypeList=$('.request-type-list');
 function activateRequestType(e){
   const b=e.target.closest('.request-type');
   if(!b||!requestTypeList?.contains(b))return;
@@ -563,6 +602,10 @@ requestTypeList?.addEventListener('pointerup',e=>{if(e.pointerType==='touch'||e.
 // نافذة الحضور بأسبقية الوصول
 $$('[data-close-walkin]').forEach(b=>b.addEventListener('click',()=>{const m=$('#walkinModal');m?.classList.remove('open');m?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}));
 $('#walkinModal')?.addEventListener('click',e=>{if(e.target.matches('.request-backdrop')){e.currentTarget.classList.remove('open');e.currentTarget.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}});
+// V65: apply the saved/query language before the first paint on every public page,
+// then guard every internal navigation so the selected language survives page changes.
+applyLang();
+installLanguageNavigationGuard();
 loadData();
 
 // V49: زر ثابت للعودة إلى أعلى الصفحة في كل صفحات الموقع العامة.

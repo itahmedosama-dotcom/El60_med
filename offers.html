@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8"><script>(function(){try{var q=new URLSearchParams(location.search).get('lang');var l=(q==='en'||q==='ar')?q:(localStorage.getItem('alsiteen_lang')||sessionStorage.getItem('alsiteen_lang')||'ar');document.documentElement.lang=l;document.documentElement.dir=l==='en'?'ltr':'rtl';if(q==='en'||q==='ar'){localStorage.setItem('alsiteen_lang',q);sessionStorage.setItem('alsiteen_lang',q)}}catch(e){}})();</script><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"><script>(function(){try{var q=new URLSearchParams(location.search).get('lang'),saved='';try{saved=localStorage.getItem('alsiteen_lang')||sessionStorage.getItem('alsiteen_lang')||''}catch(_){ }var l=(q==='en'||q==='ar')?q:((saved==='en'||saved==='ar')?saved:'ar');document.documentElement.lang=l;document.documentElement.dir=l==='en'?'ltr':'rtl';try{localStorage.setItem('alsiteen_lang',l);sessionStorage.setItem('alsiteen_lang',l)}catch(_){ }var u=new URL(location.href);u.searchParams.set('lang',l);history.replaceState(null,'',u.pathname+u.search+u.hash)}catch(e){}})();</script><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>العروض | مجمع أطباء الستين الطبي العام</title>
-  <link rel="stylesheet" href="styles.css"><script defer src="app.js"></script>
+  <link rel="stylesheet" href="styles.css?v=65"><script defer src="app.js?v=65"></script>
 </head>
 <body data-page="offers">
 <a id="announcementBar" class="announcement-bar hidden" href="#" rel="noopener"><span class="announcement-spark">✦</span><span id="announcementText"></span><span class="announcement-arrow" aria-hidden="true">←</span></a>
