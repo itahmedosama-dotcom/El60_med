@@ -332,7 +332,7 @@ function renderDoctorsPublic(){
     if(!track)return;
     let down=false,startX=0,startScroll=0,paused=false,resumeTimer=0,raf=0,lastTs=0;
     const direction=scroller.classList.contains('reverse')?-1:1;
-    const speed=window.innerWidth<=760?0.34:0.42; // متوسط ومريح
+    const speed=window.innerWidth<=760?0.62:0.78; // سرعة أوضح ومتوسطة على الجوال والكمبيوتر
     const halfWidth=()=>track.scrollWidth/2;
     const stopAuto=()=>{paused=true;clearTimeout(resumeTimer)};
     const resume=(delay=1200)=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!down)paused=false},delay)};
@@ -363,7 +363,18 @@ function renderDoctorsPublic(){
     viewport.addEventListener('pointermove',e=>{if(!down)return;viewport.scrollLeft=startScroll-(e.clientX-startX)});
     const up=e=>{if(!down)return;down=false;try{viewport.releasePointerCapture?.(e.pointerId)}catch(_){}normalize();resume()};
     viewport.addEventListener('pointerup',up);viewport.addEventListener('pointercancel',up);
-    scroller.addEventListener('mouseenter',stopAuto);scroller.addEventListener('mouseleave',()=>resume(500));
+    // الحركة تبدأ دائمًا عند فتح الصفحة. بعد مهلة قصيرة، المرور الحقيقي بالماوس
+    // فوق الصف يوقفه فورًا، والخروج منه يعيد الحركة مباشرة تقريبًا.
+    const hoverReadyAt=performance.now()+900;
+    scroller.addEventListener('mouseenter',()=>{
+      if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+      if(performance.now()<hoverReadyAt)return;
+      stopAuto();
+    });
+    scroller.addEventListener('mouseleave',()=>{
+      if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+      resume(180);
+    });
     viewport.addEventListener('touchstart',e=>{if(!e.target.closest('button,a,input,select,textarea,label,summary,details'))stopAuto()},{passive:true});
     viewport.addEventListener('touchend',()=>{normalize();resume(900)},{passive:true});
     scroller.querySelectorAll('.doctors-row-arrow').forEach(btn=>btn.addEventListener('click',e=>{
