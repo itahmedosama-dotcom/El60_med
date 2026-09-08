@@ -89,7 +89,7 @@ function normalizePayload(j){if(!j||typeof j!=="object")return null;if(j.data&&t
   if(Array.isArray(j.offers))out.offers=j.offers.filter(x=>x&&typeof x==='object');
   if(Array.isArray(out.stats)){out.stats=out.stats.map(x=>{const ar=String(x.labelAr||''),en=String(x.labelEn||'');if((Number(x.value)===24||ar.includes('24 تخصص')||en.includes('24 specialties'))&&String(x.icon||'').includes('✚'))return {...x,value:11,labelAr:'أكثر من 11 تخصص',labelEn:'More than 11 specialties'};return x})}return out}
 function pageKind(){return document.querySelector('#offersGrid')?'offers':document.querySelector('#doctorsGrid')?'doctors':'home'}
-function pageCacheKey(){return 'alsiteen_page_cache_v5_'+pageKind()}
+function pageCacheKey(){return 'alsiteen_page_cache_v6_'+pageKind()}
 function readCachedData(){
   try{
     const raw=localStorage.getItem(pageCacheKey())||localStorage.getItem('alsiteen_content_cache_v4');
@@ -131,6 +131,24 @@ function writeDoctorsFastCache(doctors){
   try{if(Array.isArray(doctors))localStorage.setItem('alsiteen_doctors_fast_v3',JSON.stringify({savedAt:Date.now(),doctors}))}catch(e){}
 }
 function readServicesFastCache(){try{const x=JSON.parse(localStorage.getItem('alsiteen_services_fast_v1')||'null');return Array.isArray(x?.services)&&Date.now()-Number(x.savedAt||0)<24*60*60*1000?x.services:null}catch(e){return null}}
+const BOOKING_DIR_CACHE='alsiteen_booking_directory_v1';
+function readBookingDirectory(){try{const x=JSON.parse(localStorage.getItem(BOOKING_DIR_CACHE)||'null');if(!x||!Array.isArray(x.services)||!Array.isArray(x.doctors))return null;return x}catch(e){return null}}
+function writeBookingDirectory(services,doctors){try{localStorage.setItem(BOOKING_DIR_CACHE,JSON.stringify({savedAt:Date.now(),services:Array.isArray(services)?services:[],doctors:Array.isArray(doctors)?doctors:[]}));if(Array.isArray(doctors))writeDoctorsFastCache(doctors);if(Array.isArray(services))localStorage.setItem('alsiteen_services_fast_v1',JSON.stringify({savedAt:Date.now(),services}))}catch(e){}}
+let bookingDirectoryPromise=null;
+async function ensureBookingDirectory(force=false){
+  const cached=readBookingDirectory();
+  if(!force&&cached&&Date.now()-Number(cached.savedAt||0)<30*60*1000){data={...data,services:cached.services,doctors:cached.doctors};return cached}
+  if(bookingDirectoryPromise)return bookingDirectoryPromise;
+  bookingDirectoryPromise=(async()=>{
+    try{
+      const raw=await fetchJsonAction('getBookingDirectory',4200);
+      const d=raw?.data||raw||{},services=Array.isArray(d.services)?d.services:[],doctors=Array.isArray(d.doctors)?d.doctors:[];
+      if(services.length||doctors.length){writeBookingDirectory(services,doctors);data={...data,services:services.length?services:data.services,doctors:doctors.length?doctors:data.doctors};render();return {services,doctors,savedAt:Date.now()}}
+    }catch(e){console.warn('Booking directory refresh skipped:',e)}
+    return cached||{services:data.services||[],doctors:readDoctorsFastCache()||data.doctors||[],savedAt:0}
+  })();
+  try{return await bookingDirectoryPromise}finally{bookingDirectoryPromise=null}
+}
 function writeSelectedServiceDoctorsCache(serviceName,ids,doctors){
   try{sessionStorage.setItem('alsiteen_selected_service_doctors_v1',JSON.stringify({savedAt:Date.now(),serviceName:String(serviceName||''),ids:Array.isArray(ids)?ids:[],doctors:Array.isArray(doctors)?doctors:[]}))}catch(e){}
 }
@@ -138,8 +156,13 @@ function readSelectedServiceDoctorsCache(){
   try{const raw=sessionStorage.getItem('alsiteen_selected_service_doctors_v1');if(!raw)return null;const x=JSON.parse(raw);if(!x||Date.now()-Number(x.savedAt||0)>15*60*1000)return null;return x}catch(e){return null}
 }
 async function ensureDoctorsFastCache(force=false){
+  const inMemory=Array.isArray(data.doctors)&&data.doctors.length?data.doctors:null;
+  if(!force&&inMemory?.length)return inMemory;
+  const dir=readBookingDirectory();
+  if(!force&&dir?.doctors?.length){writeDoctorsFastCache(dir.doctors);return dir.doctors}
   const meta=readDoctorsFastCache(true);
   if(!force&&meta?.doctors?.length&&Date.now()-meta.savedAt<30*60*1000)return meta.doctors;
+  try{const raw=await fetchJsonAction('getBookingDirectory',4200);const d=raw?.data||raw||{};if(Array.isArray(d.doctors)){writeBookingDirectory(d.services||data.services||[],d.doctors);return d.doctors}}catch(_){}
   const raw=await fetchJsonAction('getDoctorsLite',3200);
   const list=raw?.data?.doctors||raw?.doctors||raw?.data;
   if(Array.isArray(list)){writeDoctorsFastCache(list);return list}
@@ -150,13 +173,7 @@ function doctorSkeletons(){
 }
 async function prefetchDoctorsInBackground(force=false){
   if(document.querySelector('#doctorsGrid'))return;
-  const meta=readDoctorsFastCache(true);
-  if(!force&&meta?.doctors?.length&&Date.now()-meta.savedAt<30*60*1000)return;
-  try{
-    const raw=await fetchJsonAction('getDoctorsLite',3200);
-    const list=raw?.data?.doctors||raw?.doctors||raw?.data;
-    if(Array.isArray(list))writeDoctorsFastCache(list);
-  }catch(e){console.warn('Doctors prefetch skipped:',e)}
+  await ensureBookingDirectory(force);
 }
 async function refreshDoctorsFast(){
   if(!document.querySelector('#doctorsGrid'))return;
@@ -181,8 +198,10 @@ function loadData(){
   // Paint instantly. On the doctors page, restore the small doctors-only cache first,
   // then refresh doctors independently without waiting for the much larger getAll payload.
   const doctorsPage=!!document.querySelector('#doctorsGrid');
-  const fastServices=!doctorsPage?readServicesFastCache():null;
+  const bookingDir=!doctorsPage?readBookingDirectory():null;
+  const fastServices=!doctorsPage?(bookingDir?.services?.length?bookingDir.services:readServicesFastCache()):null;
   if(fastServices?.length)data={...data,services:fastServices};
+  if(!doctorsPage&&bookingDir?.doctors?.length)data={...data,doctors:bookingDir.doctors};
   const selectedServiceCache=doctorsPage?readSelectedServiceDoctorsCache():null;
   const fastDoctors=doctorsPage?(selectedServiceCache?.doctors?.length?selectedServiceCache.doctors:readDoctorsFastCache()):null;
   if(fastDoctors?.length)data={...data,doctors:fastDoctors};
@@ -201,7 +220,7 @@ function loadData(){
   else {
     // ابدأ تجهيز بيانات الأطباء فوراً بعد أول رسم للصفحة، لا ننتظر idle.
     // هذا يجعل الانتقال من القسم إلى الطبيب شبه فوري في أغلب الزيارات.
-    setTimeout(()=>prefetchDoctorsInBackground(false),60);
+    prefetchDoctorsInBackground(false);
   }
   const startRefresh=()=>{
     const last=Number(sessionStorage.getItem('alsiteen_last_bg_sync')||0);
@@ -621,7 +640,7 @@ requestTypeList?.addEventListener('click',activateRequestType);
 requestTypeList?.addEventListener('pointerup',e=>{if(e.pointerType==='touch'||e.pointerType==='pen')activateRequestType(e)});$$('[data-close-request]').forEach(b=>b.addEventListener('click',closeRequestModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRequestModal()});const dateEl=$('#date'),timeEl=$('#time');function pad(n){return String(n).padStart(2,'0')}function localDate(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}function rebuildTimes(){if(!timeEl||!dateEl)return;timeEl.innerHTML=`<option value="">${lang==='ar'?'اختر الوقت':'Select time'}</option>`;if(!dateEl.value)return;let selected=new Date(dateEl.value+'T00:00:00'),day=selected.getDay(),start=day===5?15:8,end=day===5?23:24,now=new Date(),min=new Date(now.getTime()+CONFIG.minLeadHours*3600000);for(let h=start;h<end;h++)for(let m=0;m<60;m+=30){let slot=new Date(selected);slot.setHours(h,m,0,0);if(slot<min)continue;let v=`${pad(h)}:${pad(m)}`;timeEl.insertAdjacentHTML('beforeend',`<option value="${v}">${esc(formatTime12(v))}</option>`)}}if(dateEl){let today=new Date();dateEl.min=localDate(today);dateEl.onchange=rebuildTimes;dateEl.value=localDate(today);rebuildTimes()}$('#serviceForm')?.addEventListener('submit',e=>{e.preventDefault();let f=new FormData(e.target),s=data.settings||fallback.settings,name=f.get('name'),mobile=f.get('mobile'),details=f.get('details')||'';let typeName=lang==='ar'?(formType==='booking'?'حجز موعد':formType==='company'?'طلب تعاقد':'شكوى أو اقتراح'):(formType==='booking'?'Appointment Booking':formType==='company'?'Corporate Contract':'Complaint or Suggestion');let lines=lang==='ar'?[`طلب من موقع مجمع أطباء الستين`,`النوع: ${typeName}`,`الاسم: ${name}`,`الجوال: ${mobile}`]:[`Request from Alsiteen website`,`Type: ${typeName}`,`Name: ${name}`,`Mobile: ${mobile}`];if(formType==='booking'){if(!f.get('department')||!f.get('date')||!f.get('time')){$('#formNote').textContent=lang==='ar'?'يرجى اختيار القسم والتاريخ والوقت.':'Please select department, date and time.';return}lines.push(`${lang==='ar'?'القسم':'Department'}: ${f.get('department')}`,`${lang==='ar'?'التاريخ':'Date'}: ${f.get('date')}`,`${lang==='ar'?'الوقت':'Time'}: ${formatTime12(f.get('time'))}`)}if(formType==='company')lines.push(`${lang==='ar'?'الشركة':'Company'}: ${f.get('company')||'-'}`,`${lang==='ar'?'الخدمة':'Service'}: ${f.get('service')||'-'}`);if(formType==='complaint')lines.push(`${lang==='ar'?'نوع الرسالة':'Message type'}: ${f.get('messageType')}`);lines.push(`${lang==='ar'?'التفاصيل':'Details'}: ${details||'-'}`);window.open(`https://wa.me/${cleanPhone(s.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`,'_blank')});$('#serviceFilters')?.addEventListener('click',e=>{const b=e.target.closest('.service-filter');if(!b)return;$$('.service-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activateServiceView(b.dataset.filter||'all')});
 const serviceChoiceModal=$('#serviceChoiceModal');let selectedService=null;
 function parseServiceDoctorIds(v){return String(v||'').split(/[|,]/).map(x=>x.trim()).filter(Boolean)}
-function openServiceChoice(service){selectedService=service;if(!serviceChoiceModal)return;setText('#serviceChoiceName',val(service.ar,service.en)||'');const tr=I18N[lang];setText('#serviceChoiceKicker',tr.service_choice_kicker);setText('#serviceChoiceTitle',tr.service_choice_title);setText('#serviceChoiceIntro',lang==='ar'?'اختر طريقة الحجز المناسبة لك':'Choose the booking method that suits you');setText('.service-selected-label',lang==='ar'?'القسم المختار':'Selected department');setText('#bookDepartmentBtn .service-choice-action-copy b',tr.book_department);setText('#chooseServiceDoctorBtn .service-choice-action-copy b',tr.choose_doctor_service);setText('.service-choice-dept-hint',lang==='ar'?'احجز مباشرة في هذا القسم':'Book directly with this department');setText('.service-choice-doctor-hint',lang==='ar'?'اختر طبيبًا مرتبطًا بهذا القسم':'Choose a doctor assigned to this department');const ids=parseServiceDoctorIds(service.assignedDoctorIds);const note=$('#serviceChoiceNote');if(note)note.textContent=ids.length?'':(lang==='ar'?'لا يوجد أطباء مرتبطون بهذا القسم حاليًا، ويمكنك الحجز في القسم مباشرة.':'No doctors are currently linked to this department. You can book with the department directly.');const doctorBtn=$('#chooseServiceDoctorBtn');if(doctorBtn)doctorBtn.disabled=!ids.length;serviceChoiceModal.classList.add('open');serviceChoiceModal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+function openServiceChoice(service){selectedService=service;if(!serviceChoiceModal)return;setText('#serviceChoiceName',val(service.ar,service.en)||'');const tr=I18N[lang];setText('#serviceChoiceKicker',tr.service_choice_kicker);setText('#serviceChoiceTitle',tr.service_choice_title);setText('#serviceChoiceIntro',lang==='ar'?'اختر طريقة الحجز المناسبة لك':'Choose the booking method that suits you');setText('.service-selected-label',lang==='ar'?'القسم المختار':'Selected department');setText('#bookDepartmentBtn .service-choice-action-copy b',tr.book_department);setText('#chooseServiceDoctorBtn .service-choice-action-copy b',tr.choose_doctor_service);setText('.service-choice-dept-hint',lang==='ar'?'احجز مباشرة في هذا القسم':'Book directly with this department');setText('.service-choice-doctor-hint',lang==='ar'?'اختر طبيبًا مرتبطًا بهذا القسم':'Choose a doctor assigned to this department');const ids=parseServiceDoctorIds(service.assignedDoctorIds),pool=(Array.isArray(data.doctors)&&data.doctors.length?data.doctors:(readBookingDirectory()?.doctors||readDoctorsFastCache()||[])),linked=pool.filter(d=>ids.includes(String(d.doctorId||'')));const note=$('#serviceChoiceNote');if(linked.length)writeSelectedServiceDoctorsCache(val(service.ar,service.en)||'',ids,linked);if(note)note.textContent=!ids.length?(lang==='ar'?'لا يوجد أطباء مرتبطون بهذا القسم حاليًا، ويمكنك الحجز في القسم مباشرة.':'No doctors are currently linked to this department. You can book with the department directly.'):(linked.length?'':(lang==='ar'?'جاري تجهيز قائمة الأطباء...':'Preparing doctor list...'));const doctorBtn=$('#chooseServiceDoctorBtn');if(doctorBtn)doctorBtn.disabled=!ids.length;serviceChoiceModal.classList.add('open');serviceChoiceModal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');if(ids.length&&!linked.length)ensureBookingDirectory(false).then(dir=>{if(selectedService!==service)return;const ready=(dir?.doctors||[]).filter(d=>ids.includes(String(d.doctorId||'')));if(ready.length){writeSelectedServiceDoctorsCache(val(service.ar,service.en)||'',ids,ready);if(note)note.textContent=''}})}
 function closeServiceChoice(){serviceChoiceModal?.classList.remove('open');serviceChoiceModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
 $('#servicesGrid')?.addEventListener('click',e=>{const card=e.target.closest('.service-card-v10');if(!card||$('#servicesGrid')?.classList.contains('is-dragging'))return;const service=(data.services||[]).find((o,i)=>String(o.serviceId||i)===String(card.dataset.serviceId));if(service)openServiceChoice(service)});
 $('#servicesGrid')?.addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;const card=e.target.closest('.service-card-v10');if(!card)return;e.preventDefault();const service=(data.services||[]).find((o,i)=>String(o.serviceId||i)===String(card.dataset.serviceId));if(service)openServiceChoice(service)});
@@ -634,13 +653,15 @@ $('#chooseServiceDoctorBtn')?.addEventListener('click',async()=>{
   const name=val(selectedService.ar,selectedService.en)||'',btn=$('#chooseServiceDoctorBtn'),note=$('#serviceChoiceNote');
   const oldHtml=btn?.innerHTML;
   try{
-    let doctors=readDoctorsFastCache()||[];
+    const dir=readBookingDirectory();
+    let doctors=(Array.isArray(data.doctors)&&data.doctors.length?data.doctors:(dir?.doctors?.length?dir.doctors:(readDoctorsFastCache()||[])));
     let linked=doctors.filter(d=>ids.includes(String(d.doctorId||'')));
-    if(linked.length<Math.min(ids.length,1)){
+    if(!linked.length){
       if(btn){btn.disabled=true;btn.classList.add('loading');const b=btn.querySelector('b');if(b)b.textContent=lang==='ar'?'جاري تجهيز الأطباء...':'Preparing doctors...'}
-      if(note)note.textContent=lang==='ar'?'يتم تجهيز قائمة الأطباء مرة واحدة...':'Preparing the doctor list...';
-      doctors=await ensureDoctorsFastCache(true);linked=doctors.filter(d=>ids.includes(String(d.doctorId||'')));
+      if(note)note.textContent=lang==='ar'?'جاري تحديث قائمة الأطباء، لن يستغرق ذلك سوى لحظات...':'Refreshing the doctor list...';
+      const fresh=await ensureBookingDirectory(true);doctors=fresh?.doctors||[];linked=doctors.filter(d=>ids.includes(String(d.doctorId||'')));
     }
+    if(!linked.length)throw new Error('NO_LINKED_DOCTORS');
     writeSelectedServiceDoctorsCache(name,ids,linked);
     closeServiceChoice();
     navigateInternal(`doctors.html?doctorIds=${encodeURIComponent(ids.join(','))}&serviceName=${encodeURIComponent(name)}`);
