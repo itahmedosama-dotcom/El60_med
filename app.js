@@ -327,17 +327,52 @@ function renderDoctorsPublic(){
   if(specialty){const cur=specialty.value||'all';specialty.innerHTML=`<option value="all">${lang==='ar'?'كل التخصصات':'All specialties'}</option>`+specs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');specialty.value=[...specialty.options].some(o=>o.value===cur)?cur:'all'}
   const card=(x,i,idx)=>{const canBook=truthy(x.bookingEnabled,true);return `<article class="doctor-card doctor-marquee-card"><div class="doctor-photo">${x.image?`<img src="${esc(x.image)}" alt="${esc(val(x.nameAr,x.nameEn)||'')}" loading="${i<6?'eager':'lazy'}" decoding="async" ${i<3?'fetchpriority="high"':'fetchpriority="low"'}>`:`<div class="doctor-placeholder" aria-hidden="true">⚕</div>`}</div><div class="doctor-info"><span class="doctor-specialty">${esc(val(x.specialtyAr,x.specialtyEn)||'')}</span><h3>${esc(val(x.nameAr,x.nameEn)||'')}</h3>${val(x.nationalityAr,x.nationalityEn)?`<div class="doctor-nationality">${lang==='ar'?'الجنسية: ':'Nationality: '}${esc(val(x.nationalityAr,x.nationalityEn))}</div>`:''}<p>${esc(val(x.bioAr,x.bioEn)||'')}</p>${doctorScheduleCompactHtml(x)}${canBook?`<button class="btn primary doctor-book" type="button" data-doctor-key="${esc(String(idx))}">${lang==='ar'?'حجز موعد':'Book Appointment'}</button>`:`<button class="doctor-walkin" type="button" data-walkin-key="${esc(String(idx))}"><b>${lang==='ar'?'الحضور بأسبقية الوصول':'Walk-in, first come first served'}</b><small>${lang==='ar'?'اضغط لمعرفة التفاصيل':'Tap for details'}</small></button>`}</div></article>`};
   function bindTrackDrag(scroller){
-    let down=false,startX=0,startScroll=0,resumeTimer;
-    const stopAuto=()=>scroller.classList.add('is-interacting');
-    const resume=()=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>scroller.classList.remove('is-interacting'),900)};
-    scroller.addEventListener('pointerdown',e=>{
-      // لا نبدأ السحب عند الضغط على زر الحجز أو أي عنصر تفاعلي.
-      if(e.target.closest('button,a,input,select,textarea,label,summary,details'))return;
-      down=true;startX=e.clientX;startScroll=scroller.scrollLeft;stopAuto();scroller.setPointerCapture?.(e.pointerId)
+    const viewport=scroller.querySelector('.doctors-marquee-viewport')||scroller;
+    const track=scroller.querySelector('.doctors-marquee-track');
+    if(!track)return;
+    let down=false,startX=0,startScroll=0,paused=false,resumeTimer=0,raf=0,lastTs=0;
+    const direction=scroller.classList.contains('reverse')?-1:1;
+    const speed=window.innerWidth<=760?0.34:0.42; // متوسط ومريح
+    const halfWidth=()=>track.scrollWidth/2;
+    const stopAuto=()=>{paused=true;clearTimeout(resumeTimer)};
+    const resume=(delay=1200)=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!down)paused=false},delay)};
+    const normalize=()=>{
+      const half=halfWidth();if(!half)return;
+      if(viewport.scrollLeft>=half)viewport.scrollLeft-=half;
+      else if(viewport.scrollLeft<0)viewport.scrollLeft+=half;
+    };
+    const tick=ts=>{
+      if(!lastTs)lastTs=ts;
+      const dt=Math.min(32,ts-lastTs||16.67);lastTs=ts;
+      if(!paused&&!down&&halfWidth()>viewport.clientWidth){
+        viewport.scrollLeft+=direction*speed*(dt/16.67);
+        const half=halfWidth();
+        if(direction>0&&viewport.scrollLeft>=half)viewport.scrollLeft-=half;
+        if(direction<0&&viewport.scrollLeft<=0)viewport.scrollLeft+=half;
+      }
+      raf=requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(()=>{
+      if(direction<0)viewport.scrollLeft=halfWidth();
+      raf=requestAnimationFrame(tick);
     });
-    scroller.addEventListener('pointermove',e=>{if(!down)return;scroller.scrollLeft=startScroll-(e.clientX-startX)});
-    const up=e=>{if(!down)return;down=false;try{scroller.releasePointerCapture?.(e.pointerId)}catch(_){}resume()};
-    scroller.addEventListener('pointerup',up);scroller.addEventListener('pointercancel',up);scroller.addEventListener('mouseenter',stopAuto);scroller.addEventListener('mouseleave',resume);scroller.addEventListener('touchstart',e=>{if(!e.target.closest('button,a,input,select,textarea,label,summary,details'))stopAuto()},{passive:true});scroller.addEventListener('touchend',resume,{passive:true});
+    viewport.addEventListener('pointerdown',e=>{
+      if(e.target.closest('button,a,input,select,textarea,label,summary,details'))return;
+      down=true;startX=e.clientX;startScroll=viewport.scrollLeft;stopAuto();viewport.setPointerCapture?.(e.pointerId)
+    });
+    viewport.addEventListener('pointermove',e=>{if(!down)return;viewport.scrollLeft=startScroll-(e.clientX-startX)});
+    const up=e=>{if(!down)return;down=false;try{viewport.releasePointerCapture?.(e.pointerId)}catch(_){}normalize();resume()};
+    viewport.addEventListener('pointerup',up);viewport.addEventListener('pointercancel',up);
+    scroller.addEventListener('mouseenter',stopAuto);scroller.addEventListener('mouseleave',()=>resume(500));
+    viewport.addEventListener('touchstart',e=>{if(!e.target.closest('button,a,input,select,textarea,label,summary,details'))stopAuto()},{passive:true});
+    viewport.addEventListener('touchend',()=>{normalize();resume(900)},{passive:true});
+    scroller.querySelectorAll('.doctors-row-arrow').forEach(btn=>btn.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();stopAuto();
+      const step=Math.min(340,Math.max(240,viewport.clientWidth*.72));
+      const delta=btn.classList.contains('arrow-left')?-step:step;
+      viewport.scrollBy({left:delta,behavior:'smooth'});
+      setTimeout(normalize,430);resume(1700);
+    }));
   }
   function uniqueDoctors(items){
     const seen=new Set();
@@ -353,20 +388,27 @@ function renderDoctorsPublic(){
     empty?.classList.toggle('hidden',list.length>0);
     if(!list.length){host.innerHTML='';return}
     let rows;
-    if(list.length>=6){
-      rows=[list.filter((_,i)=>i%2===0),list.filter((_,i)=>i%2===1)];
-    }else if(list.length>=3){
-      // مع عدد قليل من الأطباء نستخدم نفس المجموعة بترتيب مختلف في الصف الثاني،
-      // بحيث لا يتكرر نفس الطبيب بجوار نفسه إطلاقاً.
-      rows=[list,rotate(list,Math.max(1,Math.floor(list.length/2)))];
-    }else{
-      // لا نخترع أطباء غير موجودين: نعرض الأطباء الفعليين فقط بدون تكرار بصري.
+    if(list.length===1){
       rows=[list];
+    }else if(list.length>=6){
+      rows=[list.filter((_,i)=>i%2===0),list.filter((_,i)=>i%2===1)];
+    }else{
+      // نستخدم صفين حتى مع العدد المتوسط، مع تدوير الصف الثاني
+      // للحصول على توزيع متوازن وحركة متصلة بدون فراغات مزعجة.
+      rows=[list,rotate(list,Math.max(1,Math.floor(list.length/2)))];
     }
+    const minVisibleCards=window.innerWidth<=760?4:6;
+    const buildMovingSet=row=>{
+      if(row.length<=1)return row;
+      const base=[];
+      while(base.length<minVisibleCards)base.push(...row);
+      const normalized=base.slice(0,Math.max(minVisibleCards,row.length));
+      return [...normalized,...normalized];
+    };
     host.innerHTML=rows.map((row,ri)=>{
-      const moving=row.length>=3;
-      const expanded=moving?[...row,...row]:row;
-      return `<div class="doctors-marquee-row ${ri%2?'reverse':''} ${moving?'':'static-row'}"><div class="doctors-marquee-track">${expanded.map((x,i)=>card(x,i+ri*12,all.indexOf(x))).join('')}</div></div>`
+      const moving=row.length>1;
+      const expanded=moving?buildMovingSet(row):row;
+      return `<div class="doctors-marquee-row ${ri%2?'reverse':''} ${moving?'':'static-row'}"><button class="doctors-row-arrow arrow-left" type="button" aria-label="${lang==='ar'?'تحريك الصف لليسار':'Move row left'}">‹</button><div class="doctors-marquee-viewport"><div class="doctors-marquee-track">${expanded.map((x,i)=>card(x,i+ri*24,all.indexOf(x))).join('')}</div></div><button class="doctors-row-arrow arrow-right" type="button" aria-label="${lang==='ar'?'تحريك الصف لليمين':'Move row right'}">›</button></div>`
     }).join('');
     host.querySelectorAll('.doctors-marquee-row').forEach(r=>{if(!r.classList.contains('static-row'))bindTrackDrag(r)});
   }
