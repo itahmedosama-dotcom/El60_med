@@ -182,14 +182,32 @@
 <div id="serviceChoiceModal" class="request-modal service-choice-modal" aria-hidden="true">
   <div class="request-backdrop" data-close-service-choice></div>
   <section class="request-dialog service-choice-dialog" role="dialog" aria-modal="true" aria-labelledby="serviceChoiceTitle">
-    <button class="request-close" type="button" aria-label="إغلاق" data-close-service-choice>×</button>
-    <span class="request-kicker" id="serviceChoiceKicker">خيارات الحجز</span>
+    <button class="request-close service-choice-close" type="button" aria-label="إغلاق" data-close-service-choice>×</button>
+    <div class="service-choice-top">
+      <span class="service-choice-kicker-dot" aria-hidden="true"></span>
+      <span class="request-kicker" id="serviceChoiceKicker">خيارات الحجز</span>
+    </div>
     <h2 id="serviceChoiceTitle">كيف تريد الحجز؟</h2>
-    <p id="serviceChoiceIntro">يمكنك الحجز مباشرة في القسم أو اختيار طبيب مرتبط بهذا القسم.</p>
-    <div id="serviceChoiceName" class="service-choice-name"></div>
+    <div class="service-choice-selected">
+      <small class="service-selected-label">القسم المختار</small>
+      <strong id="serviceChoiceName"></strong>
+    </div>
+    <p id="serviceChoiceIntro" class="service-choice-intro">اختر طريقة الحجز المناسبة لك</p>
     <div class="service-choice-actions">
-      <button id="bookDepartmentBtn" class="btn primary" type="button">احجز في القسم</button>
-      <button id="chooseServiceDoctorBtn" class="btn ghost" type="button">احجز عند الطبيب</button>
+      <button id="bookDepartmentBtn" class="service-choice-action department-choice" type="button">
+        <span class="service-choice-action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 3h10v4H7V3Zm-2 6h14v12H5V9Zm4 4h6m-3-3v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="service-choice-action-copy"><b>احجز في القسم</b><small class="service-choice-dept-hint">احجز مباشرة في هذا القسم</small></span>
+        <span class="service-choice-arrow" aria-hidden="true">←</span>
+      </button>
+      <button id="chooseServiceDoctorBtn" class="service-choice-action doctor-choice" type="button">
+        <span class="service-choice-action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8c.7-4 3.1-6 7-6s6.3 2 7 6M18.5 9.5v5m-2.5-2.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        <span class="service-choice-action-copy"><b>احجز عند الطبيب</b><small class="service-choice-doctor-hint">اختر طبيبًا مرتبطًا بهذا القسم</small></span>
+        <span class="service-choice-arrow" aria-hidden="true">←</span>
+      </button>
     </div>
     <p id="serviceChoiceNote" class="note service-choice-note"></p>
   </section>
