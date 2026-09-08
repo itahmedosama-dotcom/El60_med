@@ -120,7 +120,7 @@ async function refreshRemoteData(force=false){
 }
 function readDoctorsFastCache(withMeta=false){
   try{
-    const raw=localStorage.getItem('alsiteen_doctors_fast_v2')||localStorage.getItem('alsiteen_doctors_fast_v1');
+    const raw=localStorage.getItem('alsiteen_doctors_fast_v3')||localStorage.getItem('alsiteen_doctors_fast_v2')||localStorage.getItem('alsiteen_doctors_fast_v1');
     if(!raw)return withMeta?null:null;
     const parsed=JSON.parse(raw), doctors=Array.isArray(parsed?.doctors)?parsed.doctors:null;
     if(!doctors)return null;
@@ -128,7 +128,22 @@ function readDoctorsFastCache(withMeta=false){
   }catch(e){return null}
 }
 function writeDoctorsFastCache(doctors){
-  try{if(Array.isArray(doctors))localStorage.setItem('alsiteen_doctors_fast_v2',JSON.stringify({savedAt:Date.now(),doctors}))}catch(e){}
+  try{if(Array.isArray(doctors))localStorage.setItem('alsiteen_doctors_fast_v3',JSON.stringify({savedAt:Date.now(),doctors}))}catch(e){}
+}
+function readServicesFastCache(){try{const x=JSON.parse(localStorage.getItem('alsiteen_services_fast_v1')||'null');return Array.isArray(x?.services)&&Date.now()-Number(x.savedAt||0)<24*60*60*1000?x.services:null}catch(e){return null}}
+function writeSelectedServiceDoctorsCache(serviceName,ids,doctors){
+  try{sessionStorage.setItem('alsiteen_selected_service_doctors_v1',JSON.stringify({savedAt:Date.now(),serviceName:String(serviceName||''),ids:Array.isArray(ids)?ids:[],doctors:Array.isArray(doctors)?doctors:[]}))}catch(e){}
+}
+function readSelectedServiceDoctorsCache(){
+  try{const raw=sessionStorage.getItem('alsiteen_selected_service_doctors_v1');if(!raw)return null;const x=JSON.parse(raw);if(!x||Date.now()-Number(x.savedAt||0)>15*60*1000)return null;return x}catch(e){return null}
+}
+async function ensureDoctorsFastCache(force=false){
+  const meta=readDoctorsFastCache(true);
+  if(!force&&meta?.doctors?.length&&Date.now()-meta.savedAt<30*60*1000)return meta.doctors;
+  const raw=await fetchJsonAction('getDoctorsLite',3200);
+  const list=raw?.data?.doctors||raw?.doctors||raw?.data;
+  if(Array.isArray(list)){writeDoctorsFastCache(list);return list}
+  return meta?.doctors||[];
 }
 function doctorSkeletons(){
   return `<div class="doctors-skeleton-row">${Array.from({length:3},()=>`<article class="doctor-card doctor-skeleton-card"><div class="doctor-skeleton-photo skeleton-shimmer"></div><div class="doctor-info"><i class="skeleton-line w35"></i><i class="skeleton-line w70"></i><i class="skeleton-line w50"></i><i class="skeleton-line w100"></i><i class="skeleton-line w100"></i><i class="skeleton-button"></i></div></article>`).join('')}</div>`;
@@ -138,8 +153,8 @@ async function prefetchDoctorsInBackground(force=false){
   const meta=readDoctorsFastCache(true);
   if(!force&&meta?.doctors?.length&&Date.now()-meta.savedAt<30*60*1000)return;
   try{
-    const raw=await fetchJsonAction('getDoctorsPage',4800);
-    const list=raw?.data?.doctors||raw?.doctors;
+    const raw=await fetchJsonAction('getDoctorsLite',3200);
+    const list=raw?.data?.doctors||raw?.doctors||raw?.data;
     if(Array.isArray(list))writeDoctorsFastCache(list);
   }catch(e){console.warn('Doctors prefetch skipped:',e)}
 }
@@ -148,11 +163,12 @@ async function refreshDoctorsFast(){
   try{
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),2800);
-    const u=CONFIG.sheetApiUrl+(CONFIG.sheetApiUrl.includes('?')?'&':'?')+'action=getDoctorsPage&_='+Date.now();
+    const u=CONFIG.sheetApiUrl+(CONFIG.sheetApiUrl.includes('?')?'&':'?')+'action=getDoctorsLite&_='+Date.now();
     const r=await fetch(u,{cache:'no-store',signal:controller.signal});clearTimeout(timer);
     if(!r.ok)throw new Error('HTTP '+r.status);
     const raw=await r.json();
-    const list=raw?.data?.doctors||raw?.doctors, n=normalizePayload(raw);
+    const list=raw?.data?.doctors||raw?.doctors||raw?.data, n=normalizePayload(raw);
+    if(Array.isArray(list)&&!n?.doctors)n.doctors=list;
     if(n){
       if(Array.isArray(list))writeDoctorsFastCache(list);
       writeCachedData(raw,raw?.version||'');
@@ -165,7 +181,10 @@ function loadData(){
   // Paint instantly. On the doctors page, restore the small doctors-only cache first,
   // then refresh doctors independently without waiting for the much larger getAll payload.
   const doctorsPage=!!document.querySelector('#doctorsGrid');
-  const fastDoctors=doctorsPage?readDoctorsFastCache():null;
+  const fastServices=!doctorsPage?readServicesFastCache():null;
+  if(fastServices?.length)data={...data,services:fastServices};
+  const selectedServiceCache=doctorsPage?readSelectedServiceDoctorsCache():null;
+  const fastDoctors=doctorsPage?(selectedServiceCache?.doctors?.length?selectedServiceCache.doctors:readDoctorsFastCache()):null;
   if(fastDoctors?.length)data={...data,doctors:fastDoctors};
   render();
   if(doctorsPage&&!fastDoctors?.length){
@@ -180,9 +199,9 @@ function loadData(){
   }
   if(doctorsPage)refreshDoctorsFast();
   else {
-    const prefetch=()=>prefetchDoctorsInBackground(false);
-    if('requestIdleCallback' in window)requestIdleCallback(prefetch,{timeout:2200});
-    else setTimeout(prefetch,900);
+    // ابدأ تجهيز بيانات الأطباء فوراً بعد أول رسم للصفحة، لا ننتظر idle.
+    // هذا يجعل الانتقال من القسم إلى الطبيب شبه فوري في أغلب الزيارات.
+    setTimeout(()=>prefetchDoctorsInBackground(false),60);
   }
   const startRefresh=()=>{
     const last=Number(sessionStorage.getItem('alsiteen_last_bg_sync')||0);
@@ -608,7 +627,28 @@ $('#servicesGrid')?.addEventListener('click',e=>{const card=e.target.closest('.s
 $('#servicesGrid')?.addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;const card=e.target.closest('.service-card-v10');if(!card)return;e.preventDefault();const service=(data.services||[]).find((o,i)=>String(o.serviceId||i)===String(card.dataset.serviceId));if(service)openServiceChoice(service)});
 $$('[data-close-service-choice]').forEach(b=>b.addEventListener('click',closeServiceChoice));
 $('#bookDepartmentBtn')?.addEventListener('click',()=>{if(!selectedService)return;const department=val(selectedService.ar,selectedService.en)||'';closeServiceChoice();openRequestModal('booking');setTimeout(()=>{const d=$('#department');if(d){const opt=[...d.options].find(o=>o.textContent.trim()===department.trim());if(opt)d.value=opt.value}},80)});
-$('#chooseServiceDoctorBtn')?.addEventListener('click',()=>{if(!selectedService)return;const ids=parseServiceDoctorIds(selectedService.assignedDoctorIds);if(!ids.length){const note=$('#serviceChoiceNote');if(note)note.textContent=I18N[lang].no_assigned_doctors;return}const name=val(selectedService.ar,selectedService.en)||'';closeServiceChoice();navigateInternal(`doctors.html?doctorIds=${encodeURIComponent(ids.join(','))}&serviceName=${encodeURIComponent(name)}`)});
+$('#chooseServiceDoctorBtn')?.addEventListener('click',async()=>{
+  if(!selectedService)return;
+  const ids=parseServiceDoctorIds(selectedService.assignedDoctorIds);
+  if(!ids.length){const note=$('#serviceChoiceNote');if(note)note.textContent=I18N[lang].no_assigned_doctors;return}
+  const name=val(selectedService.ar,selectedService.en)||'',btn=$('#chooseServiceDoctorBtn'),note=$('#serviceChoiceNote');
+  const oldHtml=btn?.innerHTML;
+  try{
+    let doctors=readDoctorsFastCache()||[];
+    let linked=doctors.filter(d=>ids.includes(String(d.doctorId||'')));
+    if(linked.length<Math.min(ids.length,1)){
+      if(btn){btn.disabled=true;btn.classList.add('loading');const b=btn.querySelector('b');if(b)b.textContent=lang==='ar'?'جاري تجهيز الأطباء...':'Preparing doctors...'}
+      if(note)note.textContent=lang==='ar'?'يتم تجهيز قائمة الأطباء مرة واحدة...':'Preparing the doctor list...';
+      doctors=await ensureDoctorsFastCache(true);linked=doctors.filter(d=>ids.includes(String(d.doctorId||'')));
+    }
+    writeSelectedServiceDoctorsCache(name,ids,linked);
+    closeServiceChoice();
+    navigateInternal(`doctors.html?doctorIds=${encodeURIComponent(ids.join(','))}&serviceName=${encodeURIComponent(name)}`);
+  }catch(e){
+    if(note)note.textContent=lang==='ar'?'تعذر تجهيز الأطباء الآن، حاول مرة أخرى.':'Unable to prepare doctors right now. Please try again.';
+    if(btn){btn.disabled=false;btn.classList.remove('loading');if(oldHtml)btn.innerHTML=oldHtml}
+  }
+});
 const requestedType=new URLSearchParams(location.search).get('request');if(requestedType&&['booking','company','complaint'].includes(requestedType)){setTimeout(()=>openRequestModal(requestedType),300)}
 // نافذة الحضور بأسبقية الوصول
 $$('[data-close-walkin]').forEach(b=>b.addEventListener('click',()=>{const m=$('#walkinModal');m?.classList.remove('open');m?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}));

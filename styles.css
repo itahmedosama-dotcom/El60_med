@@ -1440,3 +1440,26 @@ html[dir="ltr"] .service-choice-close{left:auto!important;right:14px!important}
   .service-choice-action-icon svg{width:22px;height:22px}
   .service-choice-action-copy b{font-size:14px!important}.service-choice-action-copy small{font-size:10px!important}
 }
+
+
+/* ===== V72 faster service-doctor handoff + green insurance pulse ===== */
+.hero-insurance-btn{
+  background:linear-gradient(135deg,#eafbf1,#ffffff)!important;
+  color:#0d8f49!important;
+  border:1.5px solid rgba(20,170,88,.58)!important;
+  box-shadow:0 8px 22px rgba(20,170,88,.16)!important;
+  animation:insuranceGreenFlash 1.35s ease-in-out infinite!important;
+}
+.hero-insurance-btn .hero-action-icon{
+  background:#12a958!important;color:#fff!important;
+  animation:insuranceGreenIcon 1.35s ease-in-out infinite!important;
+}
+.hero-insurance-btn:hover{background:#10a957!important;color:#fff!important;border-color:#10a957!important;animation-play-state:paused!important}
+.hero-insurance-btn:hover .hero-action-icon{background:#fff!important;color:#0d8f49!important;animation-play-state:paused!important}
+@keyframes insuranceGreenFlash{
+  0%,100%{filter:brightness(1);box-shadow:0 7px 18px rgba(20,170,88,.10),0 0 0 0 rgba(20,170,88,0)}
+  50%{filter:brightness(1.12);box-shadow:0 10px 28px rgba(20,170,88,.30),0 0 0 5px rgba(20,170,88,.10)}
+}
+@keyframes insuranceGreenIcon{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(20,170,88,.35)}50%{transform:scale(1.08);box-shadow:0 0 0 7px rgba(20,170,88,0)}}
+#chooseServiceDoctorBtn.loading{opacity:.78;cursor:wait;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.hero-insurance-btn,.hero-insurance-btn .hero-action-icon{animation:none!important}}
