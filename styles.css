@@ -1294,3 +1294,41 @@ html[dir="ltr"] .doctor-marquee-card{direction:ltr;text-align:left}
   .top .nav nav>a,.top .request-nav-trigger{font-size:12.5px!important;padding-inline:6px!important}
   .top .shop{font-size:12px!important;padding-inline:9px!important}
 }
+
+
+/* ===== V66 insurance verification action ===== */
+.hero-insurance-btn{background:linear-gradient(135deg,#fff,#f5f8fb);color:var(--navy);border:1px solid #d9e3ee;text-decoration:none}
+.hero-insurance-btn .hero-action-icon{background:rgba(18,54,95,.08);color:var(--navy)}
+.hero-insurance-btn:hover{border-color:#bdcad8;background:#fff}
+.insurance-verify-dialog{width:min(760px,94vw);grid-template-columns:.9fr 1.1fr}
+.insurance-verify-form{grid-template-columns:1fr}
+.insurance-verify-form .wide-field,.insurance-verify-form .whatsapp-submit,.insurance-verify-form .note{grid-column:1/-1}
+.insurance-verify-form select,.insurance-verify-form input{min-height:52px}
+@media(min-width:901px){.hero-actions-v27{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:720px}.hero-actions-v27 .btn{width:100%;padding-inline:16px;font-size:14px}}
+@media(max-width:900px){.hero-actions-v27{grid-template-columns:repeat(3,minmax(0,1fr))!important}.hero-actions-v27 .btn{font-size:11px!important;padding-inline:6px!important}.insurance-verify-dialog{grid-template-columns:1fr!important;width:min(96vw,500px)!important;max-height:94dvh!important;gap:0!important;padding:0!important;overflow:auto!important}.insurance-verify-dialog .request-dialog-copy{padding:22px 14px 10px!important;text-align:center}.insurance-verify-dialog .request-dialog-copy h2{font-size:22px!important;margin:5px 0!important}.insurance-verify-dialog .request-dialog-copy p{font-size:12px!important;line-height:1.5!important;margin:0 10px 10px!important}.insurance-verify-dialog .request-dialog-form{padding:10px!important;border-radius:16px 16px 0 0!important}.insurance-verify-dialog .modal-form{padding:0!important;gap:9px!important}.insurance-verify-dialog .modal-form label>span{font-size:12px!important;margin-bottom:4px!important}.insurance-verify-dialog .modal-form select,.insurance-verify-dialog .modal-form input{min-height:44px!important;height:44px!important;padding:8px 10px!important;font-size:14px!important}.insurance-verify-dialog .whatsapp-submit{min-height:44px!important;font-size:13px!important}}
+@media(max-width:430px){.hero-actions-v27{grid-template-columns:1fr 1fr!important}.hero-insurance-btn{grid-column:1/-1}.hero-actions-v27 .btn{font-size:12px!important}}
+
+
+/* V67 - editable site logo in Identity & Appearance */
+.identity-logo-card{overflow:hidden}.identity-logo-head{display:flex;align-items:center;justify-content:space-between;gap:22px;margin-bottom:16px}.identity-logo-head h3{margin:0 0 4px}.site-logo-preview{width:220px;min-width:220px;height:92px;border:1px solid var(--line);border-radius:16px;background:#f8fafc;display:grid;place-items:center;padding:10px;overflow:hidden}.site-logo-preview img{width:100%;height:100%;object-fit:contain}.logo-actions{justify-content:flex-start;flex-wrap:wrap}.identity-logo-card input[type=url]{direction:ltr;text-align:left}
+@media(max-width:700px){.identity-logo-head{align-items:stretch;flex-direction:column}.site-logo-preview{width:100%;min-width:0;height:100px}.logo-actions{display:grid;grid-template-columns:1fr 1fr}.logo-actions .btn{width:100%;font-size:12px;padding-inline:8px}}
+
+
+/* ===== V68 service booking + doctor mapping ===== */
+.service-card-v10{cursor:pointer}
+.service-card-v10:focus-visible{outline:3px solid rgba(237,28,36,.25);outline-offset:3px}
+.service-card-action{display:inline-block;margin-top:9px;color:var(--red);font-size:11px;font-weight:900}
+.service-choice-dialog{width:min(92vw,560px)!important;background:#fff!important;color:var(--navy)!important;padding:28px!important;text-align:center;border-radius:24px!important}
+.service-choice-dialog .request-kicker{color:var(--red)}
+.service-choice-dialog h2{margin:7px 0 6px;font-size:30px;color:var(--navy)}
+.service-choice-dialog>p{color:var(--muted);margin:0 auto 14px}
+.service-choice-name{background:#f5f8fb;border:1px solid var(--line);border-radius:14px;padding:12px 15px;font-weight:900;margin:14px 0;color:var(--navy)}
+.service-choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.service-choice-actions .btn{width:100%;min-height:48px}
+.service-choice-note{font-size:12px;margin-top:10px!important}
+.service-choice-actions button:disabled{opacity:.45;cursor:not-allowed}
+.service-doctors-map{grid-column:1/-1;border:1px solid #dde6ef;border-radius:14px;background:#f8fbfe;overflow:hidden}
+.service-doctors-map>summary{cursor:pointer;list-style:none;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}.service-doctors-map>summary::-webkit-details-marker{display:none}.service-doctors-map>summary span{display:flex;flex-direction:column}.service-doctors-map>summary small{color:#718198;font-weight:600}.service-doctors-map>summary em{font-style:normal;color:var(--navy);font-size:12px;font-weight:800}
+.service-doctors-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:12px;border-top:1px solid #e5ebf2;background:#fff}
+.service-doctor-choice{display:flex!important;align-items:center;gap:8px;padding:9px 10px;border:1px solid #e1e8ef;border-radius:11px;background:#fff;cursor:pointer}.service-doctor-choice input{width:auto!important}.service-doctor-choice span{display:flex;flex-direction:column;min-width:0}.service-doctor-choice b{font-size:12px}.service-doctor-choice small{font-size:10px;color:#718198}
+@media(max-width:760px){.service-choice-dialog{padding:22px 15px!important}.service-choice-dialog h2{font-size:24px}.service-choice-actions{grid-template-columns:1fr}.service-doctors-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.service-doctors-grid{grid-template-columns:1fr}}

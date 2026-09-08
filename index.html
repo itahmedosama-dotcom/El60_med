@@ -58,6 +58,7 @@
       <div class="hero-actions-v27">
         <button id="heroBookingButton" class="btn hero-book-btn" type="button"><span class="hero-action-icon">▣</span><span data-i18n="hero_book_now">احجز موعدك الآن</span></button>
         <a id="heroOffersButton" class="btn hero-offers-btn" href="offers.html"><span class="hero-action-icon">◇</span><span data-i18n="hero_view_offers">شاهد العروض</span></a>
+        <button id="heroInsuranceVerifyButton" class="btn hero-insurance-btn" type="button"><span class="hero-action-icon">✓</span><span data-i18n="hero_verify_insurance">التحقق من التأمين</span></button>
       </div>
     </div>
     <div class="hero-card">
@@ -149,6 +150,50 @@
 </section>
 </main>
 
+<div id="insuranceVerifyModal" class="request-modal insurance-verify-modal" aria-hidden="true">
+  <div class="request-backdrop" data-close-insurance-verify></div>
+  <section class="request-dialog insurance-verify-dialog" role="dialog" aria-modal="true" aria-labelledby="insuranceVerifyTitle">
+    <button class="request-close" type="button" aria-label="إغلاق" data-close-insurance-verify>×</button>
+    <div class="request-dialog-copy">
+      <span class="request-kicker" data-i18n="insurance_verify_kicker">تحقق سريع عبر واتساب</span>
+      <h2 id="insuranceVerifyTitle" data-i18n="insurance_verify_title">تحقق من أهليتك التأمينية</h2>
+      <p data-i18n="insurance_verify_intro">اختر نوع الوثيقة وأدخل الرقم، وسيتم تجهيز رسالة واتساب لإرسالها إلى المجمع.</p>
+    </div>
+    <div class="request-dialog-form">
+      <form id="insuranceVerifyForm" class="form modal-form insurance-verify-form">
+        <label class="wide-field"><span data-i18n="insurance_id_type_label">نوع الرقم</span>
+          <select id="insuranceIdType" name="idType" required>
+            <option value="" data-i18n="insurance_id_type_placeholder">اختر النوع</option>
+            <option value="national" data-i18n="insurance_id_national">هوية</option>
+            <option value="iqama" data-i18n="insurance_id_iqama">إقامة</option>
+            <option value="border" data-i18n="insurance_id_border">رقم حدود</option>
+            <option value="other" data-i18n="insurance_id_other">آخر</option>
+          </select>
+        </label>
+        <label id="insuranceIdValueWrap" class="wide-field hidden"><span id="insuranceIdValueLabel" data-i18n="insurance_id_value_label">الرقم</span><input id="insuranceIdValue" name="idValue" inputmode="numeric" autocomplete="off" placeholder="" required></label>
+        <button class="btn whatsapp-submit" type="submit" data-i18n="insurance_send_whatsapp">إرسال للتحقق عبر واتساب ↗</button>
+        <p id="insuranceVerifyNote" class="note"></p>
+      </form>
+    </div>
+  </section>
+</div>
+
+
+<div id="serviceChoiceModal" class="request-modal service-choice-modal" aria-hidden="true">
+  <div class="request-backdrop" data-close-service-choice></div>
+  <section class="request-dialog service-choice-dialog" role="dialog" aria-modal="true" aria-labelledby="serviceChoiceTitle">
+    <button class="request-close" type="button" aria-label="إغلاق" data-close-service-choice>×</button>
+    <span class="request-kicker" id="serviceChoiceKicker">خيارات الحجز</span>
+    <h2 id="serviceChoiceTitle">كيف تريد الحجز؟</h2>
+    <p id="serviceChoiceIntro">يمكنك الحجز مباشرة في القسم أو اختيار طبيب مرتبط بهذا القسم.</p>
+    <div id="serviceChoiceName" class="service-choice-name"></div>
+    <div class="service-choice-actions">
+      <button id="bookDepartmentBtn" class="btn primary" type="button">احجز في القسم</button>
+      <button id="chooseServiceDoctorBtn" class="btn ghost" type="button">احجز عند الطبيب</button>
+    </div>
+    <p id="serviceChoiceNote" class="note service-choice-note"></p>
+  </section>
+</div>
 <div id="requestModal" class="request-modal" aria-hidden="true">
   <div class="request-backdrop" data-close-request></div>
   <section class="request-dialog" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>لوحة التحكم | مجمع أطباء الستين</title>
-  <link rel="stylesheet" href="styles.css"><script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script defer src="admin.js"></script>
+  <link rel="stylesheet" href="styles.css?v=67"><script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script defer src="admin.js?v=67"></script>
 </head>
 <body class="admin-body">
 <div id="loginScreen" class="login-screen">
@@ -131,7 +131,18 @@
       <section id="panel-insurers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الشركاء</span><h2>شركاء التأمين</h2></div><button class="btn primary small" data-add="insurers">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="insurers" placeholder="بحث باسم شركة التأمين..."></div><div id="insurersEditor" class="editor-list"></div></section>
       <section id="panel-suppliers" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الشركاء</span><h2>سابقة الأعمال والموردون</h2></div><button class="btn primary small" data-add="suppliers">+ إضافة</button></div><div class="filter-bar"><input class="editor-search" data-list="suppliers" placeholder="بحث باسم المورد أو الشريك..."></div><div id="suppliersEditor" class="editor-list"></div></section>
       <section id="panel-socials" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">التواصل</span><h2>قنوات السوشيال ميديا</h2></div><button class="btn primary small" data-add="socials">+ إضافة قناة</button></div><div class="filter-bar"><input class="editor-search" data-list="socials" placeholder="بحث..."></div><div id="socialsEditor" class="editor-list"></div></section>
-      <section id="panel-appearance" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الهوية</span><h2>ألوان الموقع</h2></div></div><div class="admin-card"><p class="admin-tip">تم توحيد التصميم على ألوان الشعار: الكحلي والأحمر والأبيض. يمكن تغييرها هنا عند الحاجة، ويفضل عدم إدخال ألوان خارج الهوية.</p><div class="admin-grid color-grid"><label>الكحلي الرئيسي<input id="themeNavy" type="color"></label><label>الكحلي الداكن<input id="themeNavyDark" type="color"></label><label>الأحمر<input id="themeRed" type="color"></label><label>الخلفية الفاتحة<input id="themeLight" type="color"></label></div></div></section>
+      <section id="panel-appearance" class="admin-panel">
+        <div class="panel-head"><div><span class="eyebrow">الهوية</span><h2>الهوية والمظهر</h2></div></div>
+        <div class="admin-card identity-logo-card">
+          <div class="identity-logo-head"><div><h3>شعار الموقع</h3><p class="admin-tip">ضع رابط مباشر للشعار أو مسار صورة داخل المشروع. سيظهر الشعار تلقائياً في الهيدر والفوتر وصفحات الموقع.</p></div><div class="site-logo-preview"><img id="siteLogoPreview" src="assets/logo.jpg" alt="معاينة الشعار"></div></div>
+          <div class="admin-grid">
+            <label class="wide">رابط / مسار الشعار<input id="logoUrl" type="url" dir="ltr" placeholder="https://example.com/logo.png أو assets/logo.jpg"></label>
+          </div>
+          <div class="admin-actions logo-actions"><button id="previewLogoBtn" type="button" class="btn ghost small">معاينة الشعار</button><button id="resetLogoBtn" type="button" class="btn ghost small">استخدام الشعار الافتراضي</button></div>
+          <p id="logoPreviewStatus" class="admin-tip"></p>
+        </div>
+        <div class="admin-card"><h3>ألوان الموقع</h3><p class="admin-tip">تم توحيد التصميم على ألوان الشعار: الكحلي والأحمر والأبيض. يمكن تغييرها هنا عند الحاجة، ويفضل عدم إدخال ألوان خارج الهوية.</p><div class="admin-grid color-grid"><label>الكحلي الرئيسي<input id="themeNavy" type="color"></label><label>الكحلي الداكن<input id="themeNavyDark" type="color"></label><label>الأحمر<input id="themeRed" type="color"></label><label>الخلفية الفاتحة<input id="themeLight" type="color"></label></div></div>
+      </section>
       <section id="panel-account" class="admin-panel"><div class="panel-head"><div><span class="eyebrow">الأمان</span><h2>تغيير بيانات الدخول</h2></div></div><div class="admin-card account-card"><p>يمكن تغيير اسم المستخدم وكلمة المرور من هنا. كلمة المرور لا يتم حفظها كنص صريح.</p><div class="admin-grid"><label>اسم المستخدم الجديد<input id="newUsername" autocomplete="username"></label><label>كلمة المرور الحالية<input id="currentPassword" type="password" autocomplete="current-password"></label><label>كلمة المرور الجديدة<input id="newPassword" type="password" autocomplete="new-password"></label><label>تأكيد كلمة المرور<input id="confirmPassword" type="password" autocomplete="new-password"></label></div><div class="account-actions"><button id="changeCredentialsBtn" class="btn primary">تحديث بيانات الدخول</button><button id="restoreBackupBtn" class="btn ghost" type="button">استعادة آخر نسخة قبل الحفظ</button></div><div id="accountNotice" class="login-notice"></div></div></section>
     </main>
   </div>
