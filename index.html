@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8"><script>(function(){try{var q=new URLSearchParams(location.search).get('lang');var l=(q==='en'||q==='ar')?q:(localStorage.getItem('alsiteen_lang')||sessionStorage.getItem('alsiteen_lang')||'ar');document.documentElement.lang=l;document.documentElement.dir=l==='en'?'ltr':'rtl';if(q==='en'||q==='ar'){localStorage.setItem('alsiteen_lang',q);sessionStorage.setItem('alsiteen_lang',q)}}catch(e){}})();</script>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>مجمع أطباء الستين الطبي العام</title>
   <meta name="description" content="مجمع أطباء الستين الطبي العام بالطائف - صحتك أولويتنا.">
@@ -18,7 +18,7 @@
       <img loading="lazy" decoding="async" src="assets/logo.jpg" alt="مجمع أطباء الستين" class="logo">
       <span class="slogan" data-i18n="slogan">صحتك أولويتنا</span>
     </a>
-    <button class="menu" aria-label="القائمة">☰</button>
+    <button class="menu" aria-label="القائمة" data-i18n-aria="menu_label">☰</button>
     <nav>
       <a href="#home" data-i18n="nav_home">الرئيسية</a>
       <a href="#about" data-i18n="nav_about">عن المجمع</a>
@@ -135,13 +135,13 @@
     <span class="eyebrow" id="contactLabel" data-i18n="contact_label">تواصل معنا</span>
     <h2 id="contactTitle" data-i18n="contact_title">نحن أقرب مما تتخيل</h2>
     <div class="contact-intro">
-      <p id="contactIntro">تابعنا على قنوات التواصل الاجتماعي، أو افتح موقع المجمع مباشرة على خرائط Google.</p>
+      <p id="contactIntro" data-i18n="contact_intro">تابعنا على قنوات التواصل الاجتماعي، أو افتح موقع المجمع مباشرة على خرائط Google.</p>
     </div>
     <div class="contact-layout">
       <div class="social-cards social-brand-cards social-rail" id="socialCards"></div>
       <div class="map-wrap">
-        <a class="map-click" id="mapLink" href="https://maps.app.goo.gl/Nybbty1Em6jc9p2F9" target="_blank" rel="noopener" aria-label="فتح موقع المجمع في خرائط جوجل">
-          <iframe id="mapFrame" title="موقع مجمع أطباء الستين" loading="lazy" tabindex="-1" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=%D9%85%D8%AC%D9%85%D8%B9%20%D8%A3%D8%B7%D8%A8%D8%A7%D8%A1%20%D8%A7%D9%84%D8%B3%D8%AA%D9%8A%D9%86%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%20%D8%A7%D9%84%D8%B9%D8%A7%D9%85%20%D8%A7%D9%84%D8%B7%D8%A7%D8%A6%D9%81&output=embed"></iframe>
+        <a class="map-click" id="mapLink" href="https://maps.app.goo.gl/Nybbty1Em6jc9p2F9" target="_blank" rel="noopener" aria-label="فتح موقع المجمع في خرائط جوجل" data-i18n-aria="map_aria">
+          <iframe id="mapFrame" title="موقع مجمع أطباء الستين" data-i18n-title="map_title" loading="lazy" tabindex="-1" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=%D9%85%D8%AC%D9%85%D8%B9%20%D8%A3%D8%B7%D8%A8%D8%A7%D8%A1%20%D8%A7%D9%84%D8%B3%D8%AA%D9%8A%D9%86%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%20%D8%A7%D9%84%D8%B9%D8%A7%D9%85%20%D8%A7%D9%84%D8%B7%D8%A7%D8%A6%D9%81&output=embed"></iframe>
         </a>
       </div>
     </div>
@@ -152,7 +152,7 @@
 <div id="requestModal" class="request-modal" aria-hidden="true">
   <div class="request-backdrop" data-close-request></div>
   <section class="request-dialog" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle">
-    <button class="request-close" type="button" aria-label="إغلاق" data-close-request>×</button>
+    <button class="request-close" type="button" aria-label="إغلاق" data-i18n-aria="close_label" data-close-request>×</button>
     <div class="request-dialog-copy">
       <span class="request-kicker" data-i18n="modal_kicker">خدمة أسرع عبر واتساب</span>
       <h2 id="requestModalTitle" data-i18n="modal_title">اختر طلبك، واترك الباقي علينا</h2>
@@ -168,8 +168,8 @@
         <label><span data-i18n="name_label">الاسم</span><input name="name" data-i18n-placeholder="name" placeholder="اكتب الاسم" required></label>
         <label><span data-i18n="mobile_label">رقم الجوال</span><input name="mobile" inputmode="tel" dir="ltr" data-i18n-placeholder="mobile" placeholder="05xxxxxxxx" required></label>
         <div id="bookingFields" class="modal-fields">
-          <label><span data-i18n="branch_label">الفرع</span><select name="branch"><option value="الحوية - الطائف">الحوية - الطائف</option></select></label>
-          <label><span data-i18n="department_label">القسم أو العيادة</span><select name="department" id="department"><option value="">اختر القسم</option></select></label>
+          <label><span data-i18n="branch_label">الفرع</span><select name="branch"><option value="الحوية - الطائف" data-i18n="branch_taif">الحوية - الطائف</option></select></label>
+          <label><span data-i18n="department_label">القسم أو العيادة</span><select name="department" id="department"><option value="" data-i18n="select_department">اختر القسم</option></select></label>
           <label><span data-i18n="date_label">التاريخ المفضل</span><input type="date" name="date" id="date"></label>
           <label><span data-i18n="time_label">التوقيت المفضل</span><select name="time" id="time"><option value="">اختر التوقيت</option></select></label>
         </div>
@@ -188,7 +188,7 @@
   </section>
 </div>
 
-<section class="footer-contact-band" aria-label="بيانات التواصل">
+<section class="footer-contact-band" aria-label="بيانات التواصل" data-i18n-aria="contact_data_label">
   <div class="wrap footer-contact-grid">
     <div class="footer-contact-copy">
       <span id="footerContactKicker" class="footer-contact-kicker" data-i18n="footer_contact_kicker">تواصل معنا</span>
@@ -208,10 +208,10 @@
   <div class="wrap site-footer-grid">
     <div class="site-footer-brand">
       <img loading="lazy" decoding="async" src="assets/logo.jpg" alt="مجمع أطباء الستين الطبي العام">
-      <div><b id="footerSiteName">مجمع أطباء الستين الطبي العام</b><span data-i18n="slogan">صحتك أولويتنا</span></div>
+      <div><b id="footerSiteName" data-i18n="site_name">مجمع أطباء الستين الطبي العام</b><span data-i18n="slogan">صحتك أولويتنا</span></div>
       <p id="footerAbout" data-i18n="footer_about">رعاية طبية متكاملة في الطائف، تجمع العيادات والخدمات التشخيصية والتأمينية في مكان واحد.</p>
     </div>
-    <nav class="site-footer-links" aria-label="روابط سريعة">
+    <nav class="site-footer-links" aria-label="روابط سريعة" data-i18n-aria="quick_links_label">
       <a href="index.html" data-i18n="nav_home">الرئيسية</a>
       <a href="#about" data-i18n="nav_about">عن المجمع</a>
       <a href="#services" data-i18n="nav_services">التخصصات والخدمات</a>
@@ -225,8 +225,8 @@
   <div class="wrap site-footer-bottom"><span id="copyrightText" data-i18n="copyright">© 2026 مجمع أطباء الستين الطبي العام. جميع الحقوق محفوظة.</span><span dir="ltr">Admin@alsiteendoctor.com</span></div>
 </footer>
 
-<div class="floating-action-stack" aria-label="روابط سريعة">
-<a class="whatsapp-float" id="floatingWhatsapp" href="https://wa.me/966540394555?text=%D8%A3%D8%AA%D9%88%D8%A7%D8%B5%D9%84%20%D9%85%D8%B9%D9%83%D9%85%20%D9%85%D9%86%20%D8%AE%D9%84%D8%A7%D9%84%20%D8%A7%D9%84%D9%85%D9%88%D9%82%D8%B9%20%D9%84%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1" target="_blank" rel="noopener" aria-label="تحدث معنا على واتساب">
+<div class="floating-action-stack" aria-label="روابط سريعة" data-i18n-aria="quick_links_label">
+<a class="whatsapp-float" id="floatingWhatsapp" href="https://wa.me/966540394555?text=%D8%A3%D8%AA%D9%88%D8%A7%D8%B5%D9%84%20%D9%85%D8%B9%D9%83%D9%85%20%D9%85%D9%86%20%D8%AE%D9%84%D8%A7%D9%84%20%D8%A7%D9%84%D9%85%D9%88%D9%82%D8%B9%20%D9%84%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1" target="_blank" rel="noopener" aria-label="تحدث معنا على واتساب" data-i18n-aria="whatsapp_aria">
   <span class="wa-label" data-i18n="wa_talk">تحدث معنا الآن</span>
   <span class="wa-rings"><span class="wa-button">
     <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M19.11 17.21c-.16-.08-.94-.46-1.08-.51-.15-.05-.25-.08-.36.08-.11.16-.41.51-.51.62-.09.11-.19.12-.35.04-.16-.08-.67-.25-1.28-.79-.47-.42-.79-.94-.88-1.1-.09-.16-.01-.24.07-.32.07-.07.16-.19.24-.28.08-.09.11-.16.16-.27.05-.11.03-.2-.01-.28-.04-.08-.36-.87-.49-1.19-.13-.31-.26-.27-.36-.28h-.31c-.11 0-.28.04-.43.2-.15.16-.57.56-.57 1.36s.59 1.58.67 1.69c.08.11 1.16 1.77 2.8 2.48.39.17.7.27.94.34.4.13.76.11 1.04.07.32-.05.94-.38 1.07-.75.13-.37.13-.69.09-.75-.04-.07-.15-.11-.31-.19z"/><path fill="currentColor" d="M16.03 4.8c-6.1 0-11.06 4.96-11.06 11.06 0 2.18.64 4.31 1.85 6.12L4.86 27.8l6-1.93a11 11 0 0 0 5.16 1.27h.01c6.1 0 11.06-4.96 11.06-11.06 0-2.95-1.15-5.73-3.24-7.82A10.97 10.97 0 0 0 16.03 4.8zm0 20.47h-.01a9.2 9.2 0 0 1-4.7-1.29l-.34-.2-3.56 1.15 1.16-3.47-.22-.36a9.2 9.2 0 1 1 7.67 4.17z"/></svg>

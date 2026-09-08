@@ -50,12 +50,16 @@ const fallback={
 doctors:[]
 };
 const I18N={
- ar:{slogan:"صحتك أولويتنا",nav_home:"الرئيسية",nav_about:"عن المجمع",nav_services:"التخصصات والخدمات",nav_doctors:"أطباؤنا",nav_offers:"العروض",nav_insurance:"التأمين",nav_request:"اطلب الآن",nav_contact:"تواصل معنا",shop:"المتجر الإلكتروني",request_now:"اطلب الآن",whatsapp:"واتساب",badge1:"✓ تخصصات متعددة",badge2:"✓ خدمات متكاملة",badge3:"✓ رعاية باحترافية",hero_book_now:"احجز موعدك الآن",hero_view_offers:"شاهد العروض",hero_location:"مجمع طبي متكامل في الحوية - الطائف",stat_specialties:"تخصصات وخدمات",stat_insurance:"شركة تأمين",stat_pharmacy:"صيدلية وخدمات مختارة",stat_contact:"للتواصل",about_label:"عن المجمع",mission:"الرسالة",vision:"الرؤية",values:"القيم",services_label:"التخصصات والخدمات",services_title:"اختر الخدمة التي تناسب احتياجك",services_intro:"قسمنا الخدمات إلى مجموعات واضحة لتصل إلى العيادة أو القسم المطلوب بسرعة، ويمكنك حجز الموعد مباشرة من بطاقة الخدمة.",filter_all:"الكل",filter_clinics:"العيادات",filter_diagnostics:"التشخيص والفحوصات",filter_support:"الخدمات المساندة",stat_goal:"هدفنا رعايتكم",stat_24:"أكثر من 11 تخصص",stat_5000:"خدمتنا أكثر من 5000 خدمة",stat_13:"أكثر من 13 شريك تأمين",stat_1000:"خدمنا أكثر من 1,000 شركة",stat_100000:"خدمنا أكثر من 100,000 عميل",journey_label:"رحلة صحية متكاملة",journey_title:"من الاستشارة إلى التشخيص والعلاج",journey_text:"يضم المجمع عيادات خارجية، مختبر، أشعة، صيدلية، فحص عمالة وخدمات تأمين وشركات لتسهيل رحلة المراجع.",start_request:"ابدأ الطلب ←",insurance_label:"شركاء التأمين",insurance_title:"نتعامل مع مجموعة واسعة من شركات التأمين",insurance_note:"تعتمد التغطية على فئة الوثيقة وموافقة شركة التأمين.",suppliers_label:"سابقة الأعمال والموردين",suppliers_title:"شركاء وموردون نفخر بالتعامل معهم",request_label:"اطلب الآن",request_title:"كيف يمكننا مساعدتك؟",request_intro:"اختر نوع الطلب وسيظهر النموذج المناسب مباشرة.",modal_kicker:"خدمة أسرع عبر واتساب",modal_title:"اختر طلبك، واترك الباقي علينا",modal_text:"اختر نوع الطلب وأدخل البيانات الأساسية، وسنجهز رسالة واتساب للمراجعة قبل الإرسال.",name_label:"الاسم",mobile_label:"رقم الجوال",branch_label:"الفرع",department_label:"القسم أو العيادة",date_label:"التاريخ المفضل",time_label:"التوقيت المفضل",company_label:"اسم الشركة أو المؤسسة",service_label:"الخدمة المطلوبة",message_type_label:"نوع الرسالة",details_label:"تفاصيل إضافية",booking_hint:"اختر التخصص والموعد المناسب",company_hint:"اطلب التواصل لخدمات الشركات",complaint_hint:"شاركنا ملاحظتك أو اقتراحك",tab_booking:"حجز موعد",tab_company:"طلب تعاقد",tab_complaint:"شكوى أو اقتراح",name:"الاسم",mobile:"05xxxxxxxx",company:"اسم الشركة أو المؤسسة",service:"الخدمة المطلوبة",details:"التفاصيل",complaint:"شكوى",suggestion:"اقتراح",send_whatsapp:"إرسال الطلب عبر واتساب",contact_label:"تواصل معنا",contact_title:"نحن أقرب مما تتخيل",open_maps:"⌖ فتح الموقع على الخرائط",all_links:"كل الروابط",quick_contact:"للتواصل",wa_talk:"تحدث معنا الآن",copyright:"© 2026 مجمع أطباء الستين الطبي العام. جميع الحقوق محفوظة.",footer_contact_kicker:"تواصل معنا",footer_contact_title:"نحن أقرب مما تتخيل",footer_contact_text:"للاستفسارات الطبية أو التأمين أو خدمات الشركات، تواصل معنا وسنوجهك إلى القسم المناسب.",footer_phone:"الهاتف",footer_whatsapp:"واتساب",footer_email:"البريد الإلكتروني",footer_address:"العنوان",footer_address_value:"الطائف - الحوية، شارع الستين.",footer_about:"رعاية طبية متكاملة في الطائف، تجمع العيادات والخدمات التشخيصية والتأمينية في مكان واحد.",admin:"إدارة المحتوى",offers_label:"العروض",offers_title:"أحدث عروض مجمع أطباء الستين",offers_intro:"",offers_empty:"لا توجد عروض منشورة حالياً."},
- en:{slogan:"Your Health Is Our Priority",nav_home:"Home",nav_about:"About",nav_services:"Specialties & Services",nav_doctors:"Our Doctors",nav_offers:"Offers",nav_insurance:"Insurance",nav_request:"Request Now",nav_contact:"Contact",shop:"Online Store",request_now:"Request Now",whatsapp:"WhatsApp",badge1:"✓ Multiple specialties",badge2:"✓ Integrated services",badge3:"✓ Professional care",hero_book_now:"Book your appointment",hero_view_offers:"View offers",hero_location:"Integrated medical complex in Al Hawiyah - Taif",stat_specialties:"Specialties & Services",stat_insurance:"Insurance Companies",stat_pharmacy:"Pharmacy & selected services",stat_contact:"Contact",about_label:"About Us",mission:"Mission",vision:"Vision",values:"Values",services_label:"Specialties & Services",services_title:"Choose the service that fits your needs",services_intro:"Services are grouped clearly so you can reach the right clinic or department quickly and book directly.",filter_all:"All",filter_clinics:"Clinics",filter_diagnostics:"Diagnostics & Tests",filter_support:"Support Services",stat_goal:"Your care is our goal",stat_24:"More than 11 specialties",stat_5000:"More than 5,000 services delivered",stat_13:"More than 13 insurance partners",stat_1000:"More than 1,000 companies served",stat_100000:"More than 100,000 clients served",journey_label:"Integrated care journey",journey_title:"From consultation to diagnosis and treatment",journey_text:"The complex includes outpatient clinics, laboratory, radiology, pharmacy, employment checks, insurance and corporate services.",start_request:"Start request →",insurance_label:"Insurance Partners",insurance_title:"We work with a wide network of insurers",insurance_note:"Coverage depends on policy class and insurer approval.",suppliers_label:"Partners & Suppliers",suppliers_title:"Partners and suppliers we are proud to work with",request_label:"Request Now",request_title:"How can we help you?",request_intro:"Choose a request type and the appropriate form will appear instantly.",modal_kicker:"Faster service via WhatsApp",modal_title:"Choose your request and leave the rest to us",modal_text:"Select a request type and enter the basic details. We will prepare a WhatsApp message for you to review before sending.",name_label:"Name",mobile_label:"Mobile number",branch_label:"Branch",department_label:"Department or clinic",date_label:"Preferred date",time_label:"Preferred time",company_label:"Company / Organization",service_label:"Required service",message_type_label:"Message type",details_label:"Additional details",booking_hint:"Choose specialty and appointment",company_hint:"Request corporate services contact",complaint_hint:"Share your feedback or suggestion",tab_booking:"Book Appointment",tab_company:"Corporate Contract",tab_complaint:"Complaint or Suggestion",name:"Name",mobile:"05xxxxxxxx",company:"Company / Organization",service:"Required service",details:"Details",complaint:"Complaint",suggestion:"Suggestion",send_whatsapp:"Send via WhatsApp",contact_label:"Contact Us",contact_title:"We are closer than you think",open_maps:"⌖ Open in Google Maps",all_links:"All Links",quick_contact:"Contact",wa_talk:"Chat with us now",copyright:"© 2026 Alsiteen Doctors General Medical Complex. All rights reserved.",footer_contact_kicker:"Contact Us",footer_contact_title:"We are closer than you think",footer_contact_text:"For medical inquiries, insurance, or corporate services, contact us and we will direct you to the right department.",footer_phone:"Phone",footer_whatsapp:"WhatsApp",footer_email:"Email",footer_address:"Address",footer_address_value:"Taif - Al Hawiyah, Al Siteen Street.",footer_about:"Integrated healthcare in Taif, bringing clinics, diagnostics, insurance and support services together in one place.",admin:"Content Admin",offers_label:"Offers",offers_title:"Latest Alsiteen Medical Offers",offers_intro:"Browse current offers and request any offer directly through WhatsApp.",offers_empty:"No offers are currently published."}
+ ar:{slogan:"صحتك أولويتنا",nav_home:"الرئيسية",nav_about:"عن المجمع",nav_services:"التخصصات والخدمات",nav_doctors:"أطباؤنا",nav_offers:"العروض",nav_insurance:"التأمين",nav_request:"اطلب الآن",nav_contact:"تواصل معنا",shop:"المتجر الإلكتروني",request_now:"اطلب الآن",whatsapp:"واتساب",badge1:"✓ تخصصات متعددة",badge2:"✓ خدمات متكاملة",badge3:"✓ رعاية باحترافية",hero_book_now:"احجز موعدك الآن",hero_view_offers:"شاهد العروض",hero_location:"مجمع طبي متكامل في الحوية - الطائف",stat_specialties:"تخصصات وخدمات",stat_insurance:"شركة تأمين",stat_pharmacy:"صيدلية وخدمات مختارة",stat_contact:"للتواصل",about_label:"عن المجمع",mission:"الرسالة",vision:"الرؤية",values:"القيم",services_label:"التخصصات والخدمات",services_title:"اختر الخدمة التي تناسب احتياجك",services_intro:"قسمنا الخدمات إلى مجموعات واضحة لتصل إلى العيادة أو القسم المطلوب بسرعة، ويمكنك حجز الموعد مباشرة من بطاقة الخدمة.",filter_all:"الكل",filter_clinics:"العيادات",filter_diagnostics:"التشخيص والفحوصات",filter_support:"الخدمات المساندة",stat_goal:"هدفنا رعايتكم",stat_24:"أكثر من 11 تخصص",stat_5000:"خدمتنا أكثر من 5000 خدمة",stat_13:"أكثر من 13 شريك تأمين",stat_1000:"خدمنا أكثر من 1,000 شركة",stat_100000:"خدمنا أكثر من 100,000 عميل",journey_label:"رحلة صحية متكاملة",journey_title:"من الاستشارة إلى التشخيص والعلاج",journey_text:"يضم المجمع عيادات خارجية، مختبر، أشعة، صيدلية، فحص عمالة وخدمات تأمين وشركات لتسهيل رحلة المراجع.",start_request:"ابدأ الطلب ←",insurance_label:"شركاء التأمين",insurance_title:"نتعامل مع مجموعة واسعة من شركات التأمين",insurance_note:"تعتمد التغطية على فئة الوثيقة وموافقة شركة التأمين.",suppliers_label:"سابقة الأعمال والموردين",suppliers_title:"شركاء وموردون نفخر بالتعامل معهم",request_label:"اطلب الآن",request_title:"كيف يمكننا مساعدتك؟",request_intro:"اختر نوع الطلب وسيظهر النموذج المناسب مباشرة.",modal_kicker:"خدمة أسرع عبر واتساب",modal_title:"اختر طلبك، واترك الباقي علينا",modal_text:"اختر نوع الطلب وأدخل البيانات الأساسية، وسنجهز رسالة واتساب للمراجعة قبل الإرسال.",name_label:"الاسم",mobile_label:"رقم الجوال",branch_label:"الفرع",department_label:"القسم أو العيادة",date_label:"التاريخ المفضل",time_label:"التوقيت المفضل",company_label:"اسم الشركة أو المؤسسة",service_label:"الخدمة المطلوبة",message_type_label:"نوع الرسالة",details_label:"تفاصيل إضافية",booking_hint:"اختر التخصص والموعد المناسب",company_hint:"اطلب التواصل لخدمات الشركات",complaint_hint:"شاركنا ملاحظتك أو اقتراحك",tab_booking:"حجز موعد",tab_company:"طلب تعاقد",tab_complaint:"شكوى أو اقتراح",name:"الاسم",mobile:"05xxxxxxxx",company:"اسم الشركة أو المؤسسة",service:"الخدمة المطلوبة",details:"التفاصيل",complaint:"شكوى",suggestion:"اقتراح",send_whatsapp:"إرسال الطلب عبر واتساب",contact_label:"تواصل معنا",contact_title:"نحن أقرب مما تتخيل",open_maps:"⌖ فتح الموقع على الخرائط",all_links:"كل الروابط",quick_contact:"للتواصل",wa_talk:"تحدث معنا الآن",copyright:"© 2026 مجمع أطباء الستين الطبي العام. جميع الحقوق محفوظة.",footer_contact_kicker:"تواصل معنا",footer_contact_title:"نحن أقرب مما تتخيل",footer_contact_text:"للاستفسارات الطبية أو التأمين أو خدمات الشركات، تواصل معنا وسنوجهك إلى القسم المناسب.",footer_phone:"الهاتف",footer_whatsapp:"واتساب",footer_email:"البريد الإلكتروني",footer_address:"العنوان",footer_address_value:"الطائف - الحوية، شارع الستين.",footer_about:"رعاية طبية متكاملة في الطائف، تجمع العيادات والخدمات التشخيصية والتأمينية في مكان واحد.",contact_intro:"تابعنا على قنوات التواصل الاجتماعي، أو افتح موقع المجمع مباشرة على خرائط Google.",site_name:"مجمع أطباء الستين الطبي العام",medical_team:"الفريق الطبي",choose_doctor:"اختر الطبيب المناسب",doctor_search:"ابحث باسم الطبيب أو التخصص أو الجنسية...",all_specialties:"كل التخصصات",doctors_empty:"لا يوجد أطباء منشورون حالياً.",doctor_booking_kicker:"حجز مباشر مع الطبيب",doctor_booking_title:"احجز موعدك مع الطبيب",doctor_booking_intro:"بيانات الطبيب والتخصص ستضاف تلقائيًا إلى رسالة الحجز.",doctor_label:"الطبيب",specialty_label:"التخصص",enter_name:"اكتب الاسم",select_time:"اختر التوقيت",extra_details_placeholder:"اكتب أي تفاصيل تساعدنا في خدمتك",doctor_send_whatsapp:"إرسال طلب الحجز عبر واتساب ↗",walkin_kicker:"الحضور المباشر",walkin_title:"الحضور بأسبقية الوصول",walkin_text:"هذا الطبيب لا يستقبل حجز مواعيد مسبق حاليًا. يمكنكم الحضور خلال مواعيد العمل، وتكون الخدمة بأسبقية الوصول.",ok:"حسنًا",offers_services_label:"خدمات المجمع",offers_choose_title:"اختر ما يناسبك بسهولة",offers_lead:"جميع خدمات المتجر في مكان واحد، مع إظهار التخفيضات أولاً.",offers_discount_first:"العروض المخفضة أولاً",offers_search:"ابحث عن خدمة...",offers_all_categories:"كل التصنيفات",offers_sort_label:"ترتيب الخدمات",offers_more:"عرض المزيد",branch_taif:"الحوية - الطائف",select_department:"اختر القسم",menu_label:"القائمة",close_label:"إغلاق",contact_data_label:"بيانات التواصل",quick_links_label:"روابط سريعة",whatsapp_aria:"تحدث معنا على واتساب",map_aria:"فتح موقع المجمع في خرائط جوجل",map_title:"موقع مجمع أطباء الستين",admin:"إدارة المحتوى",offers_label:"العروض",offers_title:"أحدث عروض مجمع أطباء الستين",offers_intro:"",offers_empty:"لا توجد عروض منشورة حالياً."},
+ en:{slogan:"Your Health Is Our Priority",nav_home:"Home",nav_about:"About",nav_services:"Specialties & Services",nav_doctors:"Our Doctors",nav_offers:"Offers",nav_insurance:"Insurance",nav_request:"Request Now",nav_contact:"Contact",shop:"Online Store",request_now:"Request Now",whatsapp:"WhatsApp",badge1:"✓ Multiple specialties",badge2:"✓ Integrated services",badge3:"✓ Professional care",hero_book_now:"Book your appointment",hero_view_offers:"View offers",hero_location:"Integrated medical complex in Al Hawiyah - Taif",stat_specialties:"Specialties & Services",stat_insurance:"Insurance Companies",stat_pharmacy:"Pharmacy & selected services",stat_contact:"Contact",about_label:"About Us",mission:"Mission",vision:"Vision",values:"Values",services_label:"Specialties & Services",services_title:"Choose the service that fits your needs",services_intro:"Services are grouped clearly so you can reach the right clinic or department quickly and book directly.",filter_all:"All",filter_clinics:"Clinics",filter_diagnostics:"Diagnostics & Tests",filter_support:"Support Services",stat_goal:"Your care is our goal",stat_24:"More than 11 specialties",stat_5000:"More than 5,000 services delivered",stat_13:"More than 13 insurance partners",stat_1000:"More than 1,000 companies served",stat_100000:"More than 100,000 clients served",journey_label:"Integrated care journey",journey_title:"From consultation to diagnosis and treatment",journey_text:"The complex includes outpatient clinics, laboratory, radiology, pharmacy, employment checks, insurance and corporate services.",start_request:"Start request →",insurance_label:"Insurance Partners",insurance_title:"We work with a wide network of insurers",insurance_note:"Coverage depends on policy class and insurer approval.",suppliers_label:"Partners & Suppliers",suppliers_title:"Partners and suppliers we are proud to work with",request_label:"Request Now",request_title:"How can we help you?",request_intro:"Choose a request type and the appropriate form will appear instantly.",modal_kicker:"Faster service via WhatsApp",modal_title:"Choose your request and leave the rest to us",modal_text:"Select a request type and enter the basic details. We will prepare a WhatsApp message for you to review before sending.",name_label:"Name",mobile_label:"Mobile number",branch_label:"Branch",department_label:"Department or clinic",date_label:"Preferred date",time_label:"Preferred time",company_label:"Company / Organization",service_label:"Required service",message_type_label:"Message type",details_label:"Additional details",booking_hint:"Choose specialty and appointment",company_hint:"Request corporate services contact",complaint_hint:"Share your feedback or suggestion",tab_booking:"Book Appointment",tab_company:"Corporate Contract",tab_complaint:"Complaint or Suggestion",name:"Name",mobile:"05xxxxxxxx",company:"Company / Organization",service:"Required service",details:"Details",complaint:"Complaint",suggestion:"Suggestion",send_whatsapp:"Send via WhatsApp",contact_label:"Contact Us",contact_title:"We are closer than you think",open_maps:"⌖ Open in Google Maps",all_links:"All Links",quick_contact:"Contact",wa_talk:"Chat with us now",copyright:"© 2026 Alsiteen Doctors General Medical Complex. All rights reserved.",footer_contact_kicker:"Contact Us",footer_contact_title:"We are closer than you think",footer_contact_text:"For medical inquiries, insurance, or corporate services, contact us and we will direct you to the right department.",footer_phone:"Phone",footer_whatsapp:"WhatsApp",footer_email:"Email",footer_address:"Address",footer_address_value:"Taif - Al Hawiyah, Al Siteen Street.",footer_about:"Integrated healthcare in Taif, bringing clinics, diagnostics, insurance and support services together in one place.",contact_intro:"Follow us on social media, or open the medical complex location directly in Google Maps.",site_name:"Alsiteen Doctors General Medical Complex",medical_team:"Medical Team",choose_doctor:"Choose the Right Doctor",doctor_search:"Search by doctor name, specialty, or nationality...",all_specialties:"All specialties",doctors_empty:"No doctors are currently published.",doctor_booking_kicker:"Direct booking with the doctor",doctor_booking_title:"Book Your Appointment with the Doctor",doctor_booking_intro:"The doctor and specialty details will be added automatically to the booking message.",doctor_label:"Doctor",specialty_label:"Specialty",enter_name:"Enter your name",select_time:"Select time",extra_details_placeholder:"Add any details that may help us serve you",doctor_send_whatsapp:"Send booking request via WhatsApp ↗",walkin_kicker:"Walk-in Service",walkin_title:"First Come, First Served",walkin_text:"This doctor is not currently accepting advance appointments. You may visit during working hours; patients are seen in order of arrival.",ok:"OK",offers_services_label:"Medical Services",offers_choose_title:"Choose What Suits You Easily",offers_lead:"All store services in one place, with discounted services shown first.",offers_discount_first:"Discounted offers first",offers_search:"Search for a service...",offers_all_categories:"All categories",offers_sort_label:"Sort services",offers_more:"Show more",branch_taif:"Al Hawiyah - Taif",select_department:"Select department",menu_label:"Menu",close_label:"Close",contact_data_label:"Contact details",quick_links_label:"Quick links",whatsapp_aria:"Chat with us on WhatsApp",map_aria:"Open the medical complex location in Google Maps",map_title:"Alsiteen Doctors Medical Complex location",admin:"Content Admin",offers_label:"Offers",offers_title:"Latest Alsiteen Medical Offers",offers_intro:"Browse current offers and request any offer directly through WhatsApp.",offers_empty:"No offers are currently published."}
 };
 
 
-let data=structuredClone(fallback);let lang=localStorage.getItem('alsiteen_lang')||'ar';
+let data=structuredClone(fallback);
+const urlLang=new URLSearchParams(location.search).get('lang');
+let lang=(urlLang==='en'||urlLang==='ar')?urlLang:(localStorage.getItem('alsiteen_lang')||sessionStorage.getItem('alsiteen_lang')||'ar');
+if(lang!=='en'&&lang!=='ar')lang='ar';
+try{localStorage.setItem('alsiteen_lang',lang);sessionStorage.setItem('alsiteen_lang',lang)}catch(_){}
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 function normalizePayload(j){if(!j||typeof j!=="object")return null;if(j.data&&typeof j.data==="object")j=j.data;const out={...structuredClone(fallback),settings:{...fallback.settings,...(j.settings||{})}};
   const cleanList=(key,valid)=>{
@@ -330,30 +334,40 @@ function renderDoctorsPublic(){
     const viewport=scroller.querySelector('.doctors-marquee-viewport')||scroller;
     const track=scroller.querySelector('.doctors-marquee-track');
     if(!track)return;
-    let down=false,startX=0,startScroll=0,paused=false,resumeTimer=0,raf=0,lastTs=0;
-    const direction=scroller.classList.contains('reverse')?-1:1;
-    const speed=window.innerWidth<=760?0.62:0.78; // سرعة أوضح ومتوسطة على الجوال والكمبيوتر
-    const halfWidth=()=>track.scrollWidth/2;
+    let down=false,startX=0,startScroll=0,paused=false,resumeTimer=0,raf=0,lastTs=0,edgePauseUntil=0;
+    let direction=scroller.classList.contains('reverse')?-1:1;
+    const edgePauseMs=10000;
+    const speed=window.innerWidth<=760?0.72:0.86;
+    const maxScroll=()=>Math.max(0,viewport.scrollWidth-viewport.clientWidth);
     const stopAuto=()=>{paused=true;clearTimeout(resumeTimer)};
-    const resume=(delay=1200)=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!down)paused=false},delay)};
-    const normalize=()=>{
-      const half=halfWidth();if(!half)return;
-      if(viewport.scrollLeft>=half)viewport.scrollLeft-=half;
-      else if(viewport.scrollLeft<0)viewport.scrollLeft+=half;
+    const resume=(delay=700)=>{clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!down)paused=false},delay)};
+    const clampAndSetDirection=()=>{
+      const max=maxScroll();
+      if(viewport.scrollLeft<=1){viewport.scrollLeft=0;direction=1}
+      else if(viewport.scrollLeft>=max-1){viewport.scrollLeft=max;direction=-1}
     };
     const tick=ts=>{
       if(!lastTs)lastTs=ts;
       const dt=Math.min(32,ts-lastTs||16.67);lastTs=ts;
-      if(!paused&&!down&&halfWidth()>viewport.clientWidth){
+      const max=maxScroll();
+      if(!paused&&!down&&max>2&&ts>=edgePauseUntil){
         viewport.scrollLeft+=direction*speed*(dt/16.67);
-        const half=halfWidth();
-        if(direction>0&&viewport.scrollLeft>=half)viewport.scrollLeft-=half;
-        if(direction<0&&viewport.scrollLeft<=0)viewport.scrollLeft+=half;
+        if(viewport.scrollLeft>=max){
+          viewport.scrollLeft=max;
+          direction=-1;
+          edgePauseUntil=ts+edgePauseMs;
+        }else if(viewport.scrollLeft<=0){
+          viewport.scrollLeft=0;
+          direction=1;
+          edgePauseUntil=ts+edgePauseMs;
+        }
       }
       raf=requestAnimationFrame(tick);
     };
     requestAnimationFrame(()=>{
-      if(direction<0)viewport.scrollLeft=halfWidth();
+      const max=maxScroll();
+      if(scroller.classList.contains('reverse')&&max>0)viewport.scrollLeft=max;
+      else viewport.scrollLeft=0;
       raf=requestAnimationFrame(tick);
     });
     viewport.addEventListener('pointerdown',e=>{
@@ -361,11 +375,9 @@ function renderDoctorsPublic(){
       down=true;startX=e.clientX;startScroll=viewport.scrollLeft;stopAuto();viewport.setPointerCapture?.(e.pointerId)
     });
     viewport.addEventListener('pointermove',e=>{if(!down)return;viewport.scrollLeft=startScroll-(e.clientX-startX)});
-    const up=e=>{if(!down)return;down=false;try{viewport.releasePointerCapture?.(e.pointerId)}catch(_){}normalize();resume()};
+    const up=e=>{if(!down)return;down=false;try{viewport.releasePointerCapture?.(e.pointerId)}catch(_){}clampAndSetDirection();resume()};
     viewport.addEventListener('pointerup',up);viewport.addEventListener('pointercancel',up);
-    // الحركة تبدأ دائمًا عند فتح الصفحة. بعد مهلة قصيرة، المرور الحقيقي بالماوس
-    // فوق الصف يوقفه فورًا، والخروج منه يعيد الحركة مباشرة تقريبًا.
-    const hoverReadyAt=performance.now()+900;
+    const hoverReadyAt=performance.now()+650;
     scroller.addEventListener('mouseenter',()=>{
       if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
       if(performance.now()<hoverReadyAt)return;
@@ -373,17 +385,18 @@ function renderDoctorsPublic(){
     });
     scroller.addEventListener('mouseleave',()=>{
       if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
-      resume(180);
+      resume(120);
     });
     viewport.addEventListener('touchstart',e=>{if(!e.target.closest('button,a,input,select,textarea,label,summary,details'))stopAuto()},{passive:true});
-    viewport.addEventListener('touchend',()=>{normalize();resume(900)},{passive:true});
+    viewport.addEventListener('touchend',()=>{clampAndSetDirection();resume(650)},{passive:true});
     scroller.querySelectorAll('.doctors-row-arrow').forEach(btn=>btn.addEventListener('click',e=>{
       e.preventDefault();e.stopPropagation();stopAuto();
-      const step=Math.min(340,Math.max(240,viewport.clientWidth*.72));
+      const step=Math.min(360,Math.max(230,viewport.clientWidth*.72));
       const delta=btn.classList.contains('arrow-left')?-step:step;
       viewport.scrollBy({left:delta,behavior:'smooth'});
-      setTimeout(normalize,430);resume(1700);
+      setTimeout(clampAndSetDirection,450);resume(1200);
     }));
+    window.addEventListener('resize',()=>{viewport.scrollLeft=Math.min(viewport.scrollLeft,maxScroll());clampAndSetDirection()},{passive:true});
   }
   function uniqueDoctors(items){
     const seen=new Set();
@@ -399,27 +412,15 @@ function renderDoctorsPublic(){
     empty?.classList.toggle('hidden',list.length>0);
     if(!list.length){host.innerHTML='';return}
     let rows;
-    if(list.length===1){
+    if(list.length<=3){
       rows=[list];
-    }else if(list.length>=6){
-      rows=[list.filter((_,i)=>i%2===0),list.filter((_,i)=>i%2===1)];
     }else{
-      // نستخدم صفين حتى مع العدد المتوسط، مع تدوير الصف الثاني
-      // للحصول على توزيع متوازن وحركة متصلة بدون فراغات مزعجة.
-      rows=[list,rotate(list,Math.max(1,Math.floor(list.length/2)))];
+      // توزيع الأطباء الفعليين فقط على صفين، بدون استنساخ أي طبيب للحركة.
+      rows=[list.filter((_,i)=>i%2===0),list.filter((_,i)=>i%2===1)];
     }
-    const minVisibleCards=window.innerWidth<=760?4:6;
-    const buildMovingSet=row=>{
-      if(row.length<=1)return row;
-      const base=[];
-      while(base.length<minVisibleCards)base.push(...row);
-      const normalized=base.slice(0,Math.max(minVisibleCards,row.length));
-      return [...normalized,...normalized];
-    };
     host.innerHTML=rows.map((row,ri)=>{
       const moving=row.length>1;
-      const expanded=moving?buildMovingSet(row):row;
-      return `<div class="doctors-marquee-row ${ri%2?'reverse':''} ${moving?'':'static-row'}"><button class="doctors-row-arrow arrow-left" type="button" aria-label="${lang==='ar'?'تحريك الصف لليسار':'Move row left'}">‹</button><div class="doctors-marquee-viewport"><div class="doctors-marquee-track">${expanded.map((x,i)=>card(x,i+ri*24,all.indexOf(x))).join('')}</div></div><button class="doctors-row-arrow arrow-right" type="button" aria-label="${lang==='ar'?'تحريك الصف لليمين':'Move row right'}">›</button></div>`
+      return `<div class="doctors-marquee-row ${ri%2?'reverse':''} ${moving?'':'static-row'}"><button class="doctors-row-arrow arrow-left" type="button" aria-label="${lang==='ar'?'تحريك الصف لليسار':'Move row left'}">‹</button><div class="doctors-marquee-viewport"><div class="doctors-marquee-track">${row.map((x,i)=>card(x,i+ri*24,all.indexOf(x))).join('')}</div></div><button class="doctors-row-arrow arrow-right" type="button" aria-label="${lang==='ar'?'تحريك الصف لليمين':'Move row right'}">›</button></div>`
     }).join('');
     host.querySelectorAll('.doctors-marquee-row').forEach(r=>{if(!r.classList.contains('static-row'))bindTrackDrag(r)});
   }
@@ -515,8 +516,41 @@ function activateServiceView(filter='all'){
   grid.addEventListener('touchcancel',()=>resume(400),{passive:true});
   grid.addEventListener('scroll',()=>{if(paused&&!dragging)resume(800)},{passive:true});
 }
-function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';if($('#langBtn'))$('#langBtn').textContent=lang==='ar'?'EN':'AR';$$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});$$('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder;if(I18N[lang][k])el.placeholder=I18N[lang][k]});render()}
-$('#langBtn')?.addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';localStorage.setItem('alsiteen_lang',lang);applyLang()});$('.menu')?.addEventListener('click',()=>$('.nav nav')?.classList.toggle('open'));$$('.nav nav a').forEach(a=>a.addEventListener('click',()=>$('.nav nav')?.classList.remove('open')));let formType='booking';const requestModal=$('#requestModal'),requestTrigger=$('.request-nav-trigger'),requestDropdown=$('.request-dropdown');function setFormType(type='booking'){formType=type;$$('.request-type').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('#bookingFields')?.classList.toggle('hidden',type!=='booking');$('#companyFields')?.classList.toggle('hidden',type!=='company');$('#complaintFields')?.classList.toggle('hidden',type!=='complaint')}function openRequestModal(type='booking'){setFormType(type);requestModal?.classList.add('open');requestModal?.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false');setTimeout(()=>requestModal?.querySelector('input[name="name"]')?.focus(),120)}function closeRequestModal(){requestModal?.classList.remove('open');requestModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}window.openAlsiteenRequest=openRequestModal;requestTrigger?.addEventListener('click',e=>{e.stopPropagation();const open=requestDropdown?.classList.toggle('open');requestTrigger.setAttribute('aria-expanded',open?'true':'false')});document.addEventListener('click',e=>{if(!e.target.closest('.request-nav')){requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false')}});$$('[data-request-type]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openRequestModal(b.dataset.requestType||'booking')}));const heroBookingButton=$('#heroBookingButton');if(heroBookingButton){heroBookingButton.onclick=e=>{e.preventDefault();e.stopPropagation();openRequestModal('booking')}}const heroOffersButton=$('#heroOffersButton');if(heroOffersButton){heroOffersButton.onclick=e=>{e.stopPropagation();location.href='offers.html'}}const requestTypeList=$('.request-type-list');
+function syncInternalLanguageLinks(){
+  const isInternalHref=href=>href&& !href.startsWith('#') && !href.startsWith('http://') && !href.startsWith('https://') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('javascript:');
+  document.querySelectorAll('a[href]').forEach(a=>{
+    const raw=a.getAttribute('href');
+    if(!isInternalHref(raw))return;
+    try{
+      const u=new URL(raw,location.href);
+      if(lang==='en')u.searchParams.set('lang','en');else u.searchParams.delete('lang');
+      a.setAttribute('href',u.pathname.split('/').pop()+(u.search||'')+(u.hash||''));
+    }catch(_){}
+  });
+}
+function navigateInternal(path){
+  const u=new URL(path,location.href);
+  if(lang==='en')u.searchParams.set('lang','en');else u.searchParams.delete('lang');
+  location.href=u.pathname.split('/').pop()+(u.search||'')+(u.hash||'');
+}
+function applyLang(){
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  try{localStorage.setItem('alsiteen_lang',lang);sessionStorage.setItem('alsiteen_lang',lang)}catch(_){}
+  if($('#langBtn'))$('#langBtn').textContent=lang==='ar'?'EN':'AR';
+  $$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});
+  $$('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder;if(I18N[lang][k])el.placeholder=I18N[lang][k]});
+  $$('[data-i18n-aria]').forEach(el=>{const k=el.dataset.i18nAria;if(I18N[lang][k])el.setAttribute('aria-label',I18N[lang][k])});
+  $$('[data-i18n-title]').forEach(el=>{const k=el.dataset.i18nTitle;if(I18N[lang][k])el.setAttribute('title',I18N[lang][k])});
+  const branch=$('#serviceForm select[name="branch"] option');if(branch){branch.textContent=I18N[lang].branch_taif;branch.value=I18N[lang].branch_taif}
+  setText('#doctorBookingKicker',I18N[lang].doctor_booking_kicker);setText('#doctorBookingTitle',I18N[lang].doctor_booking_title);setText('#doctorBookingIntro',I18N[lang].doctor_booking_intro);
+  setText('#doctorBookingDoctorLabel',I18N[lang].doctor_label);setText('#doctorBookingSpecialtyLabel',I18N[lang].specialty_label);setText('#doctorBookingNameLabel',I18N[lang].name_label);setText('#doctorBookingMobileLabel',I18N[lang].mobile_label);setText('#doctorBookingDateLabel',I18N[lang].date_label);setText('#doctorBookingTimeLabel',I18N[lang].time_label);setText('#doctorBookingDetailsLabel',I18N[lang].details_label);setText('#doctorBookingSubmit',I18N[lang].doctor_send_whatsapp);
+  const doctorNameInput=$('#doctorBookingForm input[name="name"]');if(doctorNameInput)doctorNameInput.placeholder=I18N[lang].enter_name;const doctorDetails=$('#doctorBookingForm textarea[name="details"]');if(doctorDetails)doctorDetails.placeholder=I18N[lang].extra_details_placeholder;
+  const doctorTime=$('#doctorBookingTime');if(doctorTime&&!doctorTime.value&&doctorTime.options.length)doctorTime.options[0].textContent=I18N[lang].select_time;
+  syncInternalLanguageLinks();
+  render();
+  syncInternalLanguageLinks();
+}
+$('#langBtn')?.addEventListener('click',()=>{lang=lang==='ar'?'en':'ar';try{localStorage.setItem('alsiteen_lang',lang);sessionStorage.setItem('alsiteen_lang',lang)}catch(_){};const u=new URL(location.href);if(lang==='en')u.searchParams.set('lang','en');else u.searchParams.delete('lang');history.replaceState(null,'',u.pathname+u.search+u.hash);applyLang()});$('.menu')?.addEventListener('click',()=>$('.nav nav')?.classList.toggle('open'));$$('.nav nav a').forEach(a=>a.addEventListener('click',()=>$('.nav nav')?.classList.remove('open')));let formType='booking';const requestModal=$('#requestModal'),requestTrigger=$('.request-nav-trigger'),requestDropdown=$('.request-dropdown');function setFormType(type='booking'){formType=type;$$('.request-type').forEach(x=>x.classList.toggle('active',x.dataset.type===type));$('#bookingFields')?.classList.toggle('hidden',type!=='booking');$('#companyFields')?.classList.toggle('hidden',type!=='company');$('#complaintFields')?.classList.toggle('hidden',type!=='complaint')}function openRequestModal(type='booking'){setFormType(type);requestModal?.classList.add('open');requestModal?.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false');setTimeout(()=>requestModal?.querySelector('input[name="name"]')?.focus(),120)}function closeRequestModal(){requestModal?.classList.remove('open');requestModal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}window.openAlsiteenRequest=openRequestModal;requestTrigger?.addEventListener('click',e=>{e.stopPropagation();const open=requestDropdown?.classList.toggle('open');requestTrigger.setAttribute('aria-expanded',open?'true':'false')});document.addEventListener('click',e=>{if(!e.target.closest('.request-nav')){requestDropdown?.classList.remove('open');requestTrigger?.setAttribute('aria-expanded','false')}});$$('[data-request-type]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openRequestModal(b.dataset.requestType||'booking')}));const heroBookingButton=$('#heroBookingButton');if(heroBookingButton){heroBookingButton.onclick=e=>{e.preventDefault();e.stopPropagation();openRequestModal('booking')}}const heroOffersButton=$('#heroOffersButton');if(heroOffersButton){heroOffersButton.onclick=e=>{e.stopPropagation();navigateInternal('offers.html')}}const requestTypeList=$('.request-type-list');
 function activateRequestType(e){
   const b=e.target.closest('.request-type');
   if(!b||!requestTypeList?.contains(b))return;
